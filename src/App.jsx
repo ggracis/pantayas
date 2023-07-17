@@ -1,104 +1,53 @@
-import { useState } from "react";
-import {
-  Box,
-  Flex,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Select,
-  Text,
-} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import Parse from "parse/dist/parse.min.js";
+import { PersonComponent } from "./components/Test";
+import { Navigate, Route, Routes } from "react-router-dom";
+import UsuarioForm from "./components/Users/Form";
+import NavBar from "./components/NavBar";
+import ProductoForm from "./components/products/Form";
+import Listado from "./components/products/Listado";
 
-const categories = ["Entradas", "Platos principales", "Postres"];
-const menuItems = [
-  {
-    name: "Ensalada César",
-    description: "Lechuga, pollo, crutones y aderezo César",
-    price: 8.99,
-    category: "Entradas",
-  },
-  {
-    name: "Hamburguesa clásica",
-    description: "Carne de res, quesoeddar, lechuga y tomate",
-    price: 12.99,
-    category: "Platos principales",
-  },
-  {
-    name: "Tarta de manzana",
-    description: "Tarta de manzana con helado de vainilla",
-    price: 6.99,
-    category: "Postres",
-  },
-];
+// Your Parse initialization configuration goes here
+const PARSE_APPLICATION_ID = "WNBfJEeklSm2WQ7p92cJDtiPs7lpJyrkUErWj2uJ";
+const PARSE_HOST_URL = "https://parseapi.back4app.com/";
+const PARSE_JAVASCRIPT_KEY = "bMSVQiyAwrqenmqdhc11M7gl1BcvlXEX5H1nJcoX";
+Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
+Parse.serverURL = PARSE_HOST_URL;
 
-function MenuItem({ name, description, price }) {
+function App() {
   return (
-    <Flex justify="space-between" mb={4}>
-      <Box>
-        <Heading as="h3" size="md">
-          {name}
-        </Heading>
-        <Text fontSize="sm" color="gray.500">
-          {description}
-        </Text>
-      </Box>
-      <Text fontSize="lg" fontWeight="bold">
-        ${price}
-      </Text>
-    </Flex>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <>
+            <NavBar />
+            <h1>Home</h1>
+            <p>Esta es la página de inicio</p>
+          </>
+        }
+      />
+
+      <Route path="*" element={<Navigate to="/" />} />
+      <Route
+        path="/usuario"
+        element={
+          <>
+            <NavBar /> <UsuarioForm />
+          </>
+        }
+      />
+      <Route
+        path="/productos"
+        element={
+          <>
+            <NavBar /> <ProductoForm /> <Listado />
+          </>
+        }
+      />
+      <Route path="/test" element={<PersonComponent />} />
+    </Routes>
   );
 }
 
-export default function MenuScreen() {
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredMenuItems = menuItems.filter(
-    (item) =>
-      item.category.includes(selectedCategory) &&
-      item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  return (
-    <Box p={4}>
-      <Heading as="h1" size="xl" mb={4}>
-        Menú
-      </Heading>
-      <Flex mb={4}>
-        <InputGroup>
-          <Input
-            type="text"
-            placeholder="Buscar plato"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </InputGroup>
-        <Select
-          ml={4}
-          placeholder="Filtrar por categoría"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </Select>
-      </Flex>
-      {filteredMenuItems.length > 0 ? (
-        filteredMenuItems.map((item) => (
-          <MenuItem
-            key={item.name}
-            name={item.name}
-            description={item.description}
-            price={item.price}
-          />
-        ))
-      ) : (
-        <Text>No se encontraron platos</Text>
-      )}
-    </Box>
-  );
-}
+export default App;
