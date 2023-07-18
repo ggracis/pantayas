@@ -36,6 +36,9 @@ export default function NavBar() {
         <NavLink className={styles.enlaces} to="/productos">
           Agregar productos
         </NavLink>
+        <NavLink className={styles.enlaces} to="/screen">
+          Pantalla 1
+        </NavLink>
       </nav>
     );
   };
