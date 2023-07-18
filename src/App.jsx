@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Parse from "parse/dist/parse.min.js";
-import { PersonComponent } from "./components/Test";
 import { Navigate, Route, Routes } from "react-router-dom";
-import UsuarioForm from "./components/Users/Form";
 import NavBar from "./components/NavBar";
 import ProductoForm from "./components/products/Form";
 import Listado from "./components/products/Listado";
+import UsuarioForm from "./components/Users/Form";
+import Screen1 from "./components/screens/Screen1";
 
 // Your Parse initialization configuration goes here
 const PARSE_APPLICATION_ID = "WNBfJEeklSm2WQ7p92cJDtiPs7lpJyrkUErWj2uJ";
@@ -15,6 +15,36 @@ Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
 Parse.serverURL = PARSE_HOST_URL;
 
 function App() {
+  const [productos, setProductos] = useState([]);
+
+  const fetchProductos = async () => {
+    const Producto = Parse.Object.extend("Producto");
+    const query = new Parse.Query(Producto);
+    const results = await query.find();
+    const productosData = results.map((result) => result.toJSON());
+    setProductos(productosData);
+  };
+
+  const handleAgregarProducto = async (nuevoProducto) => {
+    const Producto = Parse.Object.extend("Producto");
+    const producto = new Producto();
+
+    producto.set({
+      item: nuevoProducto.item,
+      precio: nuevoProducto.precio,
+      descripcion: nuevoProducto.descripcion,
+      categoria: nuevoProducto.categoria,
+    });
+
+    try {
+      await producto.save();
+      console.log("Producto guardado exitosamente");
+      setProductos((prevProductos) => [...prevProductos, producto.toJSON()]);
+    } catch (error) {
+      console.error("Error al guardar el producto:", error);
+    }
+  };
+
   return (
     <Routes>
       <Route
@@ -33,7 +63,8 @@ function App() {
         path="/usuario"
         element={
           <>
-            <NavBar /> <UsuarioForm />
+            <NavBar />
+            <UsuarioForm />
           </>
         }
       />
@@ -41,11 +72,20 @@ function App() {
         path="/productos"
         element={
           <>
-            <NavBar /> <ProductoForm /> <Listado />
+            <NavBar />
+            <ProductoForm onAgregarProducto={handleAgregarProducto} />
+            <Listado productos={productos} onFetchProductos={fetchProductos} />
           </>
         }
       />
-      <Route path="/test" element={<PersonComponent />} />
+      <Route
+        path="/screen"
+        element={
+          <>
+            <Screen1 productos={productos} onFetchProductos={fetchProductos} />
+          </>
+        }
+      />
     </Routes>
   );
 }

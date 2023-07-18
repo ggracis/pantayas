@@ -28,7 +28,12 @@ Esta aplicación, desarrollada con Vite+React,
 - **React Use Window Size** - React Use Window Size es una biblioteca de React
   que permite obtener el tamaño de la ventana del navegador.
 
-### Captura de como se ve la base de datos en Firestore
+### Rutas
+
+    / - Página de inicio que muestra un mensaje de bienvenida.
+    /usuario - Página para agregar un nuevo usuario.
+    /productos - Página que muestra el formulario para agregar un nuevo producto y el listado de productos existentes.
+    /screen - Página para mostrar productos en pantalla
 
 ### Cómo contribuir
 

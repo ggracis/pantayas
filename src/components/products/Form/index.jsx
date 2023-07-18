@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Parse from "parse/dist/parse.min.js";
 import {
   Box,
   Button,
@@ -10,32 +9,36 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-const ProductoForm = () => {
-  const [item, setItem] = useState("");
-  const [precio, setPrecio] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [categoria, setCategoria] = useState("");
+const ProductoForm = ({ onAgregarProducto }) => {
+  const [nuevoProducto, setNuevoProducto] = useState({
+    item: "",
+    precio: "",
+    descripcion: "",
+    categoria: "",
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const Producto = Parse.Object.extend("Producto");
-    const producto = new Producto();
+    await onAgregarProducto(nuevoProducto);
 
-    producto.set({
-      item: item,
-      precio: precio,
-      descripcion: descripcion,
-      categoria: categoria,
+    setNuevoProducto({
+      item: "",
+      precio: "",
+      descripcion: "",
+      categoria: "",
     });
-
-    try {
-      await producto.save();
-      console.log("Producto guardado exitosamente");
-    } catch (error) {
-      console.error("Error al guardar el producto:", error);
-    }
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNuevoProducto((prevProducto) => ({
+      ...prevProducto,
+      [name]: value,
+    }));
+  };
+
+  const { item, precio, descripcion, categoria } = nuevoProducto;
 
   return (
     <Box maxW="700px" mx="auto" mt="4">
@@ -45,35 +48,39 @@ const ProductoForm = () => {
       <Stack spacing="10px">
         <form onSubmit={handleSubmit}>
           <FormControl>
-            <FormLabel htmlFor="title">Nombre del item:</FormLabel>
+            <FormLabel htmlFor="item">Nombre del item:</FormLabel>
             <Input
               type="text"
+              name="item"
               value={item}
-              onChange={(e) => setItem(e.target.value)}
+              onChange={handleInputChange}
             />
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="title">Precio:</FormLabel>
+            <FormLabel htmlFor="precio">Precio:</FormLabel>
             <Input
               type="text"
+              name="precio"
               value={precio}
-              onChange={(e) => setPrecio(e.target.value)}
+              onChange={handleInputChange}
             />
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="title">Descripción:</FormLabel>
+            <FormLabel htmlFor="descripcion">Descripción:</FormLabel>
             <Input
               type="text"
+              name="descripcion"
               value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
+              onChange={handleInputChange}
             />
           </FormControl>
           <FormControl>
-            <FormLabel htmlFor="title">Categoría:</FormLabel>
+            <FormLabel htmlFor="categoria">Categoría:</FormLabel>
             <Input
               type="text"
+              name="categoria"
               value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
+              onChange={handleInputChange}
             />
           </FormControl>
           <Button mt={4} type="submit">
