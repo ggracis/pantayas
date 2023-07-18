@@ -58,18 +58,14 @@ export default function NavBar() {
             <MenuItem>
               <NavLink to="/">Inicio</NavLink>
             </MenuItem>
-
             <MenuItem>
-              <NavLink to="/herramientas">Herramientas</NavLink>
+              <NavLink to="/usuario">Agregar usuario</NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink to="/deportes">Deportes y fitness</NavLink>
+              <NavLink to="/productos">Agregar productos</NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink to="/moda">Moda</NavLink>
-            </MenuItem>
-            <MenuItem>
-              <NavLink to="/salud">Salud y belleza</NavLink>
+              <NavLink to="/screen">Pantalla 1</NavLink>
             </MenuItem>
           </MenuList>
         </Menu>
@@ -87,7 +83,7 @@ export default function NavBar() {
       pb={2}
       className={styles.navbar}
     >
-      <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+      <Flex h={16} alignItems="center" justifyContent="space-between">
         <Flex align="center" mr={5}>
           <NavLink to="/">
             <Heading as="h1" size="lg">
@@ -116,14 +112,14 @@ export default function NavBar() {
           <MobileNav />
         </Flex>
 
-        <Flex alignItems={"center"}>
-          <Stack direction={"row"} spacing={7}>
+        <Flex alignItems="center">
+          <Stack direction="row" spacing={7}>
             <Menu>
               <MenuButton
                 as={Button}
-                rounded={"full"}
-                variant={"link"}
-                cursor={"pointer"}
+                rounded="full"
+                variant="link"
+                cursor="pointer"
                 minW={0}
               >
                 {/* <Avatar
@@ -133,7 +129,7 @@ export default function NavBar() {
                   title={userNombre}
                 /> */}
               </MenuButton>
-              <MenuList alignItems={"center"}>
+              <MenuList alignItems="center">
                 <br />
                 <Center>
                   <WrapItem>
