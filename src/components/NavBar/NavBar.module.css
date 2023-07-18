@@ -1,0 +1,29 @@
+.navbar{ background: rgba(0, 0, 0, 0.7);     box-shadow: 0 4px 10px rgba(11, 95, 59, 0.2);
+  backdrop-filter: blur(12.1px); -webkit-backdrop-filter: blur(12.1px); border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.enlaces {
+    display: inline-grid;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.25em;
+    height: 2rem;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0.5em;
+ 
+    background: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+      linear-gradient(to right, rgb(2, 255, 162), rgb(49, 151, 159));
+    background-size: 100% 0.1em, 0 0.1em;
+    background-position: 100% 100%, 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 400ms;
+    
+  }
+  
+  .enlaces:hover,
+  .enlaces:focus {
+    background-size: 0 0.1em, 100% 0.1em;
+  }
