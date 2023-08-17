@@ -82,7 +82,7 @@ function App() {
         path="/screen"
         element={
           <>
-            <Screen1 productos={productos} onFetchProductos={fetchProductos} />
+            <Screen1 productos={productos} onFetchProductos={fetchProductos}/>
           </>
         }
       />
