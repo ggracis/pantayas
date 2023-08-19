@@ -24,21 +24,3 @@ jobs:
           REMOTE_HOST: "ec2-18-231-148-75.sa-east-1.compute.amazonaws.com"
           REMOTE_USER: "ec2-user"
           TARGET: "~/pantayas/"
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@master
-
-        with:
-          host: "ec2-18-231-148-75.sa-east-1.compute.amazonaws.com"
-          username: "ec2-user"
-          key: ${{secrets.EC2_SSH_KEY}}
-          script: |
-            cd ~/pantayas
-            npm install
-            npm run build
-            npm run preview
