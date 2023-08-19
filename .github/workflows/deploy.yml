@@ -41,4 +41,4 @@ jobs:
             cd ~/pantayas
             npm install
             npm run build
-            npm run preview --port 3000
+            npm run preview
