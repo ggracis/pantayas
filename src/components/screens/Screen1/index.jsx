@@ -1,10 +1,8 @@
 import { Box, Text, SimpleGrid, useColorMode, Badge } from "@chakra-ui/react";
-
 import React, { useEffect, useState } from "react";
 import useInterval from "../../../hooks/useInterval";
 
 const ListadoProductos = ({ productos, onFetchProductos }) => {
-  // Actualizar productos cada 5 minutos
   const intervalDelay = 5 * 60 * 1000; // 5 minutos en milisegundos
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
@@ -28,14 +26,7 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
 
   const fontText = ["arial", "Rowdies", "Caprasimo", "Courier Prime"];
 
-  const productosArray = () => {
-    let _ar = new Array(0);
-    productos.map((x) => _ar.push(x));
-    return _ar;
-  };
-  const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
 
   useEffect(() => {
     fetchProductos();
@@ -59,9 +50,10 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
         PANADERIA NTQJ
       </Text>
       <SimpleGrid
-        columns={clamp(Math.ceil(productosArray().length / 3), 1, 4)}
+        columns={[1, 2, 3, 4]} // Ajustar el número de columnas según el ancho de pantalla
         spacing="1em"
-        m="2em 5em"
+        m="2em"
+        px={[4, 8, 10, 20]} // Ajustar los márgenes laterales según el ancho de pantalla
       >
         {productos.map((producto) => (
           <Box
@@ -71,7 +63,6 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
             border
             borderRadius="md"
             boxShadow="sm"
-            paddingLeft="3em"
             bg={colorMode === "light" ? "#353535" : "#e6e6e6"}
             color={colorMode === "light" ? "white" : "black"}
           >
