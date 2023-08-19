@@ -23,4 +23,4 @@ jobs:
           SOURCE: "./"
           REMOTE_HOST: "ec2-18-231-148-75.sa-east-1.compute.amazonaws.com"
           REMOTE_USER: "ec2-user"
-          TARGET: "/ec2-user/pantayas/"
+          TARGET: "~/pantayas/"
