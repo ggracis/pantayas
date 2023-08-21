@@ -39,5 +39,6 @@ jobs:
           key: ${{secrets.EC2_SSH_KEY}}
           script: |
             cd ~/pantayas
+            pkill -f "vite"
             npm install
             npm run start
