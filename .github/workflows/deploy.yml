@@ -1,7 +1,6 @@
 name: Push-to-EC2
 on:
   workflow_dispatch:
-
   push:
     branches:
       - master
@@ -13,32 +12,23 @@ jobs:
 
     steps:
       - name: Checkout the files
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Copy files with SSH
-        uses: easingthemes/ssh-deploy@main
-
-        env:
-          SSH_PRIVATE_KEY: ${{secrets.EC2_SSH_KEY}}
-          SOURCE: "./"
-          REMOTE_HOST: "ec2-18-231-148-75.sa-east-1.compute.amazonaws.com"
-          REMOTE_USER: "ec2-user"
-          TARGET: "~/pantayas/"
+        run:
+          scp -i ${{secrets.EC2_SSH_KEY}} -r ./
+          ec2-user@ec2-18-231-148-75.sa-east-1.compute.amazonaws.com:~/pantayas/
 
   build:
-    name: Build
+    name: Build and Start Application
     runs-on: ubuntu-latest
 
     steps:
-      - name: Executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@master
-
-        with:
-          host: "ec2-18-231-148-75.sa-east-1.compute.amazonaws.com"
-          username: "ec2-user"
-          key: ${{secrets.EC2_SSH_KEY}}
-          script: |
+      - name: SSH into EC2 and Run Commands
+        run: |
+          ssh -i ${{secrets.EC2_SSH_KEY}} ec2-user@ec2-18-231-148-75.sa-east-1.compute.amazonaws.com "
             cd ~/pantayas
-            pkill -f "vite"
+            pkill -f 'vite'
             npm install
             npm run start
+          "
