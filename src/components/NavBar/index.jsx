@@ -37,7 +37,10 @@ export default function NavBar() {
           Agregar productos
         </NavLink>
         <NavLink className={styles.enlaces} to="/screen">
-          Pantalla 1
+          📺 1
+        </NavLink>
+        <NavLink className={styles.enlaces} to="/screen2">
+          📺 2
         </NavLink>
       </nav>
     );
@@ -65,7 +68,10 @@ export default function NavBar() {
               <NavLink to="/productos">Agregar productos</NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink to="/screen">Pantalla 1</NavLink>
+              <NavLink to="/screen">📺 1</NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink to="/screen2">📺 2</NavLink>
             </MenuItem>
           </MenuList>
         </Menu>

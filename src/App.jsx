@@ -6,6 +6,7 @@ import ProductoForm from "./components/products/Form";
 import Listado from "./components/products/Listado";
 import UsuarioForm from "./components/Users/Form";
 import Screen1 from "./components/screens/Screen1";
+import Screen2 from "./components/screens/Screen2";
 
 // Your Parse initialization configuration goes here
 const PARSE_APPLICATION_ID = "WNBfJEeklSm2WQ7p92cJDtiPs7lpJyrkUErWj2uJ";
@@ -82,7 +83,15 @@ function App() {
         path="/screen"
         element={
           <>
-            <Screen1 productos={productos} onFetchProductos={fetchProductos}/>
+            <Screen1 productos={productos} onFetchProductos={fetchProductos} />
+          </>
+        }
+      />
+      <Route
+        path="/screen2"
+        element={
+          <>
+            <Screen2 productos={productos} onFetchProductos={fetchProductos} />
           </>
         }
       />
