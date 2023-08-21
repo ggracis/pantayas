@@ -56,7 +56,7 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
         p="1em"
       >
         {Object.keys(categorias).map((categoria) => (
-          <Box key={categoria} flex="1" minWidth="250px" maxWidth="33vw">
+          <Box key={categoria} flex="1" minWidth="250px">
             <Text fontSize="1.5em" fontWeight="bold">
               {categoria}
             </Text>
@@ -64,6 +64,7 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
               <Box
                 key={producto.objectId}
                 p="2"
+                m="1"
                 borderWidth="1px"
                 border
                 borderRadius="md"

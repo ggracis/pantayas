@@ -7,7 +7,7 @@ import RedesSociales from "../RedesSociales";
 const ScHeader = () => {
   return (
     <Box bg="#000" color="#fff" p={2}>
-      <Flex justify="space-between" align="center">
+      <Flex justify="space-between" align="center" maxHeight={"8vh"}>
         {/* Columna Izquierda */}
         <Box flex="1" maxWidth={"30vw"}>
           <RedesSociales />
