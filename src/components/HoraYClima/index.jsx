@@ -35,21 +35,21 @@ const HoraYClima = () => {
         return null;
     }
   };
-
   return (
-    <Flex align="center">
-      <Box p={4} borderRadius="md">
-        <Text fontSize="2xl">
+    <Flex align="center" justifyContent="center" flexWrap="wrap">
+      <Box p={2} borderRadius="md" mb={2}>
+        <Text fontSize="1.5em">
           <Icon as={FaClock} mr={2} />
           {horaActual.toLocaleTimeString()}
         </Text>
       </Box>
-      <Box p={4} borderRadius="md" ml={2}>
+      <Box p={2} borderRadius="md" mb={2}>
         {renderIconoClima()}
       </Box>
-      <Box p={4} borderRadius="md" ml={2}>
-        <Text fontSize="2xl">
-          <Icon as={FaThermometerHalf} mr={1} /> 25°C{" "}
+      <Box p={2} borderRadius="md" mb={2}>
+        <Text fontSize="1.5em">
+          25°C
+          <Icon as={FaThermometerHalf} ml={1} />
           {/* Cambiar esto con la temperatura real */}
         </Text>
       </Box>

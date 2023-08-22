@@ -3,7 +3,7 @@ import React from "react";
 
 const LogoEmpresa = () => {
   return (
-    <Box p={4} borderRadius="md" textAlign="center">
+    <Box borderRadius="md" textAlign="center">
       <Flex align="center" justify="center">
         <Image
           src="/panaderia.png"
@@ -11,7 +11,7 @@ const LogoEmpresa = () => {
           boxSize={24}
           mr={2}
         />
-        <Text fontSize="lg" fontWeight="bold">
+        <Text fontSize="1.5em" fontWeight="bold">
           PANADERIA NTQJ
         </Text>
       </Flex>

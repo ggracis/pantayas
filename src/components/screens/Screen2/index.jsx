@@ -1,7 +1,9 @@
-import { Box, Flex, Text, useColorMode } from "@chakra-ui/react";
+import { Box, SimpleGrid, Text, useColorMode } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import useInterval from "../../../hooks/useInterval";
 import ScHeader from "../../ScHeader";
+import Masonry from "react-masonry-css";
+import styles from "./ListadoProductos.module.css";
 
 const ListadoProductos = ({ productos, onFetchProductos }) => {
   const intervalDelay = 5 * 60 * 1000; // 5 minutos en milisegundos
@@ -25,8 +27,6 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
     }
   }, 30 * 1000); // 30 segundos en milisegundos
 
-  const fontText = ["arial", "Rowdies", "Caprasimo", "Courier Prime"];
-
   const { colorMode } = useColorMode();
 
   useEffect(() => {
@@ -48,57 +48,44 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
   return (
     <>
       <ScHeader />
-      <Box
-        display="flex"
-        flexWrap="wrap"
-        alignItems="flex-start"
-        justifyContent="space-between"
-        p="1em"
+      <Masonry
+        breakpointCols={{ default: 4, 1100: 3, 700: 2, 500: 1 }}
+        className={styles.myMasonryGrid}
+        columnClassName={styles.myMasonryGridColumn}
       >
         {Object.keys(categorias).map((categoria) => (
-          <Box key={categoria} flex="1" minWidth="250px">
-            <Text fontSize="1.5em" fontWeight="bold">
+          <div key={categoria} className={styles.myMasonryGridItem}>
+            <Text fontSize="1.5em" fontWeight="bold" textAlign="center" mb="2">
               {categoria}
             </Text>
             {categorias[categoria].map((producto) => (
               <Box
                 key={producto.objectId}
-                p="2"
+                p="1"
                 m="1"
-                borderWidth="1px"
-                border
                 borderRadius="md"
-                boxShadow="sm"
                 bg={colorMode === "light" ? "#353535" : "#e6e6e6"}
                 color={colorMode === "light" ? "white" : "black"}
+                className={styles.masonryItem}
               >
-                <Flex alignItems="center" justifyContent="space-between">
-                  <div>
-                    <Text
-                      fontSize="1.5em"
-                      fontWeight="bold"
-                      fontFamily={fontText}
-                    >
+                <div className={styles.productInfo}>
+                  <div className={styles.productText}>
+                    <Text fontSize="1.5em" lineHeight="1em" fontWeight="bold">
                       {producto.item}
                     </Text>
-                    <Text fontSize="0.9em" fontFamily={fontText}>
+                    <Text fontSize="0.9em" lineHeight="1em">
                       {producto.descripcion}
                     </Text>
                   </div>
-                  <Text
-                    fontSize="1.75em"
-                    textAlign="end"
-                    fontFamily={fontText}
-                    float={"right"}
-                  >
+                  <Text fontSize="1.75em" fontWeight="bolder">
                     ${producto.precio}
                   </Text>
-                </Flex>
+                </div>
               </Box>
             ))}
-          </Box>
+          </div>
         ))}
-      </Box>
+      </Masonry>
     </>
   );
 };

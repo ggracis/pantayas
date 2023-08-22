@@ -2,7 +2,7 @@ import { Box, Text, Icon, Flex } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram, FaTiktok, FaGlobe } from "react-icons/fa";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import React from "react";
+import styles from "./RedesSociales.module.css";
 
 const RedesSociales = () => {
   const redes = [
@@ -15,23 +15,19 @@ const RedesSociales = () => {
   return (
     <Carousel
       autoPlay
-      interval={10 * 1000} // 10 segundos en milisegundos
+      interval={10 * 1000}
       infiniteLoop
       showStatus={false}
       showThumbs={false}
       showArrows={false}
       showIndicators={false}
+      className={styles.carousel}
     >
       {redes.map((red) => (
-        <div key={red.nombre}>
-          <Flex
-            p={2}
-            borderRadius="md"
-            textAlign="center"
-            justifyContent="center"
-          >
+        <div key={red.nombre} className={styles.carouselItem}>
+          <Flex borderRadius="md" textAlign="center" justifyContent="center">
             <Flex alignItems="center" fontSize="2xl" verticalAlign="middle">
-              <Icon as={red.icono} boxSize={6} mr={1} />
+              <Icon as={red.icono} boxSize={6} mr={3} />
               <Text>{red.enlace}</Text>
             </Flex>
           </Flex>
