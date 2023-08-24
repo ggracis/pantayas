@@ -7,8 +7,9 @@ import Listado from "./components/products/Listado";
 import UsuarioForm from "./components/Users/Form";
 import Screen1 from "./components/screens/Screen1";
 import Screen2 from "./components/screens/Screen2";
+import ProductTable from "./components/products/TablaProductos";
 
-// Your Parse initialization configuration goes here
+// Inicializar Parse SDK (conexión con la base de datos)
 const PARSE_APPLICATION_ID = "WNBfJEeklSm2WQ7p92cJDtiPs7lpJyrkUErWj2uJ";
 const PARSE_HOST_URL = "https://parseapi.back4app.com/";
 const PARSE_JAVASCRIPT_KEY = "bMSVQiyAwrqenmqdhc11M7gl1BcvlXEX5H1nJcoX";
@@ -18,6 +19,7 @@ Parse.serverURL = PARSE_HOST_URL;
 function App() {
   const [productos, setProductos] = useState([]);
 
+  // Traer los productos desde la base de datos
   const fetchProductos = async () => {
     const Producto = Parse.Object.extend("Producto");
     const query = new Parse.Query(Producto);
@@ -26,6 +28,7 @@ function App() {
     setProductos(productosData);
   };
 
+  // Agregar un producto a la base de datos
   const handleAgregarProducto = async (nuevoProducto) => {
     const Producto = Parse.Object.extend("Producto");
     const producto = new Producto();
@@ -34,7 +37,7 @@ function App() {
       item: nuevoProducto.item,
       precio: nuevoProducto.precio,
       descripcion: nuevoProducto.descripcion,
-      categoria: nuevoProducto.categoria
+      categoria: nuevoProducto.categoria,
     });
 
     try {
@@ -45,36 +48,25 @@ function App() {
       console.error("Error al guardar el producto:", error);
     }
   };
+
+  // Editar un producto en la base de datos
   const handleEditarProducto = async (productoEdit) => {
-
-    const Producto = Parse.Object.extend("Producto");
-    const producto = new Producto();
-
-    // producto.set("objectId",)
-
-    producto.set({
-      objectId: productoEdit.objectId,
-      item: productoEdit.item,
-      precio: productoEdit.precio,
-      descripcion: productoEdit.descripcion,
-      categoria: productoEdit.categoria
-    });
-
     try {
-      await producto.save();
+      const Producto = Parse.Object.extend("Producto");
+      const producto = new Producto();
+
+      await producto.save({
+        objectId: productoEdit.objectId,
+        item: productoEdit.item,
+        precio: productoEdit.precio,
+        descripcion: productoEdit.descripcion,
+        categoria: productoEdit.categoria,
+      });
+
       console.log("Producto editado exitosamente");
-      /*
-      const productosEdit = productos.map((x) =>
-        
-        x.objectId == producto.objectId
-          ? producto.toJSON()
-          : x
-      )
-      setProductos(productosEdit);
-      */
-      fetchProductos()
+      await fetchProductos();
     } catch (error) {
-      console.error("Error al guardar el producto:", error);
+      console.error("Error al editar el producto:", error);
     }
   };
 
@@ -92,6 +84,7 @@ function App() {
       />
 
       <Route path="*" element={<Navigate to="/" />} />
+
       <Route
         path="/usuario"
         element={
@@ -101,16 +94,36 @@ function App() {
           </>
         }
       />
+
       <Route
         path="/productos"
         element={
           <>
             <NavBar />
             <ProductoForm onAgregarProducto={handleAgregarProducto} />
-            <Listado productos={productos} onFetchProductos={fetchProductos} onEditProducto={handleEditarProducto} />
+            <Listado
+              productos={productos}
+              onFetchProductos={fetchProductos}
+              onEditProducto={handleEditarProducto}
+            />
           </>
         }
       />
+
+      <Route
+        path="/tablaProductos"
+        element={
+          <>
+            <NavBar />
+            <ProductTable
+              productos={productos}
+              onFetchProductos={fetchProductos}
+              onEditProducto={handleEditarProducto}
+            />
+          </>
+        }
+      />
+
       <Route
         path="/screen"
         element={
@@ -119,6 +132,7 @@ function App() {
           </>
         }
       />
+
       <Route
         path="/screen2"
         element={

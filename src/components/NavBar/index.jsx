@@ -36,6 +36,9 @@ export default function NavBar() {
         <NavLink className={styles.enlaces} to="/productos">
           Agregar productos
         </NavLink>
+        <NavLink className={styles.enlaces} to="/tablaProductos">
+          Tabla de productos
+        </NavLink>
         <NavLink className={styles.enlaces} to="/screen">
           📺 1
         </NavLink>
@@ -66,6 +69,9 @@ export default function NavBar() {
             </MenuItem>
             <MenuItem>
               <NavLink to="/productos">Agregar productos</NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink to="/tablaProductos">Tabla de productos</NavLink>
             </MenuItem>
             <MenuItem>
               <NavLink to="/screen">📺 1</NavLink>

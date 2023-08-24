@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Box,
-  IconButton,
-  Text,
-  SimpleGrid,
-  Stack
-} from "@chakra-ui/react";
+import { Box, IconButton, Text, SimpleGrid, Stack } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 
 import useNotify from "../../../hooks/useNotify";
@@ -13,7 +7,6 @@ import Parse from "parse/dist/parse.min.js";
 
 import Producto from "../Producto";
 import EditItem from "../EditItem";
-
 
 const Listado = ({ productos, onFetchProductos, onEditProducto }) => {
   const { notify } = useNotify();
@@ -36,20 +29,18 @@ const Listado = ({ productos, onFetchProductos, onEditProducto }) => {
   };
 
   return (
-    <Box >
-      <Text color="gray.500" fontSize="2em" maxW="700px" my="2em" ml='1.5em'>
+    <Box>
+      <Text color="gray.500" fontSize="2em" maxW="700px" my="2em" ml="1.5em">
         Productos Listados
       </Text>
-      <SimpleGrid columns={4} spacing={10} mx='3em' mb='5em'>
+      <SimpleGrid columns={4} spacing={10} mx="3em" mb="5em">
         {productos.map((producto) => (
-
           <Stack columns={1}>
             <Producto producto={producto} />
-            <Box display='flex' justifyContent='space-around'>
-
+            <Box display="flex" justifyContent="space-around">
               <EditItem producto={producto} onEditProducto={onEditProducto} />
               <IconButton
-                px='5em'
+                px="5em"
                 variant="outline"
                 colorScheme="teal"
                 icon={<DeleteIcon />}
@@ -58,7 +49,7 @@ const Listado = ({ productos, onFetchProductos, onEditProducto }) => {
             </Box>
           </Stack>
         ))}
-      </SimpleGrid >
+      </SimpleGrid>
     </Box>
   );
 };
