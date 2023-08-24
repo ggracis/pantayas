@@ -12,7 +12,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 
 const ProductoForm = ({ onAgregarProducto }) => {
@@ -46,24 +46,19 @@ const ProductoForm = ({ onAgregarProducto }) => {
 
   const { item, precio, descripcion, categoria } = nuevoProducto;
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const initialRef = React.useRef(null)
+  const initialRef = React.useRef(null);
 
   return (
     <>
-      <Box alignItems='center' mt="4" display='flex' flexDir='column'>
-        <Text color="gray.500" fontSize="2em">
-          PRODUCTOS
-        </Text>
-        <Button onClick={onOpen} width='20em' mt='3em'>Agregar</Button>
+      <Box alignItems="center" display="flex" flexDir="column">
+        <Button onClick={onOpen} width="20em">
+          Agregar producto 💾
+        </Button>
       </Box>
 
-      <Modal
-        initialFocusRef={initialRef}
-        isOpen={isOpen}
-        onClose={onClose}
-      >
+      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Agregar un nuevo producto</ModalHeader>
@@ -105,19 +100,20 @@ const ProductoForm = ({ onAgregarProducto }) => {
                   onChange={handleInputChange}
                 />
               </FormControl>
-
             </ModalBody>
 
-            <ModalFooter alignItems='flex-end'>
-              <Button type="submit" mr='2em' onClick={onClose}>
+            <ModalFooter alignItems="flex-end">
+              <Button type="submit" mr="2em" onClick={onClose}>
                 Agregar
               </Button>
-              <Button onClick={onClose} bg='red.600' color='white'>Salir</Button>
+              <Button onClick={onClose} bg="red.600" color="white">
+                Salir
+              </Button>
             </ModalFooter>
           </form>
         </ModalContent>
       </Modal>
     </>
-  )
-}
+  );
+};
 export default ProductoForm;

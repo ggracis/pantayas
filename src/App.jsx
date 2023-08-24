@@ -8,6 +8,7 @@ import UsuarioForm from "./components/Users/Form";
 import Screen1 from "./components/screens/Screen1";
 import Screen2 from "./components/screens/Screen2";
 import ProductTable from "./components/products/TablaProductos";
+import Encabezado from "./components/Encabezado";
 
 // Inicializar Parse SDK (conexión con la base de datos)
 const PARSE_APPLICATION_ID = "WNBfJEeklSm2WQ7p92cJDtiPs7lpJyrkUErWj2uJ";
@@ -77,8 +78,10 @@ function App() {
         element={
           <>
             <NavBar />
-            <h1>Home</h1>
-            <p>Esta es la página de inicio</p>
+            <Encabezado
+              tituloEncabezado="Home"
+              bajadaEncabezado="Bienvenido a la página principal"
+            />
           </>
         }
       />
@@ -90,6 +93,10 @@ function App() {
         element={
           <>
             <NavBar />
+            <Encabezado
+              tituloEncabezado="Usuarios"
+              bajadaEncabezado="Agregar un nuevo usuario"
+            />
             <UsuarioForm />
           </>
         }
@@ -100,6 +107,7 @@ function App() {
         element={
           <>
             <NavBar />
+            <Encabezado tituloEncabezado="Productos" />
             <ProductoForm onAgregarProducto={handleAgregarProducto} />
             <Listado
               productos={productos}
@@ -115,6 +123,11 @@ function App() {
         element={
           <>
             <NavBar />
+            <Encabezado
+              tituloEncabezado="Tabla de productos"
+              bajadaEncabezado="Doble click en una celda para editarla"
+            />
+            <ProductoForm onAgregarProducto={handleAgregarProducto} />
             <ProductTable
               productos={productos}
               onFetchProductos={fetchProductos}

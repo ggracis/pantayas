@@ -29,10 +29,7 @@ const Listado = ({ productos, onFetchProductos, onEditProducto }) => {
   };
 
   return (
-    <Box>
-      <Text color="gray.500" fontSize="2em" maxW="700px" my="2em" ml="1.5em">
-        Productos Listados
-      </Text>
+    <Box my="4" py="4">
       <SimpleGrid columns={4} spacing={10} mx="3em" mb="5em">
         {productos.map((producto) => (
           <Stack columns={1}>
