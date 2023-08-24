@@ -1,27 +1,34 @@
 import { Box, Text, useColorMode } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import styles from "../../screens/Screen2/ListadoProductos.module.css";
 
 const Producto = ({ producto }) => {
   const { colorMode } = useColorMode();
 
   return (
     <Box
-      p="2"
+      key={producto.objectId}
+      p="1"
       m="1"
-      borderWidth="1px"
-      border
       borderRadius="md"
-      boxShadow="sm"
       bg={colorMode === "light" ? "#353535" : "#e6e6e6"}
       color={colorMode === "light" ? "white" : "black"}
+      className={styles.masonryItem}
     >
-      <Text fontSize="1.5em" fontWeight="bold">
-        {producto.item}
-      </Text>
-
-      <Text fontSize="0.9em">{producto.descripcion}</Text>
-
-      <Text fontSize="1.75em">${producto.precio}</Text>
+      <div className={styles.productInfo}>
+        <div className={styles.productText}>
+          <Text fontSize="1.5em" lineHeight="1em" fontWeight="bold">
+            {producto.item}
+          </Text>
+          <Text fontSize="0.9em" lineHeight="1em">
+            {producto.descripcion}
+          </Text>
+        </div>
+        <Text fontSize="1.75em" fontWeight="bolder">
+          ${producto.precio}
+        </Text>
+      </div>
     </Box>
   );
 };
+export default Producto;

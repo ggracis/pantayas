@@ -4,6 +4,7 @@ import useInterval from "../../../hooks/useInterval";
 import ScHeader from "../../ScHeader";
 import Masonry from "react-masonry-css";
 import styles from "./ListadoProductos.module.css";
+import Producto from '../../products/Producto/index.jsx'
 
 const ListadoProductos = ({ productos, onFetchProductos }) => {
   const intervalDelay = 5 * 60 * 1000; // 5 minutos en milisegundos
@@ -59,29 +60,7 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
               {categoria}
             </Text>
             {categorias[categoria].map((producto) => (
-              <Box
-                key={producto.objectId}
-                p="1"
-                m="1"
-                borderRadius="md"
-                bg={colorMode === "light" ? "#353535" : "#e6e6e6"}
-                color={colorMode === "light" ? "white" : "black"}
-                className={styles.masonryItem}
-              >
-                <div className={styles.productInfo}>
-                  <div className={styles.productText}>
-                    <Text fontSize="1.5em" lineHeight="1em" fontWeight="bold">
-                      {producto.item}
-                    </Text>
-                    <Text fontSize="0.9em" lineHeight="1em">
-                      {producto.descripcion}
-                    </Text>
-                  </div>
-                  <Text fontSize="1.75em" fontWeight="bolder">
-                    ${producto.precio}
-                  </Text>
-                </div>
-              </Box>
+              <Producto producto={producto}/>
             ))}
           </div>
         ))}

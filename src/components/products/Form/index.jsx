@@ -5,8 +5,14 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Stack,
   Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure
 } from "@chakra-ui/react";
 
 const ProductoForm = ({ onAgregarProducto }) => {
@@ -40,56 +46,78 @@ const ProductoForm = ({ onAgregarProducto }) => {
 
   const { item, precio, descripcion, categoria } = nuevoProducto;
 
-  return (
-    <Box maxW="700px" mx="auto" mt="4">
-      <Text color="gray.500" fontSize="2em">
-        Agregar un nuevo producto
-      </Text>
-      <Stack spacing="10px">
-        <form onSubmit={handleSubmit}>
-          <FormControl>
-            <FormLabel htmlFor="item">Nombre del item:</FormLabel>
-            <Input
-              type="text"
-              name="item"
-              value={item}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="precio">Precio:</FormLabel>
-            <Input
-              type="text"
-              name="precio"
-              value={precio}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="descripcion">Descripción:</FormLabel>
-            <Input
-              type="text"
-              name="descripcion"
-              value={descripcion}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="categoria">Categoría:</FormLabel>
-            <Input
-              type="text"
-              name="categoria"
-              value={categoria}
-              onChange={handleInputChange}
-            />
-          </FormControl>
-          <Button mt={4} type="submit">
-            Agregar Producto
-          </Button>
-        </form>
-      </Stack>
-    </Box>
-  );
-};
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
+  const initialRef = React.useRef(null)
+
+  return (
+    <>
+      <Box alignItems='center' mt="4" display='flex' flexDir='column'>
+        <Text color="gray.500" fontSize="2em">
+          PRODUCTOS
+        </Text>
+        <Button onClick={onOpen} width='20em' mt='3em'>Agregar</Button>
+      </Box>
+
+      <Modal
+        initialFocusRef={initialRef}
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Agregar un nuevo producto</ModalHeader>
+          <form onSubmit={handleSubmit}>
+            <ModalBody pb={6}>
+              <FormControl>
+                <FormLabel htmlFor="item">Nombre del item:</FormLabel>
+                <Input
+                  type="text"
+                  name="item"
+                  value={item}
+                  onChange={handleInputChange}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="precio">Precio:</FormLabel>
+                <Input
+                  type="text"
+                  name="precio"
+                  value={precio}
+                  onChange={handleInputChange}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="descripcion">Descripción:</FormLabel>
+                <Input
+                  type="text"
+                  name="descripcion"
+                  value={descripcion}
+                  onChange={handleInputChange}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="categoria">Categoría:</FormLabel>
+                <Input
+                  type="text"
+                  name="categoria"
+                  value={categoria}
+                  onChange={handleInputChange}
+                />
+              </FormControl>
+
+            </ModalBody>
+
+            <ModalFooter alignItems='flex-end'>
+              <Button type="submit" mr='2em' onClick={onClose}>
+                Agregar
+              </Button>
+              <Button onClick={onClose} bg='red.600' color='white'>Salir</Button>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
+    </>
+  )
+}
 export default ProductoForm;

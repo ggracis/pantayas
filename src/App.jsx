@@ -34,13 +34,45 @@ function App() {
       item: nuevoProducto.item,
       precio: nuevoProducto.precio,
       descripcion: nuevoProducto.descripcion,
-      categoria: nuevoProducto.categoria,
+      categoria: nuevoProducto.categoria
     });
 
     try {
       await producto.save();
       console.log("Producto guardado exitosamente");
       setProductos((prevProductos) => [...prevProductos, producto.toJSON()]);
+    } catch (error) {
+      console.error("Error al guardar el producto:", error);
+    }
+  };
+  const handleEditarProducto = async (productoEdit) => {
+
+    const Producto = Parse.Object.extend("Producto");
+    const producto = new Producto();
+
+    // producto.set("objectId",)
+
+    producto.set({
+      objectId: productoEdit.objectId,
+      item: productoEdit.item,
+      precio: productoEdit.precio,
+      descripcion: productoEdit.descripcion,
+      categoria: productoEdit.categoria
+    });
+
+    try {
+      await producto.save();
+      console.log("Producto editado exitosamente");
+      /*
+      const productosEdit = productos.map((x) =>
+        
+        x.objectId == producto.objectId
+          ? producto.toJSON()
+          : x
+      )
+      setProductos(productosEdit);
+      */
+      fetchProductos()
     } catch (error) {
       console.error("Error al guardar el producto:", error);
     }
@@ -75,7 +107,7 @@ function App() {
           <>
             <NavBar />
             <ProductoForm onAgregarProducto={handleAgregarProducto} />
-            <Listado productos={productos} onFetchProductos={fetchProductos} />
+            <Listado productos={productos} onFetchProductos={fetchProductos} onEditProducto={handleEditarProducto} />
           </>
         }
       />
