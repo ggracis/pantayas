@@ -1,19 +1,10 @@
 import React, { useEffect } from "react";
-import {
-  Box,
-  IconButton,
-  Text,
-  SimpleGrid,
-  Stack,
-  Flex,
-} from "@chakra-ui/react";
-import { DeleteIcon } from "@chakra-ui/icons";
-
+import { Box, IconButton, SimpleGrid, Stack } from "@chakra-ui/react";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import useNotify from "../../../hooks/useNotify";
-import Parse from "parse/dist/parse.min.js";
-
+import EditarAgregarProducto from "../EditarAgregarProducto";
 import Producto from "../Producto";
-import EditItem from "../EditItem";
+import { eliminarProducto } from "../../../productService";
 
 const Listado = ({ productos, onFetchProductos, onEditProducto }) => {
   const { notify } = useNotify();
@@ -26,35 +17,42 @@ const Listado = ({ productos, onFetchProductos, onEditProducto }) => {
     await onFetchProductos();
   };
 
-  const handleDelete = async (id) => {
-    const Producto = Parse.Object.extend("Producto");
-    const query = new Parse.Query(Producto);
-    const producto = await query.get(id);
-    await producto.destroy();
-    notify("info", `Producto con ID ${id} eliminado (falso)`);
-    fetchProductos();
+  const handleEdit = async (producto) => {
+    try {
+      await onEditProducto(producto);
+    } catch (error) {
+      console.error("Error al editar el producto:", error);
+    }
   };
 
   return (
     <Box my="4" py="4">
       <SimpleGrid
-        columns={[1, 2, 3, 4]} // Ajustar el número de columnas según el ancho de pantalla
+        columns={[1, 2, 3, 4]}
         spacing="1em"
         m="2em"
-        px={[4, 8, 10, 20]} // Ajustar los márgenes laterales según el ancho de pantalla
+        px={[4, 8, 10, 20]}
       >
         {productos.map((producto) => (
-          <Stack columns={1}>
+          <Stack key={producto.objectId} columns={1}>
             <Producto producto={producto} />
 
             <Box display="flex" justifyContent="space-around">
-              <EditItem producto={producto} onEditProducto={onEditProducto} />
+              <EditarAgregarProducto
+                modoEdicion={true}
+                productoEdicion={producto}
+                onAction={handleEdit}
+              />
+
               <IconButton
                 variant="outline"
                 width="40%"
-                colorScheme="teal"
+                colorScheme="red"
                 icon={<DeleteIcon />}
-                onClick={() => handleDelete(producto.objectId)}
+                onClick={async () => {
+                  await eliminarProducto(producto.objectId);
+                  fetchProductos();
+                }}
               />
             </Box>
           </Stack>
@@ -63,4 +61,5 @@ const Listado = ({ productos, onFetchProductos, onEditProducto }) => {
     </Box>
   );
 };
+
 export default Listado;

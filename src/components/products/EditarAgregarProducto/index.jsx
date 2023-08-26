@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  IconButton,
+  Box,
   Button,
   FormControl,
   FormLabel,
@@ -13,50 +13,63 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@chakra-ui/react";
-import { EditIcon } from "@chakra-ui/icons";
+import { MdOutlineSave, MdMode } from "react-icons/md";
 
-const EditItem = ({ producto, onEditProducto }) => {
-  const [productoEdit, setEditProducto] = useState({
-    item: producto.item,
-    precio: producto.precio,
-    descripcion: producto.descripcion,
-    categoria: producto.categoria,
-    objectId: producto.objectId,
+const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
+  const [producto, setProducto] = useState({
+    item: "",
+    precio: "",
+    descripcion: "",
+    categoria: "",
   });
+
+  useEffect(() => {
+    if (modoEdicion && productoEdicion) {
+      setProducto(productoEdicion);
+    }
+  }, [modoEdicion, productoEdicion]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    await onEditProducto(productoEdit);
+    await onAction(producto);
+    setProducto({
+      item: "",
+      precio: "",
+      descripcion: "",
+      categoria: "",
+    });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditProducto((prevProducto) => ({
+    setProducto((prevProducto) => ({
       ...prevProducto,
       [name]: value,
     }));
   };
-
-  const { item, precio, descripcion, categoria } = productoEdit;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = React.useRef(null);
 
   return (
     <>
-      <IconButton
-        width="40%"
-        variant="outline"
-        colorScheme="teal"
-        icon={<EditIcon />}
-        onClick={onOpen}
-      />
+      <Box alignItems="center" display="flex" flexDir="column">
+        <Button
+          onClick={onOpen}
+          rightIcon={<MdMode fontSize="1.75em" />}
+          colorScheme="teal"
+          variant="outline"
+        >
+          {modoEdicion ? "Editar producto" : "Agregar producto"}
+        </Button>
+      </Box>
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Editar producto</ModalHeader>
+          <ModalHeader>
+            {modoEdicion ? "Editar producto" : "Agregar un nuevo producto"}
+          </ModalHeader>
           <form onSubmit={handleSubmit}>
             <ModalBody pb={6}>
               <FormControl>
@@ -64,7 +77,7 @@ const EditItem = ({ producto, onEditProducto }) => {
                 <Input
                   type="text"
                   name="item"
-                  value={item}
+                  value={producto.item}
                   onChange={handleInputChange}
                 />
               </FormControl>
@@ -73,7 +86,7 @@ const EditItem = ({ producto, onEditProducto }) => {
                 <Input
                   type="text"
                   name="precio"
-                  value={precio}
+                  value={producto.precio}
                   onChange={handleInputChange}
                 />
               </FormControl>
@@ -82,7 +95,7 @@ const EditItem = ({ producto, onEditProducto }) => {
                 <Input
                   type="text"
                   name="descripcion"
-                  value={descripcion}
+                  value={producto.descripcion}
                   onChange={handleInputChange}
                 />
               </FormControl>
@@ -91,17 +104,24 @@ const EditItem = ({ producto, onEditProducto }) => {
                 <Input
                   type="text"
                   name="categoria"
-                  value={categoria}
+                  value={producto.categoria}
                   onChange={handleInputChange}
                 />
               </FormControl>
             </ModalBody>
 
             <ModalFooter alignItems="flex-end">
-              <Button type="submit" mr="2em" onClick={onClose}>
-                Cambiar
+              <Button
+                mr={3}
+                type="submit"
+                onClick={onClose}
+                rightIcon={<MdOutlineSave fontSize="1.75em" />}
+                colorScheme="teal"
+                variant="outline"
+              >
+                {modoEdicion ? "Guardar cambios" : "Agregar"}
               </Button>
-              <Button onClick={onClose} bg="red.600" color="white">
+              <Button onClick={onClose} colorScheme="red" variant="outline">
                 Salir
               </Button>
             </ModalFooter>
@@ -112,4 +132,4 @@ const EditItem = ({ producto, onEditProducto }) => {
   );
 };
 
-export default EditItem;
+export default EditarAgregarProducto;

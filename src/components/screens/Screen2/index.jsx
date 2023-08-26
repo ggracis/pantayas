@@ -4,7 +4,7 @@ import useInterval from "../../../hooks/useInterval";
 import ScHeader from "../../ScHeader";
 import Masonry from "react-masonry-css";
 import styles from "./ListadoProductos.module.css";
-import Producto from '../../products/Producto/index.jsx'
+import Producto from "../../products/Producto";
 
 const ListadoProductos = ({ productos, onFetchProductos }) => {
   const intervalDelay = 5 * 60 * 1000; // 5 minutos en milisegundos
@@ -60,7 +60,7 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
               {categoria}
             </Text>
             {categorias[categoria].map((producto) => (
-              <Producto producto={producto}/>
+              <Producto producto={producto} />
             ))}
           </div>
         ))}

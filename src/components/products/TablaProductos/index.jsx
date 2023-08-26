@@ -1,3 +1,4 @@
+import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Table,
   Thead,
@@ -11,8 +12,11 @@ import {
   Button,
   Box,
   Text,
+  IconButton,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
+import { eliminarProducto } from "../../../productService";
+import { MdOutlineSave } from "react-icons/md";
 
 const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
   useEffect(() => {
@@ -101,7 +105,7 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
                           size="sm"
                           onClick={() => handleBlur(product, "item")}
                         >
-                          💾
+                          <MdOutlineSave />
                         </Button>
                       </InputRightElement>
                     </InputGroup>
@@ -132,7 +136,7 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
                           size="sm"
                           onClick={() => handleBlur(product, "categoria")}
                         >
-                          💾
+                          <MdOutlineSave />
                         </Button>
                       </InputRightElement>
                     </InputGroup>
@@ -163,7 +167,7 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
                           size="sm"
                           onClick={() => handleBlur(product, "descripcion")}
                         >
-                          💾
+                          <MdOutlineSave />
                         </Button>
                       </InputRightElement>
                     </InputGroup>
@@ -190,7 +194,7 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
                           size="sm"
                           onClick={() => handleBlur(product, "precio")}
                         >
-                          💾
+                          <MdOutlineSave />
                         </Button>
                       </InputRightElement>
                     </InputGroup>
@@ -199,7 +203,19 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
                   )}
                 </Td>
 
-                <Td> {/* Aquí irán los botones de edición */} </Td>
+                <Td>
+                  {" "}
+                  <IconButton
+                    variant="outline"
+                    width="40%"
+                    colorScheme="red"
+                    icon={<DeleteIcon />}
+                    onClick={async () => {
+                      await eliminarProducto(product.objectId);
+                      fetchProductos();
+                    }}
+                  />{" "}
+                </Td>
               </Tr>
             ))}
           </Tbody>

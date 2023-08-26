@@ -5,7 +5,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Text,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -13,7 +12,10 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  IconButton,
 } from "@chakra-ui/react";
+
+import { MdAddCircleOutline, MdOutlineSave } from "react-icons/md";
 
 const ProductoForm = ({ onAgregarProducto }) => {
   const [nuevoProducto, setNuevoProducto] = useState({
@@ -23,7 +25,7 @@ const ProductoForm = ({ onAgregarProducto }) => {
     categoria: "",
   });
 
-  const handleSubmit = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     await onAgregarProducto(nuevoProducto);
@@ -53,8 +55,13 @@ const ProductoForm = ({ onAgregarProducto }) => {
   return (
     <>
       <Box alignItems="center" display="flex" flexDir="column">
-        <Button onClick={onOpen} width="20em">
-          Agregar producto 💾
+        <Button
+          onClick={onOpen}
+          rightIcon={<MdAddCircleOutline fontSize="1.75em" />}
+          colorScheme="teal"
+          variant="outline"
+        >
+          Agregar producto
         </Button>
       </Box>
 
@@ -62,7 +69,7 @@ const ProductoForm = ({ onAgregarProducto }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Agregar un nuevo producto</ModalHeader>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleFormSubmit}>
             <ModalBody pb={6}>
               <FormControl>
                 <FormLabel htmlFor="item">Nombre del item:</FormLabel>
@@ -103,10 +110,17 @@ const ProductoForm = ({ onAgregarProducto }) => {
             </ModalBody>
 
             <ModalFooter alignItems="flex-end">
-              <Button type="submit" mr="2em" onClick={onClose}>
-                Agregar
+              <Button
+                mr={3}
+                type="submit"
+                onClick={onClose}
+                rightIcon={<MdOutlineSave fontSize="1.75em" />}
+                colorScheme="teal"
+                variant="outline"
+              >
+                Guardar
               </Button>
-              <Button onClick={onClose} bg="red.600" color="white">
+              <Button onClick={onClose} colorScheme="red" variant="outline">
                 Salir
               </Button>
             </ModalFooter>
@@ -116,4 +130,5 @@ const ProductoForm = ({ onAgregarProducto }) => {
     </>
   );
 };
+
 export default ProductoForm;

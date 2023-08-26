@@ -1,5 +1,4 @@
-import { useState } from "react";
-import Parse from "parse/dist/parse.min.js";
+import { useState, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import ProductoForm from "./components/products/Form";
@@ -9,65 +8,38 @@ import Screen1 from "./components/screens/Screen1";
 import Screen2 from "./components/screens/Screen2";
 import ProductTable from "./components/products/TablaProductos";
 import Encabezado from "./components/Encabezado";
-
-// Inicializar Parse SDK (conexión con la base de datos)
-const PARSE_APPLICATION_ID = "WNBfJEeklSm2WQ7p92cJDtiPs7lpJyrkUErWj2uJ";
-const PARSE_HOST_URL = "https://parseapi.back4app.com/";
-const PARSE_JAVASCRIPT_KEY = "bMSVQiyAwrqenmqdhc11M7gl1BcvlXEX5H1nJcoX";
-Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
-Parse.serverURL = PARSE_HOST_URL;
+import {
+  fetchProductos,
+  agregarProducto,
+  editarProducto,
+} from "./productService"; // Importar las funciones
 
 function App() {
   const [productos, setProductos] = useState([]);
+  useEffect(() => {
+    cargarProductos();
+  }, []);
 
-  // Traer los productos desde la base de datos
-  const fetchProductos = async () => {
-    const Producto = Parse.Object.extend("Producto");
-    const query = new Parse.Query(Producto);
-    const results = await query.find();
-    const productosData = results.map((result) => result.toJSON());
+  const cargarProductos = async () => {
+    const productosData = await fetchProductos();
     setProductos(productosData);
   };
 
-  // Agregar un producto a la base de datos
   const handleAgregarProducto = async (nuevoProducto) => {
-    const Producto = Parse.Object.extend("Producto");
-    const producto = new Producto();
-
-    producto.set({
-      item: nuevoProducto.item,
-      precio: nuevoProducto.precio,
-      descripcion: nuevoProducto.descripcion,
-      categoria: nuevoProducto.categoria,
-    });
-
     try {
-      await producto.save();
-      console.log("Producto guardado exitosamente");
-      setProductos((prevProductos) => [...prevProductos, producto.toJSON()]);
+      await agregarProducto(nuevoProducto);
+      await cargarProductos();
     } catch (error) {
-      console.error("Error al guardar el producto:", error);
+      // Manejar el error
     }
   };
 
-  // Editar un producto en la base de datos
   const handleEditarProducto = async (productoEdit) => {
     try {
-      const Producto = Parse.Object.extend("Producto");
-      const producto = new Producto();
-
-      await producto.save({
-        objectId: productoEdit.objectId,
-        item: productoEdit.item,
-        precio: productoEdit.precio,
-        descripcion: productoEdit.descripcion,
-        categoria: productoEdit.categoria,
-      });
-
-      console.log("Producto editado exitosamente");
-      await fetchProductos();
+      await editarProducto(productoEdit);
+      await cargarProductos();
     } catch (error) {
-      console.error("Error al editar el producto:", error);
+      // Manejar el error
     }
   };
 
