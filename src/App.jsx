@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar";
-import ProductoForm from "./components/products/Form";
 import Listado from "./components/products/Listado";
 import UsuarioForm from "./components/Users/Form";
 import Screen1 from "./components/screens/Screen1";
@@ -13,6 +12,7 @@ import {
   agregarProducto,
   editarProducto,
 } from "./productService"; // Importar las funciones
+import EditarAgregarProducto from "./components/products/EditarAgregarProducto";
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -80,7 +80,7 @@ function App() {
           <>
             <NavBar />
             <Encabezado tituloEncabezado="Productos" />
-            <ProductoForm onAgregarProducto={handleAgregarProducto} />
+            <EditarAgregarProducto onAction={handleAgregarProducto} />
             <Listado
               productos={productos}
               onFetchProductos={fetchProductos}
@@ -99,7 +99,7 @@ function App() {
               tituloEncabezado="Tabla de productos"
               bajadaEncabezado="Doble click en una celda para editarla"
             />
-            <ProductoForm onAgregarProducto={handleAgregarProducto} />
+            <EditarAgregarProducto onAction={handleAgregarProducto} />
             <ProductTable
               productos={productos}
               onFetchProductos={fetchProductos}

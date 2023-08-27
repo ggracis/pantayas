@@ -11,30 +11,72 @@ import {
 
 const HoraYClima = () => {
   const [horaActual, setHoraActual] = useState(new Date());
-  const [clima, setClima] = useState("soleado"); // Cambiar esto según la información real del clima
+  const [climaData, setClimaData] = useState({});
+  const [location, setLocation] = useState({ lat: 0, lon: 0 });
 
   useEffect(() => {
+    const fetchWeatherData = async () => {
+      try {
+        const response = await fetch(
+          `http://api.weatherapi.com/v1/current.json?key=6d5578c057b44fd3bf8232853232208&q=${location.lat},${location.lon}&aqi=no`
+        );
+        const data = await response.json();
+        console.log("API response:", data);
+        setClimaData(data.current);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchUserLocation = async () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            setLocation({ lat: latitude, lon: longitude });
+          },
+          (error) => {
+            console.error("Error obtaining user location:", error);
+            // Si no se puede obtener la ubicación del usuario, usar la ubicación de Buenos Aires
+            setLocation({ lat: -34.72, lon: -58.41 });
+            fetchWeatherData(); // Llamar a fetchWeatherData aquí para usar la ubicación predeterminada
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
     const interval = setInterval(() => {
       setHoraActual(new Date());
     }, 1000);
 
-    return () => clearInterval(interval);
+    fetchUserLocation();
+    fetchWeatherData();
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const renderIconoClima = () => {
-    switch (clima) {
-      case "soleado":
-        return <Icon as={FaSun} boxSize={8} />;
-      case "parcialmente_nublado":
-        return <Icon as={FaCloudSun} boxSize={8} />;
-      case "lluvia":
-        return <Icon as={FaCloudRain} boxSize={8} />;
-      case "nieve":
-        return <Icon as={FaSnowflake} boxSize={8} />;
-      default:
-        return null;
+    if (climaData.condition) {
+      switch (climaData.condition.text) {
+        case "Sunny":
+          return <Icon as={FaSun} boxSize={8} />;
+        case "Partly cloudy":
+          return <Icon as={FaCloudSun} boxSize={8} />;
+        case "Rain":
+          return <Icon as={FaCloudRain} boxSize={8} />;
+        case "Snow":
+          return <Icon as={FaSnowflake} boxSize={8} />;
+        default:
+          return null;
+      }
     }
+    return null;
   };
+
   return (
     <Flex align="center" justifyContent="center" flexWrap="wrap">
       <Box p={2} borderRadius="md" mb={2}>
@@ -44,14 +86,10 @@ const HoraYClima = () => {
         </Text>
       </Box>
       <Box p={2} borderRadius="md" mb={2}>
-        {renderIconoClima()}
+        <Text fontSize="1.5em">{climaData.temp_c}°C</Text>
       </Box>
       <Box p={2} borderRadius="md" mb={2}>
-        <Text fontSize="1.5em">
-          25°C
-          <Icon as={FaThermometerHalf} ml={1} />
-          {/* Cambiar esto con la temperatura real */}
-        </Text>
+        {renderIconoClima()}
       </Box>
     </Flex>
   );

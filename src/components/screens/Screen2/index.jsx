@@ -1,4 +1,4 @@
-import { Box, SimpleGrid, Text, useColorMode } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import useInterval from "../../../hooks/useInterval";
 import ScHeader from "../../ScHeader";
@@ -13,7 +13,6 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
   useInterval(() => {
     const now = new Date();
     const elapsedTime = now - lastUpdate;
-
     if (elapsedTime >= intervalDelay) {
       fetchProductos();
       setLastUpdate(now);
@@ -27,8 +26,6 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
       );
     }
   }, 30 * 1000); // 30 segundos en milisegundos
-
-  const { colorMode } = useColorMode();
 
   useEffect(() => {
     fetchProductos();
@@ -60,7 +57,10 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
               {categoria}
             </Text>
             {categorias[categoria].map((producto) => (
-              <Producto producto={producto} />
+              <Producto
+                key={`${categoria}-${producto.objectId}`}
+                producto={producto}
+              />
             ))}
           </div>
         ))}
