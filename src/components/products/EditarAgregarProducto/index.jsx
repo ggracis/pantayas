@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Button,
@@ -11,16 +11,30 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Select,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
   useDisclosure,
+  InputGroup,
+  InputLeftElement,
 } from "@chakra-ui/react";
-import { MdOutlineSave, MdMode } from "react-icons/md";
+import { MdOutlineSave, MdModeEdit } from "react-icons/md";
 
 const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
   const [producto, setProducto] = useState({
-    item: "",
-    precio: "",
+    ID_Usuario: "",
+    tituloProducto: "",
     descripcion: "",
     categoria: "",
+    subcategoria: "",
+    unidadMedida: "Kg.",
+    titulosVariantes: ["1/4 Kg.", "1/2 Kg.", "1 Kg."],
+    preciosVariantes: Array(3).fill(""), // Inicializar con valores vacíos
+    activo: true,
   });
 
   useEffect(() => {
@@ -29,34 +43,97 @@ const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
     }
   }, [modoEdicion, productoEdicion]);
 
+  const handleUnidadMedidaChange = (e) => {
+    const unidadMedida = e.target.value;
+    const titulosVariantes = generateTitulosVariantes(unidadMedida);
+    const preciosVariantes = Array(titulosVariantes.length).fill(""); // Inicializar con valores vacíos
+    setProducto((prevProducto) => ({
+      ...prevProducto,
+      unidadMedida,
+      titulosVariantes,
+      preciosVariantes,
+    }));
+  };
+  const handleTituloChange = (e) => {
+    const { value } = e.target;
+    setProducto((prevProducto) => ({
+      ...prevProducto,
+      tituloProducto: value,
+    }));
+  };
+
+  const handleCategoriaChange = (e) => {
+    const { value } = e.target;
+    setProducto((prevProducto) => ({
+      ...prevProducto,
+      categoria: value,
+    }));
+  };
+
+  const handleSubcategoriaChange = (e) => {
+    const { value } = e.target;
+    setProducto((prevProducto) => ({
+      ...prevProducto,
+      subcategoria: value,
+    }));
+  };
+
+  const handleDescripcionChange = (e) => {
+    const { value } = e.target;
+    setProducto((prevProducto) => ({
+      ...prevProducto,
+      descripcion: value,
+    }));
+  };
+
+  const handleInputChange = (e, index) => {
+    const { value } = e.target;
+    const preciosVariantes = [...producto.preciosVariantes];
+    preciosVariantes[index] = value;
+    setProducto((prevProducto) => ({
+      ...prevProducto,
+      preciosVariantes,
+    }));
+  };
+
+  const generateTitulosVariantes = (unidadMedida) => {
+    switch (unidadMedida) {
+      case "Kg.":
+        return ["1/4 Kg.", "1/2 Kg.", "1 Kg."];
+      case "Unidad":
+        return ["C/U", "1/2 Doc.", "1 Doc."];
+      case "Tamaño":
+        return ["Chico", "Mediano", "Grande"];
+      default:
+        return [];
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await onAction(producto);
     setProducto({
-      item: "",
-      precio: "",
+      ID_Usuario: "",
+      tituloProducto: "",
       descripcion: "",
       categoria: "",
+      subcategoria: "",
+      unidadMedida: "Kg.",
+      titulosVariantes: ["1/4 Kg.", "1/2 Kg.", "1 Kg."],
+      preciosVariantes: Array(3).fill(""),
+      activo: true,
     });
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      [name]: value,
-    }));
-  };
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const initialRef = React.useRef(null);
+  const initialRef = useRef(null);
 
   return (
     <>
       <Box alignItems="center" display="flex" flexDir="column">
         <Button
           onClick={onOpen}
-          rightIcon={<MdMode fontSize="1.75em" />}
+          rightIcon={<MdModeEdit fontSize="1.75em" />}
           colorScheme="teal"
           variant="outline"
         >
@@ -73,21 +150,14 @@ const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
           <form onSubmit={handleSubmit}>
             <ModalBody pb={6}>
               <FormControl>
-                <FormLabel htmlFor="item">Nombre del item:</FormLabel>
+                <FormLabel htmlFor="tituloProducto">
+                  Título del producto:
+                </FormLabel>
                 <Input
                   type="text"
-                  name="item"
-                  value={producto.item}
-                  onChange={handleInputChange}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="precio">Precio:</FormLabel>
-                <Input
-                  type="text"
-                  name="precio"
-                  value={producto.precio}
-                  onChange={handleInputChange}
+                  name="tituloProducto"
+                  value={producto.tituloProducto}
+                  onChange={handleTituloChange}
                 />
               </FormControl>
               <FormControl>
@@ -96,7 +166,7 @@ const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
                   type="text"
                   name="descripcion"
                   value={producto.descripcion}
-                  onChange={handleInputChange}
+                  onChange={handleDescripcionChange}
                 />
               </FormControl>
               <FormControl>
@@ -105,9 +175,60 @@ const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
                   type="text"
                   name="categoria"
                   value={producto.categoria}
-                  onChange={handleInputChange}
+                  onChange={handleCategoriaChange}
                 />
               </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="subcategoria">Subcategoría:</FormLabel>
+                <Input
+                  type="text"
+                  name="subcategoria"
+                  value={producto.subcategoria}
+                  onChange={handleSubcategoriaChange}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="unidadMedida">Unidad de Medida:</FormLabel>
+                <Select
+                  name="unidadMedida"
+                  value={producto.unidadMedida}
+                  onChange={handleUnidadMedidaChange}
+                >
+                  <option value="Kg.">Kg.</option>
+                  <option value="Unidad">Unidad</option>
+                  <option value="Tamaño">Tamaño</option>
+                </Select>
+              </FormControl>
+              <Table>
+                <Thead>
+                  <Tr>
+                    {producto.titulosVariantes.map((titulo, index) => (
+                      <Th key={index}>{titulo}</Th>
+                    ))}
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    {producto.preciosVariantes.map((precio, index) => (
+                      <Td key={index}>
+                        <InputGroup>
+                          <InputLeftElement
+                            pointerEvents="none"
+                            color="gray.300"
+                            children="$"
+                          />
+                          <Input
+                            placeholder="0.00"
+                            type="number"
+                            value={precio}
+                            onChange={(e) => handleInputChange(e, index)}
+                          />
+                        </InputGroup>
+                      </Td>
+                    ))}
+                  </Tr>
+                </Tbody>
+              </Table>
             </ModalBody>
 
             <ModalFooter alignItems="flex-end">

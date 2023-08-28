@@ -5,7 +5,6 @@ import {
   FaCloudSun,
   FaCloudRain,
   FaSnowflake,
-  FaThermometerHalf,
   FaClock,
 } from "react-icons/fa";
 

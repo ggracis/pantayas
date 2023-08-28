@@ -21,10 +21,14 @@ export const agregarProducto = async (nuevoProducto) => {
   const producto = new Producto();
 
   producto.set({
-    item: nuevoProducto.item,
-    precio: nuevoProducto.precio,
+    tituloProducto: nuevoProducto.tituloProducto,
     descripcion: nuevoProducto.descripcion,
     categoria: nuevoProducto.categoria,
+    subcategoria: nuevoProducto.subcategoria,
+    unidadMedida: nuevoProducto.unidadMedida,
+    titulosVariantes: nuevoProducto.titulosVariantes,
+    preciosVariantes: nuevoProducto.preciosVariantes,
+    activo: nuevoProducto.activo,
   });
 
   try {
@@ -44,10 +48,14 @@ export const editarProducto = async (productoEdit) => {
 
     await producto.save({
       objectId: productoEdit.objectId,
-      item: productoEdit.item,
-      precio: productoEdit.precio,
+      tituloProducto: productoEdit.tituloProducto,
       descripcion: productoEdit.descripcion,
       categoria: productoEdit.categoria,
+      subcategoria: productoEdit.subcategoria,
+      unidadMedida: productoEdit.unidadMedida,
+      titulosVariantes: productoEdit.titulosVariantes,
+      preciosVariantes: productoEdit.preciosVariantes,
+      activo: productoEdit.activo,
     });
 
     console.log("Producto editado exitosamente");

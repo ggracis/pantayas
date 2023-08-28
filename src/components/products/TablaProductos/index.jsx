@@ -76,10 +76,12 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
         <Table variant="striped">
           <Thead>
             <Tr fontSize="1.5em" fontWeight="bold" textAlign="center" m="2">
-              <Th>Nombre</Th>
+              <Th>Producto</Th>
               <Th>Categoría</Th>
+              <Th>Subcategoría</Th>
               <Th>Descripción</Th>
-              <Th>Precio</Th>
+              <Th>Unidad de medida</Th>
+              <Th>Precios</Th>
               <Th>Acciones</Th>
             </Tr>
           </Thead>
@@ -87,30 +89,34 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
             {productos.map((product) => (
               <Tr key={product.objectId}>
                 <Td
-                  onDoubleClick={() => handleCellDoubleClick(product, "item")}
-                  onBlur={() => handleBlur(product, "item")}
+                  onDoubleClick={() =>
+                    handleCellDoubleClick(product, "tituloProducto")
+                  }
+                  onBlur={() => handleBlur(product, "tituloProducto")}
                 >
                   {editingCell?.productId === product.objectId &&
-                  editingCell?.field === "item" ? (
+                  editingCell?.field === "tituloProducto" ? (
                     <InputGroup size="md">
                       <Input
                         pr="4.5rem"
                         value={editedValue}
                         onChange={(e) => setEditedValue(e.target.value)}
-                        onKeyDown={(e) => handleKeyPress(e, product, "item")}
+                        onKeyDown={(e) =>
+                          handleKeyPress(e, product, "tituloProducto")
+                        }
                       />
                       <InputRightElement width="4.5rem">
                         <Button
                           h="1.75rem"
                           size="sm"
-                          onClick={() => handleBlur(product, "item")}
+                          onClick={() => handleBlur(product, "tituloProducto")}
                         >
                           <MdOutlineSave />
                         </Button>
                       </InputRightElement>
                     </InputGroup>
                   ) : (
-                    product.item
+                    product.tituloProducto
                   )}
                 </Td>
                 <Td
@@ -146,6 +152,37 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
                 </Td>
                 <Td
                   onDoubleClick={() =>
+                    handleCellDoubleClick(product, "subcategoria")
+                  }
+                  onBlur={() => handleBlur(product, "subcategoria")}
+                >
+                  {editingCell?.productId === product.objectId &&
+                  editingCell?.field === "subcategoria" ? (
+                    <InputGroup size="md">
+                      <Input
+                        pr="4.5rem"
+                        value={editedValue}
+                        onChange={(e) => setEditedValue(e.target.value)}
+                        onKeyDown={(e) =>
+                          handleKeyPress(e, product, "subcategoria")
+                        }
+                      />
+                      <InputRightElement width="4.5rem">
+                        <Button
+                          h="1.75rem"
+                          size="sm"
+                          onClick={() => handleBlur(product, "subcategoria")}
+                        >
+                          <MdOutlineSave />
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                  ) : (
+                    product.subcategoria
+                  )}
+                </Td>
+                <Td
+                  onDoubleClick={() =>
                     handleCellDoubleClick(product, "descripcion")
                   }
                   onBlur={() => handleBlur(product, "descripcion")}
@@ -176,6 +213,37 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
                   )}
                 </Td>
                 <Td
+                  onDoubleClick={() =>
+                    handleCellDoubleClick(product, "unidadMedida")
+                  }
+                  onBlur={() => handleBlur(product, "unidadMedida")}
+                >
+                  {editingCell?.productId === product.objectId &&
+                  editingCell?.field === "unidadMedida" ? (
+                    <InputGroup size="md">
+                      <Input
+                        pr="4.5rem"
+                        value={editedValue}
+                        onChange={(e) => setEditedValue(e.target.value)}
+                        onKeyDown={(e) =>
+                          handleKeyPress(e, product, "unidadMedida")
+                        }
+                      />
+                      <InputRightElement width="4.5rem">
+                        <Button
+                          h="1.75rem"
+                          size="sm"
+                          onClick={() => handleBlur(product, "unidadMedida")}
+                        >
+                          <MdOutlineSave />
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                  ) : (
+                    product.unidadMedida
+                  )}
+                </Td>
+                <Td
                   onDoubleClick={() => handleCellDoubleClick(product, "precio")}
                   onBlur={() => handleBlur(product, "precio")}
                 >
@@ -199,7 +267,16 @@ const ProductTable = ({ productos, onFetchProductos, onEditProducto }) => {
                       </InputRightElement>
                     </InputGroup>
                   ) : (
-                    product.precio
+                    product.titulosVariantes
+                      .filter(
+                        (titulo, index) =>
+                          product.preciosVariantes[index] !== ""
+                      )
+                      .map((titulo, index) => (
+                        <Text key={index} fontSize="0.9em">
+                          {`${titulo}: $${product.preciosVariantes[index]}`}
+                        </Text>
+                      ))
                   )}
                 </Td>
 

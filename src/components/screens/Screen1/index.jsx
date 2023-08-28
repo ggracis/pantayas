@@ -1,4 +1,11 @@
-import { Box, Text, SimpleGrid, useColorMode, Badge } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  SimpleGrid,
+  useColorMode,
+  Badge,
+  Flex,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import useInterval from "../../../hooks/useInterval";
 
@@ -67,31 +74,49 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
             color={colorMode === "light" ? "white" : "black"}
           >
             <Text fontWeight="bold" fontSize="x-large" fontFamily={fontText}>
-              {producto.item}
+              {producto.tituloProducto}
             </Text>
             <Badge
               variant="solid"
               colorScheme="green"
               fontFamily={["arial", "Rowdies", "Caprasimo"]}
-              w="9em"
               textAlign="center"
               fontWeight="extrabold"
               color={colorMode === "light" ? "white" : "black"}
             >
-              {producto.categoria}
+              {producto.categoria} - {producto.subcategoria}
             </Badge>
             <Text fontFamily={fontText} pt="0.5em">
               {producto.descripcion}
             </Text>
-            <Text
-              fontWeight="bold"
-              fontSize="x-large"
-              textAlign="end"
-              pt="0.2em"
-              fontFamily={fontText}
-            >
-              ${producto.precio}
-            </Text>
+            <Flex justifyContent="space-between" alignItems="center">
+              {producto.titulosVariantes.map((titulo, index) => {
+                if (producto.preciosVariantes[index] !== "") {
+                  return (
+                    <div
+                      key={index}
+                      style={{
+                        textAlign: "center",
+                        margin: "5px",
+                      }}
+                    >
+                      <Text
+                        fontSize={index === 0 ? "1.75em" : "1.5em"}
+                        fontWeight="bold"
+                        color={index === 0 ? "green.500" : "inherit"}
+                      >
+                        ${producto.preciosVariantes[index]}
+                      </Text>
+                      <Text fontSize="0.9em" lineHeight="0.4em">
+                        {titulo}
+                      </Text>
+                    </div>
+                  );
+                } else {
+                  return null;
+                }
+              })}
+            </Flex>
           </Box>
         ))}
       </SimpleGrid>

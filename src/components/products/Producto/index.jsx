@@ -18,15 +18,32 @@ const Producto = ({ producto }) => {
       <div className={styles.productInfo}>
         <div className={styles.productText}>
           <Text fontSize="1.5em" lineHeight="1em" fontWeight="bold">
-            {producto.item}
+            {producto.tituloProducto}
           </Text>
           <Text fontSize="0.9em" lineHeight="1em">
             {producto.descripcion}
           </Text>
         </div>
-        <Text fontSize="1.75em" fontWeight="bolder">
-          ${producto.precio}
-        </Text>
+        {producto.titulosVariantes.map((titulo, index) => {
+          if (producto.preciosVariantes[index] !== "") {
+            return (
+              <div key={index} style={{ textAlign: "center", margin: "5px" }}>
+                <Text
+                  fontSize={index === 0 ? "1.75em" : "1.5em"}
+                  fontWeight="bold"
+                  color={index === 0 ? "green.500" : "inherit"}
+                >
+                  ${producto.preciosVariantes[index]}
+                </Text>
+                <Text fontSize="0.9em" lineHeight="0.4em">
+                  {titulo}
+                </Text>
+              </div>
+            );
+          } else {
+            return null;
+          }
+        })}
       </div>
     </Box>
   );
