@@ -104,6 +104,7 @@ function App() {
               productos={productos}
               onFetchProductos={fetchProductos}
               onEditProducto={handleEditarProducto}
+              setProductos={setProductos}
             />
           </>
         }
