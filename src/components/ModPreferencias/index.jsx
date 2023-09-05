@@ -7,17 +7,30 @@ import {
     Tr,
     Th,
     useColorMode,
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItemOption,
-    MenuOptionGroup,
-    Button
+    Icon,
+    Input,
+    Stack,
+    IconButton,
+    SimpleGrid
 } from '@chakra-ui/react';
-import { AddIcon } from "@chakra-ui/icons";
+import Select, { components } from "react-select";
 import { FaFacebook, FaInstagram, FaTiktok, FaGlobe, FaWhatsapp } from "react-icons/fa";
 import Colorful from '@uiw/react-color-colorful';
 import Screen2 from '../screens/Screen2'
+import styles from "./ModPreferencias.module.css";
+import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+
+
+const socialMedias = [
+    { value: "WPP", icon: FaWhatsapp },
+    { value: "FB", icon: FaFacebook },
+    { value: "IG", icon: FaInstagram },
+    { value: "TT", icon: FaTiktok },
+    { value: "Gl", icon: FaGlobe }
+];
+
+
+
 
 const ModPreferencias = ({ productos, onFetchProductos }) => {
 
@@ -27,13 +40,31 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
     const [hexBack, setHexBack] = useState("#FBEFEF");
     const [hexProduct, setHexProduct] = useState("#6E6E6E");
 
+    const [selectedSocial, setSelectedSocial] = useState(socialMedias[0]);
+
+    const Option = (props) => (
+        <components.Option {...props} className={styles.SelectForm}>
+            <Icon as={props.data.icon} alt="logo" width='30%' height='30%' m='auto' />
+        </components.Option>
+    );
+
+    const SingleValue = ({ children, ...props }) => (
+        <components.SingleValue {...props} className={styles.SelectForm}>
+            <Icon as={props.data.icon} alt="s-logo" width='50%' height='50%' m='auto' />
+        </components.SingleValue>
+    );
+
+    const handleChange = (value) => {
+        setSelectedSocial(value);
+    };
+
     useEffect(() => {
         fetchProductos();
     }, []);
 
     const fetchProductos = async () => {
         await onFetchProductos();
-    }; screenX
+    };
 
     return (
         <>
@@ -58,20 +89,39 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                     <Tbody>
                         <Tr fontSize="1.5em" fontWeight="bold" textAlign="center" alignItems='center'>
                             <Th textAlign='center'>
-                                <Menu closeOnSelect={false} alignItems='center'>
-                                    <MenuButton as={Button} colorScheme='blue'>
-                                        <AddIcon />
-                                    </MenuButton>
-                                    <MenuList minWidth='10em' zIndex='1000'>
-                                        <MenuOptionGroup defaultValue='fb' type='radio' alignItems='center'>
-                                            <MenuItemOption value='fb'><FaFacebook height='10em' width='10em' /></MenuItemOption>
-                                            <MenuItemOption value='wpp'><FaWhatsapp /></MenuItemOption>
-                                        </MenuOptionGroup>
-                                    </MenuList>
-                                </Menu>
+                                <Stack>
+                                        <Box display='flex'>
+                                                <Box minWidth='25%' pr='1em'>
+                                                    <Select
+                                                        className={styles.SelectForm}
+                                                        value={selectedSocial}
+                                                        options={socialMedias}
+                                                        onChange={handleChange}
+                                                        isRtl={true}
+                                                        styles={{
+                                                            singleValue: (base) => ({
+                                                                ...base,
+                                                                display: "flex",
+                                                                alignItems: "center"
+                                                            })
+                                                        }}
+                                                        components={{
+                                                            Option,
+                                                            SingleValue
+                                                        }}
+                                                    />
+                                                </Box>
+                                                <Input placeholder='Ej: @NTQJ' />
+                                            </Box>
+                                    <SimpleGrid columns={2} spacing={4}>
+                                        <IconButton icon={<AddIcon />} />
+                                        <IconButton icon={<CloseIcon />} />
+                                    </SimpleGrid>
+                                </Stack>
                             </Th>
                             <Th>
                                 <Colorful
+                                    className={styles.colorful}
                                     color={hexNav}
                                     disableAlpha={true}
                                     onChange={(color) => {
@@ -81,6 +131,7 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                             </Th>
                             <Th>
                                 <Colorful
+                                    className={styles.colorful}
                                     color={hexBack}
                                     disableAlpha={true}
                                     onChange={(color) => {
@@ -90,7 +141,7 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                             </Th>
                             <Th>
                                 <Colorful
-
+                                    className={styles.colorful}
                                     color={hexProduct}
                                     disableAlpha={true}
                                     onChange={(color) => {
