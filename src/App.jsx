@@ -14,6 +14,7 @@ import {
   editarProducto,
 } from "./productService"; // Importar las funciones
 import EditarAgregarProducto from "./components/products/EditarAgregarProducto";
+import ModPreferencias from "./components/ModPreferencias";
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -102,6 +103,29 @@ function App() {
             />
             <EditarAgregarProducto onAction={handleAgregarProducto} />
             <ProductTable
+              productos={productos}
+              onFetchProductos={fetchProductos}
+              onEditProducto={handleEditarProducto}
+              setProductos={setProductos}
+            />
+            <ModPreferencias
+              productos={productos}
+              onFetchProductos={fetchProductos}
+            />
+          </>
+        }
+      />
+
+      <Route
+        path="/tablaPreferencias"
+        element={
+          <>
+            <NavBar />
+            <Encabezado
+              tituloEncabezado="Tabla de Preferencias"
+              bajadaEncabezado="Modifica como queres que se vean las pantallas"
+            />
+            <ModPreferencias
               productos={productos}
               onFetchProductos={fetchProductos}
               onEditProducto={handleEditarProducto}

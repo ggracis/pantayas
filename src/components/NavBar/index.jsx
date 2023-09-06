@@ -39,6 +39,9 @@ export default function NavBar() {
         <NavLink className={styles.enlaces} to="/tablaProductos">
           Tabla de productos
         </NavLink>
+        <NavLink className={styles.enlaces} to="/tablaPreferencias">
+          Tabla de Preferencias
+        </NavLink>
         <NavLink className={styles.enlaces} to="/screen">
           📺 1
         </NavLink>
