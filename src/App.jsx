@@ -5,6 +5,7 @@ import Listado from "./components/products/Listado";
 import UsuarioForm from "./components/Users/Form";
 import Screen1 from "./components/screens/Screen1";
 import Screen2 from "./components/screens/Screen2";
+import Screen3 from "./components/screens/Screen3";
 import ProductTable from "./components/products/TablaProductos";
 import Encabezado from "./components/Encabezado";
 import {
@@ -124,6 +125,15 @@ function App() {
         element={
           <>
             <Screen2 productos={productos} onFetchProductos={fetchProductos} />
+          </>
+        }
+      />
+
+      <Route
+        path="/screen3"
+        element={
+          <>
+            <Screen3 productos={productos} onFetchProductos={fetchProductos} />
           </>
         }
       />

@@ -72,19 +72,6 @@ const ProductTable = ({
       }
     }
   };
-  /* 
-  const handleKeyPress = async (e, product, field, index) => {
-    console.log("Ejecutando handleKeyPress...");
-    if (e.key === "Enter") {
-      e.stopPropagation(); // Detener la propagación del evento
-      await handleBlur(product, field, index);
-      console.log("Ejecutando el guardado de cambios...");
-    } else if (e.key === "Escape") {
-      setEditingCell(null);
-      setEditedValue("");
-      console.log("No se guardan cambios...");
-    }
-  }; */
 
   return (
     <>
@@ -99,14 +86,84 @@ const ProductTable = ({
       >
         <Table variant="striped">
           <Thead>
-            <Tr fontSize="1.5em" fontWeight="bold" textAlign="center" m="2">
-              <Th>Producto</Th>
-              <Th>Categoría</Th>
-              <Th>Subcategoría</Th>
-              <Th>Descripción</Th>
-              <Th>Unidad de medida</Th>
-              <Th>Precios</Th>
-              <Th>Acciones</Th>
+            <Tr m="2">
+              <Th
+                fontWeight="bold"
+                textAlign="center"
+                position="sticky"
+                top="20"
+                background="gray.800"
+                color="white"
+                zIndex="sticky"
+              >
+                Producto
+              </Th>
+              <Th
+                fontWeight="bold"
+                textAlign="center"
+                position="sticky"
+                top="20"
+                background="gray.800"
+                color="white"
+                zIndex="sticky"
+              >
+                Categoría
+              </Th>
+              <Th
+                fontWeight="bold"
+                textAlign="center"
+                position="sticky"
+                top="20"
+                background="gray.800"
+                color="white"
+                zIndex="sticky"
+              >
+                Subcategoría
+              </Th>
+              <Th
+                fontWeight="bold"
+                textAlign="center"
+                position="sticky"
+                top="20"
+                background="gray.800"
+                color="white"
+                zIndex="sticky"
+              >
+                Descripción
+              </Th>
+              <Th
+                fontWeight="bold"
+                textAlign="center"
+                position="sticky"
+                top="20"
+                background="gray.800"
+                color="white"
+                zIndex="sticky"
+              >
+                Unidad de medida
+              </Th>
+              <Th
+                fontWeight="bold"
+                textAlign="center"
+                position="sticky"
+                top="20"
+                background="gray.800"
+                color="white"
+                zIndex="sticky"
+              >
+                Precios
+              </Th>
+              <Th
+                fontWeight="bold"
+                textAlign="center"
+                position="sticky"
+                top="20"
+                background="gray.800"
+                color="white"
+                zIndex="sticky"
+              >
+                Acciones
+              </Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -158,7 +215,6 @@ const ProductTable = ({
                                 children="$"
                               />
                               <Input
-                                placeholder="0.00"
                                 type="number"
                                 placeholder={precio}
                                 onChange={(e) => setEditedValue(e.target.value)}

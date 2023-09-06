@@ -1,4 +1,4 @@
-import { Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import useInterval from "../../../hooks/useInterval";
 import ScHeader from "../../ScHeader";
@@ -41,6 +41,7 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
       categorias[producto.categoria] = [];
     }
     categorias[producto.categoria].push(producto);
+    //console.log(categorias);
   });
 
   return (
@@ -53,7 +54,7 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
       >
         {Object.keys(categorias).map((categoria) => (
           <div key={categoria} className={styles.myMasonryGridItem}>
-            <Text fontSize="1.5em" fontWeight="bold" textAlign="center" mb="2">
+            <Text fontSize="2.25em" fontWeight="bold" textAlign="center" mb="2">
               {categoria}
             </Text>
             {categorias[categoria].map((producto) => (

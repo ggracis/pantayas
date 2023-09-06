@@ -14,10 +14,11 @@ const Producto = ({ producto }) => {
       bg={colorMode === "light" ? "#353535" : "#e6e6e6"}
       color={colorMode === "light" ? "white" : "black"}
       className={styles.masonryItem}
+      width="100%"
     >
       <div className={styles.productInfo}>
         <div className={styles.productText}>
-          <Text fontSize="1.5em" lineHeight="1em" fontWeight="bold">
+          <Text fontSize="2em" lineHeight="1em" fontWeight="bold">
             {producto.tituloProducto}
           </Text>
           <Text fontSize="0.9em" lineHeight="1em">
@@ -29,7 +30,7 @@ const Producto = ({ producto }) => {
             return (
               <div key={index} style={{ textAlign: "center", margin: "5px" }}>
                 <Text
-                  fontSize={index === 0 ? "1.75em" : "1.5em"}
+                  fontSize={index === 0 ? "2em" : "1.75em"}
                   fontWeight="bold"
                   color={index === 0 ? "green.500" : "inherit"}
                 >
