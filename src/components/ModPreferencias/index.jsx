@@ -21,7 +21,7 @@ import styles from "./ModPreferencias.module.css";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 
 
-const socialMedias = [
+const availableSocialMedias = [
     { value: "WPP", icon: FaWhatsapp },
     { value: "FB", icon: FaFacebook },
     { value: "IG", icon: FaInstagram },
@@ -40,7 +40,7 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
     const [hexBack, setHexBack] = useState("#FBEFEF");
     const [hexProduct, setHexProduct] = useState("#6E6E6E");
 
-    const [selectedSocial, setSelectedSocial] = useState(socialMedias[0]);
+    const [socialMedias, setSocialMedias] = useState([{ ...availableSocialMedias[0], key: 0 }]);
 
     const Option = (props) => (
         <components.Option {...props} className={styles.SelectForm}>
@@ -53,10 +53,6 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
             <Icon as={props.data.icon} alt="s-logo" width='50%' height='50%' m='auto' />
         </components.SingleValue>
     );
-
-    const handleChange = (value) => {
-        setSelectedSocial(value);
-    };
 
     useEffect(() => {
         fetchProductos();
@@ -90,32 +86,49 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                         <Tr fontSize="1.5em" fontWeight="bold" textAlign="center" alignItems='center'>
                             <Th textAlign='center'>
                                 <Stack>
-                                        <Box display='flex'>
-                                                <Box minWidth='25%' pr='1em'>
-                                                    <Select
-                                                        className={styles.SelectForm}
-                                                        value={selectedSocial}
-                                                        options={socialMedias}
-                                                        onChange={handleChange}
-                                                        isRtl={true}
-                                                        styles={{
-                                                            singleValue: (base) => ({
-                                                                ...base,
-                                                                display: "flex",
-                                                                alignItems: "center"
-                                                            })
-                                                        }}
-                                                        components={{
-                                                            Option,
-                                                            SingleValue
-                                                        }}
-                                                    />
-                                                </Box>
-                                                <Input placeholder='Ej: @NTQJ' />
+                                    {
+                                    socialMedias.map((x) => (
+                                        <Box display='flex' key={x.key}>
+                                            <Box minWidth='25%' pr='1em'>
+                                                <Select
+                                                    className={styles.SelectForm}
+                                                    value={x}
+                                                    key={x.key}
+                                                    options={availableSocialMedias}
+                                                    onChange={
+                                                        (value) => setSocialMedias(y => y.map(obj =>
+                                                            obj.key == x.key ?
+                                                                {
+                                                                    ...obj,
+                                                                    value: value.value,
+                                                                    icon: value.icon
+                                                                }
+                                                                :
+                                                                { ...obj }
+                                                        ))
+                                                    }
+                                                    isRtl={true}
+                                                    styles={{
+                                                        singleValue: (base) => ({
+                                                            ...base,
+                                                            display: "flex",
+                                                            alignItems: "center"
+                                                        })
+                                                    }}
+                                                    components={{
+                                                        Option,
+                                                        SingleValue
+                                                    }}
+                                                />
                                             </Box>
+                                            <Input placeholder='Ej: @NTQJ' />
+                                        </Box>
+                                    ))
+                                    
+                                    }
                                     <SimpleGrid columns={2} spacing={4}>
-                                        <IconButton icon={<AddIcon />} />
-                                        <IconButton icon={<CloseIcon />} />
+                                        <IconButton icon={<AddIcon />} onClick={() => setSocialMedias(x => x.concat({ ...availableSocialMedias[0], key: socialMedias.length }))} />
+                                        <IconButton icon={<CloseIcon />} onClick={() => {if(socialMedias.length>1)setSocialMedias(x => x.slice(0, x.length - 1))}} />
                                     </SimpleGrid>
                                 </Stack>
                             </Th>
