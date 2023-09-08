@@ -1,9 +1,8 @@
-import { Box, Text, useColorMode } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import styles from "../../screens/Screen2/ListadoProductos.module.css";
 
-const Producto = ({ producto }) => {
-  const { colorMode } = useColorMode();
+const Producto = ({ producto, bg, textProduct }) => {
 
   return (
     <Box
@@ -11,17 +10,16 @@ const Producto = ({ producto }) => {
       p="1"
       m="1"
       borderRadius="md"
-      bg={colorMode === "light" ? "#353535" : "#e6e6e6"}
-      color={colorMode === "light" ? "white" : "black"}
+      bg= {bg}
       className={styles.masonryItem}
       width="100%"
     >
       <div className={styles.productInfo}>
         <div className={styles.productText}>
-          <Text fontSize="2em" lineHeight="1em" fontWeight="bold">
+          <Text fontSize="2em" lineHeight="1em" fontWeight="bold" color={textProduct}>
             {producto.tituloProducto}
           </Text>
-          <Text fontSize="0.9em" lineHeight="1em">
+          <Text fontSize="0.9em" lineHeight="1em" color={textProduct}>
             {producto.descripcion}
           </Text>
         </div>
@@ -32,7 +30,7 @@ const Producto = ({ producto }) => {
                 <Text
                   fontSize={index === 0 ? "2em" : "1.75em"}
                   fontWeight="bold"
-                  color={index === 0 ? "green.500" : "inherit"}
+                  color={textProduct}
                 >
                   ${producto.preciosVariantes[index]}
                 </Text>

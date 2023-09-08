@@ -4,11 +4,11 @@ import HoraYClima from "../HoraYClima";
 import LogoEmpresa from "../LogoEmpresa";
 import RedesSociales from "../RedesSociales";
 
-const ScHeader = () => {
+const ScHeader = ({bg, color}) => {
   const numColumns = useBreakpointValue({ base: 1, md: 3 });
 
   return (
-    <Box bg="#000" color="#fff">
+    <Box bg={bg} color={color}>
       <Grid
         templateColumns={`repeat(${numColumns}, 1fr)`}
         gap={numColumns === 1 ? 2 : 4}

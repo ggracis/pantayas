@@ -20,6 +20,10 @@ import Screen2 from '../screens/Screen2'
 import styles from "./ModPreferencias.module.css";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 
+import {
+    SummaCorrection
+} from "../../colorFunctions"; // Importar las funciones
+
 
 const availableSocialMedias = [
     { value: "WPP", icon: FaWhatsapp },
@@ -36,15 +40,15 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
 
     const { colorMode } = useColorMode();
 
-    const [hexNav, setHexNav] = useState("#190B07");
-    const [hexBack, setHexBack] = useState("#FBEFEF");
-    const [hexProduct, setHexProduct] = useState("#6E6E6E");
+    const [hexNav, setHexNav] = useState("#000");
+    const [hexBack, setHexBack] = useState("#1A202C");
+    const [hexProduct, setHexProduct] = useState("#EBEBEB");
 
     const [socialMedias, setSocialMedias] = useState([{ ...availableSocialMedias[0], key: 0 }]);
 
     const Option = (props) => (
         <components.Option {...props} className={styles.SelectForm}>
-            <Icon as={props.data.icon} alt="logo" width='30%' height='30%' m='auto' />
+            <Icon as={props.data.icon} alt="logo" width='40%' height='40%' m='auto' />
         </components.Option>
     );
 
@@ -67,7 +71,6 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
             <Box
                 w="80vw"
                 p={4}
-                bg="whiteAlpha.50"
                 m="auto"
                 mt={8}
                 mb={8}
@@ -84,51 +87,51 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                     </Thead>
                     <Tbody>
                         <Tr fontSize="1.5em" fontWeight="bold" textAlign="center" alignItems='center'>
-                            <Th textAlign='center'>
+                            <Th textAlign='center' minW='20em'>
                                 <Stack>
                                     {
-                                    socialMedias.map((x) => (
-                                        <Box display='flex' key={x.key}>
-                                            <Box minWidth='25%' pr='1em'>
-                                                <Select
-                                                    className={styles.SelectForm}
-                                                    value={x}
-                                                    key={x.key}
-                                                    options={availableSocialMedias}
-                                                    onChange={
-                                                        (value) => setSocialMedias(y => y.map(obj =>
-                                                            obj.key == x.key ?
-                                                                {
-                                                                    ...obj,
-                                                                    value: value.value,
-                                                                    icon: value.icon
-                                                                }
-                                                                :
-                                                                { ...obj }
-                                                        ))
-                                                    }
-                                                    isRtl={true}
-                                                    styles={{
-                                                        singleValue: (base) => ({
-                                                            ...base,
-                                                            display: "flex",
-                                                            alignItems: "center"
-                                                        })
-                                                    }}
-                                                    components={{
-                                                        Option,
-                                                        SingleValue
-                                                    }}
-                                                />
+                                        socialMedias.map((x) => (
+                                            <Box display='flex' key={x.key}>
+                                                <Box minWidth='25%' pr='1em'>
+                                                    <Select
+                                                        className={styles.SelectForm}
+                                                        value={x}
+                                                        key={x.key}
+                                                        options={availableSocialMedias}
+                                                        onChange={
+                                                            (value) => setSocialMedias(y => y.map(obj =>
+                                                                obj.key == x.key ?
+                                                                    {
+                                                                        ...obj,
+                                                                        value: value.value,
+                                                                        icon: value.icon
+                                                                    }
+                                                                    :
+                                                                    { ...obj }
+                                                            ))
+                                                        }
+                                                        isRtl={true}
+                                                        styles={{
+                                                            singleValue: (base) => ({
+                                                                ...base,
+                                                                display: "flex",
+                                                                alignItems: "center"
+                                                            })
+                                                        }}
+                                                        components={{
+                                                            Option,
+                                                            SingleValue
+                                                        }}
+                                                    />
+                                                </Box>
+                                                <Input placeholder='Ej: @NTQJ' />
                                             </Box>
-                                            <Input placeholder='Ej: @NTQJ' />
-                                        </Box>
-                                    ))
-                                    
+                                        ))
+
                                     }
                                     <SimpleGrid columns={2} spacing={4}>
                                         <IconButton icon={<AddIcon />} onClick={() => setSocialMedias(x => x.concat({ ...availableSocialMedias[0], key: socialMedias.length }))} />
-                                        <IconButton icon={<CloseIcon />} onClick={() => {if(socialMedias.length>1)setSocialMedias(x => x.slice(0, x.length - 1))}} />
+                                        <IconButton icon={<CloseIcon />} onClick={() => { if (socialMedias.length > 1) setSocialMedias(x => x.slice(0, x.length - 1)) }} />
                                     </SimpleGrid>
                                 </Stack>
                             </Th>
@@ -165,9 +168,17 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                         </Tr>
                     </Tbody>
                 </Table>
-                <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' maxHeight='30em' overflow='hidden'>
-                    <Screen2 productos={productos} onFetchProductos={fetchProductos} />
-                </Box>
+            </Box>
+            <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
+                <Screen2 productos={productos} onFetchProductos={fetchProductos} colors={{
+                    nav: hexNav,
+                    background: hexBack,
+                    product: hexProduct,
+                    textProduct: SummaCorrection(hexProduct),
+                    textCategories: SummaCorrection(hexBack),
+                    textNav: SummaCorrection(hexNav)
+                }}
+                />
             </Box>
         </>
     )
