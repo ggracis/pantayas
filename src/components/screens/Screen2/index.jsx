@@ -16,7 +16,7 @@ import Producto from "../../products/Producto";
   }
 */
 
-const ListadoProductos = ({ productos, onFetchProductos, colors }) => {
+const ListadoProductos = ({ productos, onFetchProductos, colors, socialMedias}) => {
   const intervalDelay = 5 * 60 * 1000; // 5 minutos en milisegundos
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
@@ -66,7 +66,7 @@ const ListadoProductos = ({ productos, onFetchProductos, colors }) => {
 
   return (
     <Box bg={colors.background}>
-      <ScHeader bg={colors.nav} color={colors.textNav}/>
+      <ScHeader bg={colors.nav} color={colors.textNav} socialMedias={socialMedias}/>
       <Masonry
         breakpointCols={{ default: 4, 1100: 3, 700: 2, 500: 1 }}
         className={styles.myMasonryGrid}

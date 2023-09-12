@@ -26,11 +26,10 @@ import {
 
 
 const availableSocialMedias = [
-    { value: "WPP", icon: FaWhatsapp },
-    { value: "FB", icon: FaFacebook },
-    { value: "IG", icon: FaInstagram },
-    { value: "TT", icon: FaTiktok },
-    { value: "Gl", icon: FaGlobe }
+    { value: "Facebook", icon: FaFacebook, link: "/PanaderiaNTQJ" },
+    { value: "Instagram", icon: FaInstagram, link: "@PanaderiaNTQJ" },
+    { value: "TikTok", icon: FaTiktok, link: "@PanaderiaNTQJ" },
+    { value: "Web", icon: FaGlobe, link: "www.PanaderiaNTQJ.com" },
 ];
 
 
@@ -44,7 +43,16 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
     const [hexBack, setHexBack] = useState("#1A202C");
     const [hexProduct, setHexProduct] = useState("#EBEBEB");
 
-    const [socialMedias, setSocialMedias] = useState([{ ...availableSocialMedias[0], key: 0 }]);
+    let key = 0
+    const [socialMedias, setSocialMedias] = useState(availableSocialMedias.map(x => {
+        let social = {
+            ...x,
+            key: key,
+        }
+        key++
+
+        return social
+    }));
 
     const Option = (props) => (
         <components.Option {...props} className={styles.SelectForm}>
@@ -61,6 +69,10 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
     useEffect(() => {
         fetchProductos();
     }, []);
+
+    useEffect(()=>{
+        console.log(socialMedias)
+      })
 
     const fetchProductos = async () => {
         await onFetchProductos();
@@ -103,7 +115,7 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                                                                 obj.key == x.key ?
                                                                     {
                                                                         ...obj,
-                                                                        value: value.value,
+                                                                        name: value.value,
                                                                         icon: value.icon
                                                                     }
                                                                     :
@@ -124,7 +136,17 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                                                         }}
                                                     />
                                                 </Box>
-                                                <Input placeholder='Ej: @NTQJ' />
+                                                <Input placeholder='@NTQJ' value={x.link} onChange={
+                                                    (value) => setSocialMedias(y => y.map(obj =>
+                                                        obj.key == x.key ?
+                                                            {
+                                                                ...obj,
+                                                                link: value.target.value,
+                                                            }
+                                                            :
+                                                            { ...obj }
+                                                    ))
+                                                } />
                                             </Box>
                                         ))
 
@@ -170,7 +192,8 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                 </Table>
             </Box>
             <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
-                <Screen2 productos={productos} onFetchProductos={fetchProductos} colors={{
+                <Screen2 productos={productos} onFetchProductos={fetchProductos} socialMedias={socialMedias} 
+                colors={{
                     nav: hexNav,
                     background: hexBack,
                     product: hexProduct,
