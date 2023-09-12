@@ -69,11 +69,6 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
     useEffect(() => {
         fetchProductos();
     }, []);
-
-    useEffect(()=>{
-        console.log(socialMedias)
-      })
-
     const fetchProductos = async () => {
         await onFetchProductos();
     };
