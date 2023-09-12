@@ -11,10 +11,11 @@ import {
     Input,
     Stack,
     IconButton,
-    SimpleGrid
+    SimpleGrid,
+    Image
 } from '@chakra-ui/react';
 import Select, { components } from "react-select";
-import { FaFacebook, FaInstagram, FaTiktok, FaGlobe, FaWhatsapp } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaTiktok, FaGlobe, FaWhatsapp, FaRegSave} from "react-icons/fa";
 import Colorful from '@uiw/react-color-colorful';
 import Screen2 from '../screens/Screen2'
 import styles from "./ModPreferencias.module.css";
@@ -24,12 +25,12 @@ import {
     SummaCorrection
 } from "../../colorFunctions"; // Importar las funciones
 
-
 const availableSocialMedias = [
     { value: "Facebook", icon: FaFacebook, link: "/PanaderiaNTQJ" },
     { value: "Instagram", icon: FaInstagram, link: "@PanaderiaNTQJ" },
     { value: "TikTok", icon: FaTiktok, link: "@PanaderiaNTQJ" },
     { value: "Web", icon: FaGlobe, link: "www.PanaderiaNTQJ.com" },
+    { value: 'WhatsApp', icon: FaWhatsapp, link: '+54 11 3293-0807' }
 ];
 
 
@@ -43,6 +44,9 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
     const [hexBack, setHexBack] = useState("#1A202C");
     const [hexProduct, setHexProduct] = useState("#EBEBEB");
 
+    const [title, setTitle] = useState('NTQJ PANADERIA');
+    const [image, setImage] = useState(null);
+
     let key = 0
     const [socialMedias, setSocialMedias] = useState(availableSocialMedias.map(x => {
         let social = {
@@ -53,7 +57,6 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
 
         return social
     }));
-
     const Option = (props) => (
         <components.Option {...props} className={styles.SelectForm}>
             <Icon as={props.data.icon} alt="logo" width='40%' height='40%' m='auto' />
@@ -186,16 +189,49 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                     </Tbody>
                 </Table>
             </Box>
+            <Box
+                w="80vw"
+                p={4}
+                m="auto"
+                mt={8}
+                mb={8}
+                borderRadius="lg"
+            >
+                <Table variant="striped">
+                    <Thead>
+                        <Tr m="2">
+                            <Th fontSize="1.5em" >Titulo</Th>
+                            <Th fontSize="1.5em" >Logo</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        <Tr fontSize="1.5em" m="2">
+                            <Th fontWeight='extrabold'>
+                                <Input placeholder='Titulo de tu Empresa' value={title} onChange={(value)=>setTitle(value.target.value)} maxW={'22em'} /></Th>
+                            <Th>
+                                <Input type="file" accept="image/*" onChange={(value)=>setImage(value.target.files[0])} maxW={'22em'} />
+                            </Th>
+                        </Tr>
+                    </Tbody>
+                </Table>
+            </Box>
+            <Box p='2em'>
+                <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={()=>{console.log('mando a servidor')}}/>
+            </Box>
             <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
-                <Screen2 productos={productos} onFetchProductos={fetchProductos} socialMedias={socialMedias} 
-                colors={{
-                    nav: hexNav,
-                    background: hexBack,
-                    product: hexProduct,
-                    textProduct: SummaCorrection(hexProduct),
-                    textCategories: SummaCorrection(hexBack),
-                    textNav: SummaCorrection(hexNav)
-                }}
+                <Screen2 productos={productos} onFetchProductos={fetchProductos} socialMedias={socialMedias}
+                    colors={{
+                        nav: hexNav,
+                        background: hexBack,
+                        product: hexProduct,
+                        textProduct: SummaCorrection(hexProduct),
+                        textCategories: SummaCorrection(hexBack),
+                        textNav: SummaCorrection(hexNav)
+                    }}
+                    title={{
+                        title: title,
+                        image: image
+                    }}
                 />
             </Box>
         </>
