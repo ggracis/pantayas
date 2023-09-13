@@ -12,7 +12,6 @@ import {
     Stack,
     IconButton,
     SimpleGrid,
-    Image
 } from '@chakra-ui/react';
 import Select, { components } from "react-select";
 import { FaFacebook, FaInstagram, FaTiktok, FaGlobe, FaWhatsapp, FaRegSave} from "react-icons/fa";
@@ -215,9 +214,7 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                     </Tbody>
                 </Table>
             </Box>
-            <Box p='2em'>
-                <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={()=>{console.log('mando a servidor')}}/>
-            </Box>
+
             <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
                 <Screen2 productos={productos} onFetchProductos={fetchProductos} socialMedias={socialMedias}
                     colors={{
@@ -233,6 +230,9 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                         image: image
                     }}
                 />
+            </Box>
+            <Box p='2em'>
+                <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={()=>{console.log('mando a servidor')}}/>
             </Box>
         </>
     )

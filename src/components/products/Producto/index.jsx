@@ -34,7 +34,7 @@ const Producto = ({ producto, bg, textProduct }) => {
                 >
                   ${producto.preciosVariantes[index]}
                 </Text>
-                <Text fontSize="0.9em" lineHeight="0.4em">
+                <Text fontSize="0.9em" lineHeight="0.4em" color={textProduct}>
                   {titulo}
                 </Text>
               </div>
