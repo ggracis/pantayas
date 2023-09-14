@@ -14,11 +14,13 @@ import {
     SimpleGrid,
 } from '@chakra-ui/react';
 import Select, { components } from "react-select";
-import { FaFacebook, FaInstagram, FaTiktok, FaGlobe, FaWhatsapp, FaRegSave} from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaTiktok, FaGlobe, FaWhatsapp, FaRegSave } from "react-icons/fa";
 import Colorful from '@uiw/react-color-colorful';
 import Screen2 from '../screens/Screen2'
 import styles from "./ModPreferencias.module.css";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 import {
     SummaCorrection
@@ -39,23 +41,37 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
 
     const { colorMode } = useColorMode();
 
-    const [hexNav, setHexNav] = useState("#000");
-    const [hexBack, setHexBack] = useState("#1A202C");
-    const [hexProduct, setHexProduct] = useState("#EBEBEB");
-
+    //Datos inmutables entre pantallas
     const [title, setTitle] = useState('NTQJ PANADERIA');
     const [image, setImage] = useState(null);
 
-    let key = 0
-    const [socialMedias, setSocialMedias] = useState(availableSocialMedias.map(x => {
-        let social = {
-            ...x,
-            key: key,
-        }
-        key++
+    //Datos Variables entre pantallas
+    const [hexNav, setHexNav] = useState(["#000", "#000"]);
+    const [hexBack, setHexBack] = useState(["#1A202C", "#1A202C"]);
+    const [hexProduct, setHexProduct] = useState(["#EBEBEB", "#EBEBEB"]);
 
-        return social
-    }));
+    let key = 0
+    const [socialMedias, setSocialMedias] = useState([
+        availableSocialMedias.map(x => {
+            let social = {
+                ...x,
+                key: key,
+            }
+            key++
+            return social
+        }),
+        availableSocialMedias.map(x => {
+            let social = {
+                ...x,
+                key: key,
+            }
+            key++
+            return social
+        })
+    ])
+
+    const [currentScreen, setCurrentScreen] = useState(0)
+
     const Option = (props) => (
         <components.Option {...props} className={styles.SelectForm}>
             <Icon as={props.data.icon} alt="logo" width='40%' height='40%' m='auto' />
@@ -99,7 +115,7 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                             <Th textAlign='center' minW='20em'>
                                 <Stack>
                                     {
-                                        socialMedias.map((x) => (
+                                        socialMedias[currentScreen].map((x) => (
                                             <Box display='flex' key={x.key}>
                                                 <Box minWidth='25%' pr='1em'>
                                                     <Select
@@ -108,16 +124,23 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                                                         key={x.key}
                                                         options={availableSocialMedias}
                                                         onChange={
-                                                            (value) => setSocialMedias(y => y.map(obj =>
-                                                                obj.key == x.key ?
-                                                                    {
-                                                                        ...obj,
-                                                                        name: value.value,
-                                                                        icon: value.icon
-                                                                    }
-                                                                    :
-                                                                    { ...obj }
-                                                            ))
+                                                            (value) => setSocialMedias(
+                                                                (y) => {
+                                                                    const newSocial = [...y]
+                                                                    newSocial[currentScreen] =
+                                                                        newSocial[currentScreen].map(obj =>
+                                                                            obj.key == x.key ?
+                                                                                {
+                                                                                    ...obj,
+                                                                                    name: value.value,
+                                                                                    icon: value.icon
+                                                                                }
+                                                                                :
+                                                                                { ...obj }
+                                                                        )
+                                                                    return newSocial;
+                                                                }
+                                                            )
                                                         }
                                                         isRtl={true}
                                                         styles={{
@@ -134,16 +157,24 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                                                     />
                                                 </Box>
                                                 <Input placeholder='@NTQJ' value={x.link} onChange={
-                                                    (value) => setSocialMedias(y => y.map(obj =>
-                                                        obj.key == x.key ?
-                                                            {
-                                                                ...obj,
-                                                                link: value.target.value,
-                                                            }
-                                                            :
-                                                            { ...obj }
-                                                    ))
-                                                } />
+                                                    (value) => setSocialMedias(
+                                                        (y) => {
+                                                            const newSocial = [...y]
+                                                            newSocial[currentScreen] =
+                                                                newSocial[currentScreen].map(obj =>
+                                                                    obj.key == x.key ?
+                                                                        {
+                                                                            ...obj,
+                                                                            link: value.target.value
+                                                                        }
+                                                                        :
+                                                                        { ...obj }
+                                                                )
+                                                            return newSocial;
+                                                        }
+                                                    )
+                                                }
+                                                />
                                             </Box>
                                         ))
 
@@ -157,30 +188,42 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                             <Th>
                                 <Colorful
                                     className={styles.colorful}
-                                    color={hexNav}
+                                    color={hexNav[currentScreen]}
                                     disableAlpha={true}
                                     onChange={(color) => {
-                                        setHexNav(color.hexa);
+                                        setHexNav((prevHexNav) => {
+                                            const newHexNav = [...prevHexNav];
+                                            newHexNav[currentScreen] = color.hexa;
+                                            return newHexNav;
+                                        })
                                     }}
                                 />
                             </Th>
                             <Th>
                                 <Colorful
                                     className={styles.colorful}
-                                    color={hexBack}
+                                    color={hexBack[currentScreen]}
                                     disableAlpha={true}
                                     onChange={(color) => {
-                                        setHexBack(color.hexa);
+                                        setHexBack((prevHexBack) => {
+                                            const newHexBack = [...prevHexBack];
+                                            newHexBack[currentScreen] = color.hexa;
+                                            return newHexBack;
+                                        })
                                     }}
                                 />
                             </Th>
                             <Th>
                                 <Colorful
                                     className={styles.colorful}
-                                    color={hexProduct}
+                                    color={hexProduct[currentScreen]}
                                     disableAlpha={true}
                                     onChange={(color) => {
-                                        setHexProduct(color.hexa);
+                                        setHexProduct((prevHexProduct) => {
+                                            const newHexProduct = [...prevHexProduct];
+                                            newHexProduct[currentScreen] = color.hexa;
+                                            return newHexProduct;
+                                        })
                                     }}
                                 />
                             </Th>
@@ -206,33 +249,62 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
                     <Tbody>
                         <Tr fontSize="1.5em" m="2">
                             <Th fontWeight='extrabold'>
-                                <Input placeholder='Titulo de tu Empresa' value={title} onChange={(value)=>setTitle(value.target.value)} maxW={'22em'} /></Th>
+                                <Input placeholder='Titulo de tu Empresa' value={title} onChange={(value) => setTitle(value.target.value)} maxW={'22em'} /></Th>
                             <Th>
-                                <Input type="file" accept="image/*" onChange={(value)=>setImage(value.target.files[0])} maxW={'22em'} />
+                                <Input type="file" accept="image/*" onChange={(value) => setImage(value.target.files[0])} maxW={'22em'} />
                             </Th>
                         </Tr>
                     </Tbody>
                 </Table>
             </Box>
-
-            <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
-                <Screen2 productos={productos} onFetchProductos={fetchProductos} socialMedias={socialMedias}
-                    colors={{
-                        nav: hexNav,
-                        background: hexBack,
-                        product: hexProduct,
-                        textProduct: SummaCorrection(hexProduct),
-                        textCategories: SummaCorrection(hexBack),
-                        textNav: SummaCorrection(hexNav)
-                    }}
-                    title={{
-                        title: title,
-                        image: image
-                    }}
-                />
-            </Box>
+            <Carousel
+                infiniteLoop
+                showStatus={false}
+                showThumbs={false}
+                showArrows={true}
+                showIndicators={false}
+                className={styles.carousel}
+                onChange={(x, item) => {
+                    setCurrentScreen(x)
+                }}
+            >
+                <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
+                    <Screen2 productos={productos} onFetchProductos={fetchProductos}
+                        socialMedias={socialMedias[currentScreen]}
+                        colors={{
+                            nav: hexNav[currentScreen],
+                            background: hexBack[currentScreen],
+                            product: hexProduct[currentScreen],
+                            textProduct: SummaCorrection(hexProduct[currentScreen]),
+                            textCategories: SummaCorrection(hexBack[currentScreen]),
+                            textNav: SummaCorrection(hexNav[currentScreen])
+                        }}
+                        title={{
+                            title: title,
+                            image: image
+                        }}
+                    />
+                </Box>
+                <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
+                    <Screen2 productos={productos} onFetchProductos={fetchProductos}
+                        socialMedias={socialMedias[currentScreen]}
+                        colors={{
+                            nav: hexNav[currentScreen],
+                            background: hexBack[currentScreen],
+                            product: hexProduct[currentScreen],
+                            textProduct: SummaCorrection(hexProduct[currentScreen]),
+                            textCategories: SummaCorrection(hexBack[currentScreen]),
+                            textNav: SummaCorrection(hexNav[currentScreen])
+                        }}
+                        title={{
+                            title: title,
+                            image: image
+                        }}
+                    />
+                </Box>
+            </Carousel>
             <Box p='2em'>
-                <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={()=>{console.log('mando a servidor')}}/>
+                <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={() => { console.log('mando a servidor') }} />
             </Box>
         </>
     )

@@ -24,6 +24,8 @@ const LogoEmpresa = ({title}) => {
           alt="Logotipo de la empresa"
           boxSize={24}
           mr={2}
+          maxW={'6em'}
+          maxH={'6em'}
         />
         <Text fontSize="1.5em" fontWeight="bold">
           {title.title}
