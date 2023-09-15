@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
     Box,
     Table,
@@ -6,75 +6,21 @@ import {
     Thead,
     Tr,
     Th,
-    useColorMode,
     Input,
-    IconButton,
+    IconButton
 } from '@chakra-ui/react';
-import { FaFacebook, FaInstagram, FaTiktok, FaGlobe, FaWhatsapp, FaRegSave } from "react-icons/fa";
-import Screen2 from '../screens/Screen2'
-import styles from "./ModPreferencias.module.css";
-import { Carousel } from "react-responsive-carousel";
+import {FaRegSave } from "react-icons/fa";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 import { EditSocialMedia } from './ModComponents/EditSocialMedia'
 import { EditColor } from './ModComponents/EditColor'
+import {CarouselScreens} from "./ModComponents/CarouselScreens";
+import {Counter} from './ModComponents/counter'
 
-
-const availableSocialMedias = [
-    { value: "Facebook", icon: FaFacebook, link: "/PanaderiaNTQJ", key: 0 },
-    { value: "Instagram", icon: FaInstagram, link: "@PanaderiaNTQJ", key: 1 },
-    { value: "TikTok", icon: FaTiktok, link: "@PanaderiaNTQJ", key: 2 },
-    { value: "Web", icon: FaGlobe, link: "www.PanaderiaNTQJ.com", key: 3 },
-    { value: 'WhatsApp', icon: FaWhatsapp, link: '+54 11 3293-0807', key: 4 }
-];
-const productos = [{
-    "tituloProducto": "Pasta frola batata",
-    "categoria": "Pasteleria",
-    "subcategoria": "Tarta",
-    "unidadMedida": "Unidad",
-    "titulosVariantes": [
-        "Chico",
-        "Mediano",
-        "Grande"
-    ],
-    "preciosVariantes": [
-        "123",
-        "",
-        "1233"
-    ],
-    "activo": true,
-    "createdAt": "2023-09-03T23:04:43.496Z",
-    "updatedAt": "2023-09-14T20:35:04.523Z",
-    "objectId": "bG8NPoA4Cq"
-},
-{
-    "tituloProducto": "Lunitas",
-    "categoria": "Galletitas",
-    "subcategoria": "Hojaldre",
-    "unidadMedida": "Kg.",
-    "titulosVariantes": [
-        "1/4",
-        "1/2",
-        "1Kg."
-    ],
-    "preciosVariantes": [
-        "123",
-        "",
-        "1233"
-    ],
-    "activo": true,
-    "createdAt": "2023-09-03T23:04:43.497Z",
-    "updatedAt": "2023-09-03T23:04:43.497Z",
-    "objectId": "m6BEg1sdvo"
-}]
+import {availableSocialMedias, productos} from './ModComponents/usefulObjectes'
 
 
 const ModPreferencias = () => {
-
-    const { colorMode } = useColorMode();
-
-
-
     //Datos inmutables entre pantallas
     const [title, setTitle] = useState('NTQJ PANADERIA');
     const [image, setImage] = useState(null);
@@ -95,6 +41,7 @@ const ModPreferencias = () => {
         }
     ])
     const [currentScreen, setCurrentScreen] = useState(0)
+    const [screenCounter, setScreenCounter] = useState(2)
 
     //Datos Variables entre pantallas
     const [hexNav, setHexNav] = useState(preferences[currentScreen].hexNav);
@@ -102,10 +49,49 @@ const ModPreferencias = () => {
     const [hexProduct, setHexProduct] = useState(preferences[currentScreen].hexProduct);
     const [socialMedias, setSocialMedias] = useState(preferences[currentScreen].socialMedias);
 
+    const handlehexNav = (color) => setHexNav(color)
+    const handlehexBack = (color) => setHexBack(color)
+    const handlehexProduct = (color) => setHexProduct(color)
+    const handlesocialMedias = (color) => setSocialMedias(color)
+
     const handleTitle = (value) => setTitle(value.target.value)
     const handleImage = (value) => setImage(value.target.files[0])
 
+    const HandleCarousel = (index, item) => {
+        console.log(index)
+            setPreferences(
+                x => {
+                    const arr = [...x]
+                    arr[currentScreen] = {
+                        hexNav: hexNav,
+                        hexBack: hexBack,
+                        hexProduct: hexProduct,
+                        socialMedias: socialMedias
+                    }
+                    return arr
+                }
+            )
+            setCurrentScreen(index)
 
+            setHexNav(preferences[index].hexNav);
+            setHexBack(preferences[index].hexBack);
+            setHexProduct(preferences[index].hexProduct);
+            setSocialMedias(preferences[index].socialMedias);
+    }
+    
+    const AddScreenCounter = () => { 
+        if(screenCounter<10){
+            preferences.push(preferences[0])
+            handleScreenCounter(screenCounter + 1)
+        }
+    }
+    const SubstractScreenCounter = () => { 
+        if(screenCounter>1){
+            preferences.pop()
+            handleScreenCounter(screenCounter - 1)
+        }
+    }
+    const handleScreenCounter = useCallback((value) => setScreenCounter(value), [screenCounter])
     return (
         <>
             <Table
@@ -129,18 +115,19 @@ const ModPreferencias = () => {
                     <Tr fontSize="1.5em" fontWeight="bold" textAlign="center" alignItems='center'>
                         <Th textAlign='center' minW='20em'>
                             <EditSocialMedia
-                                UpdateSocials={setSocialMedias}
+                                socialMedias={socialMedias}
+                                UpdateSocials={handlesocialMedias}
                             />
                         </Th>
                         <Th>
-                            <EditColor colorState={hexNav} UpdateColor={setHexNav} />
+                            <EditColor colorState={hexNav} UpdateColor={handlehexNav} />
 
                         </Th>
                         <Th>
-                            <EditColor colorState={hexBack} UpdateColor={setHexBack} />
+                            <EditColor colorState={hexBack} UpdateColor={handlehexBack} />
                         </Th>
                         <Th>
-                            <EditColor colorState={hexProduct} UpdateColor={setHexProduct} />
+                            <EditColor colorState={hexProduct} UpdateColor={handlehexProduct} />
                         </Th>
                     </Tr>
                 </Tbody>
@@ -158,70 +145,38 @@ const ModPreferencias = () => {
                     <Tr m="2">
                         <Th fontSize="1.5em" >Titulo</Th>
                         <Th fontSize="1.5em" >Logo</Th>
+                        <Th fontSize="1.5em" textAlign={'center'}>CANTIDAD DE PANTALLAS</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
                     <Tr fontSize="1.5em" m="2">
                         <Th fontWeight='extrabold'>
-                            <Input placeholder='Titulo de tu Empresa' value={title} onChange={handleTitle} maxW={'22em'} /></Th>
+                            <Input placeholder='Titulo de tu Empresa' value={title} onChange={handleTitle} maxW={'22em'} />
+                        </Th>
                         <Th>
                             <Input type="file" accept="image/*" onChange={handleImage} maxW={'22em'} />
+                        </Th>
+                        <Th fontWeight='extrabold' display={'flex'} flexDir={'column'} alignContent={'center'} justifyContent={'center'}>
+                            <Counter
+                                value={screenCounter}
+                                add={AddScreenCounter}
+                                substract={SubstractScreenCounter}
+                            />
                         </Th>
                     </Tr>
                 </Tbody>
             </Table>
-            <Carousel
-                infiniteLoop
-                showArrows={true}
-                showIndicators={false}
-                className={styles.carousel}
-                onChange={(index, item) => {
-                    setPreferences(
-                        x => {
-                            const arr = [...x]
-                            arr[currentScreen] = {
-                                hexNav: hexNav,
-                                hexBack: hexBack,
-                                hexProduct: hexProduct,
-                                socialMedias: socialMedias
-                            }
-                            return arr
-                        }
-                    )
-                    setCurrentScreen(index)
-
-                    setHexNav(preferences[index].hexNav);
-                    setHexBack(preferences[index].hexBack);
-                    setHexProduct(preferences[index].hexProduct);
-                    setSocialMedias(preferences[index].socialMedias);
-
-                }}
-            >
-                <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
-                    <Screen2
-                        productos={productos}
-                        onFetchProductos={() => { }}
-                        socialMedias={socialMedias}
-                        nav={hexNav}
-                        background={hexBack}
-                        product={hexProduct}
-                        title={title}
-                        image={image}
-                    />
-                </Box>
-                <Box borderColor={colorMode === "light" ? "black" : "white"} borderWidth='0.2em' borderRadius='2em' width='100%' minW='70em' maxHeight='30em' overflow='hidden'>
-                    <Screen2
-                        productos={productos}
-                        onFetchProductos={() => { }}
-                        socialMedias={socialMedias}
-                        nav={hexNav}
-                        background={hexBack}
-                        product={hexProduct}
-                        title={title}
-                        image={image}
-                    />
-                </Box>
-            </Carousel>
+            <CarouselScreens
+                productos={productos}
+                socialMedias={socialMedias}
+                nav={hexNav}
+                background={hexBack}
+                product={hexProduct}
+                title={title}
+                image={image}
+                screenCounter={screenCounter}
+                HandleCarousel={HandleCarousel}
+            />
             <Box p='2em'>
                 <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={() => { console.log('mando a servidor') }} />
             </Box>

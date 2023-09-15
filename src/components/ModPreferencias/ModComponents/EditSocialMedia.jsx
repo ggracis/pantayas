@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
     Stack,
     Box,
@@ -10,30 +9,15 @@ import {
 import Select, { components } from "react-select";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import styles from "../ModPreferencias.module.css";
-import { FaFacebook, FaInstagram, FaTiktok, FaGlobe, FaWhatsapp } from "react-icons/fa";
-
-const availableSocialMedias = [
-    { value: "Facebook", icon: FaFacebook, link: "/PanaderiaNTQJ", key: 0 },
-    { value: "Instagram", icon: FaInstagram, link: "@PanaderiaNTQJ", key: 1 },
-    { value: "TikTok", icon: FaTiktok, link: "@PanaderiaNTQJ", key: 2 },
-    { value: "Web", icon: FaGlobe, link: "www.PanaderiaNTQJ.com", key: 3 },
-    { value: 'WhatsApp', icon: FaWhatsapp, link: '+54 11 3293-0807', key: 4 }
-];
+import { availableSocialMedias } from "./usefulObjectes";
 
 
-
-export const EditSocialMedia = ({ UpdateSocials }) => {
-
-    const [socialMedias, setSocialMedias] = useState(availableSocialMedias);
-
-    useEffect(()=>{
-        UpdateSocials(socialMedias)
-    },[socialMedias])
+export const EditSocialMedia = ({ socialMedias, UpdateSocials }) => {
 
 
 
     const handleSocialMediasSelect = (value, x) => {
-        setSocialMedias((y) =>
+        UpdateSocials((y) =>
             y.map(obj =>
                 obj.key == x.key ?
                     {
@@ -47,7 +31,7 @@ export const EditSocialMedia = ({ UpdateSocials }) => {
         )
     }
     const handleSocialMediasLink = (value, x) => {
-        setSocialMedias((y) =>
+        UpdateSocials((y) =>
             y.map(obj =>
                 obj.key === x.key ?
                     {
@@ -61,7 +45,7 @@ export const EditSocialMedia = ({ UpdateSocials }) => {
     }
 
 
-    const AddSocial = () => setSocialMedias(
+    const AddSocial = () => UpdateSocials(
         x =>
             x.concat({
                 ...x[0],
@@ -69,15 +53,14 @@ export const EditSocialMedia = ({ UpdateSocials }) => {
             })
 
     )
-    const RemoveSocial =
-        () => setSocialMedias(
-            x => {
-                let newSocial = [...x]
-                if (newSocial.length > 1)
-                    newSocial.pop()
-                return newSocial
-            }
-        )
+    const RemoveSocial = () => UpdateSocials(
+        x => {
+            let newSocial = [...x]
+            if (newSocial.length > 1)
+                newSocial.pop()
+            return newSocial
+        }
+    )
 
 
     const Option = (props) => (

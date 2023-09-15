@@ -8,8 +8,9 @@ import Producto from "../../products/Producto";
 import {
   SummaCorrection
 } from "../../../colorFunctions"; // Importar las funciones
+import { availableSocialMedias } from "../../ModPreferencias/ModComponents/usefulObjectes";
 
-const ListadoProductos = ({ productos, onFetchProductos, nav, background, product, title, socialMedia, image }) => {
+const ListadoProductos = ({ productos, onFetchProductos, nav, background, product, title, socialMedia = [], image }) => {
   const intervalDelay = 5 * 60 * 1000; // 5 minutos en milisegundos
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
@@ -21,20 +22,18 @@ const ListadoProductos = ({ productos, onFetchProductos, nav, background, produc
   const textNavSelected = useMemo(() => (nav === null||nav===undefined) ? '#ffffff':SummaCorrection(nav), [nav])
   const titleSelected = useMemo(() => (title === null||title===undefined) ? 'NTQJ PANADERIA' : title, [title])
   const imageSelected = useMemo(() => image, [image])
+  const socialMediaSelected = useMemo(() =>socialMedia.length<=0?availableSocialMedias:socialMedia, [socialMedia])
 
-  const socialMediaSelected = useMemo(() => {
-    socialMedia === null ?
-      availableSocialMedias.map(x => {
-        let social = {
-          ...x,
-          key: key,
-        }
-        key++
-        return social
-      }) :
-      socialMedia
-      , [image]
-  })
+  // const navSelected = (nav === null||nav===undefined) ? '#000' : nav
+  // const backgroundSelected = (background === null||background===undefined) ?'#1A202C':background
+  // const productSelected = (product === null||product===undefined) ? '#EBEBEB' : product
+  // const textProductSelected = (product === null||product===undefined) ? '#000000':SummaCorrection(product)
+  // const textCategoriesSelected = (background === null||background===undefined)?'#ffffff':SummaCorrection(background)
+  // const textNavSelected = (nav === null||nav===undefined) ? '#ffffff':SummaCorrection(nav)
+  // const titleSelected = (title === null||title===undefined) ? 'NTQJ PANADERIA' : title
+  // const imageSelected = image
+
+  
 
 useInterval(() => {
   const now = new Date();

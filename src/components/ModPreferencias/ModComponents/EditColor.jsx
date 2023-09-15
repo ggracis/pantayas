@@ -5,8 +5,9 @@ import styles from "../ModPreferencias.module.css";
 // ,color, setColor
 export const EditColor = ({colorState,UpdateColor}) => {
 
-    const ChangeColor = (color) =>
+    const ChangeColor = (color) =>{
         UpdateColor(color.hexa)
+    }
 
     return (
         <Colorful
