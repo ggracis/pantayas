@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     Box,
     Table,
@@ -9,18 +9,17 @@ import {
     Input,
     IconButton
 } from '@chakra-ui/react';
-import {FaRegSave } from "react-icons/fa";
+import { FaRegSave } from "react-icons/fa";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 import { EditSocialMedia } from './ModComponents/EditSocialMedia'
 import { EditColor } from './ModComponents/EditColor'
-import {CarouselScreens} from "./ModComponents/CarouselScreens";
-import {Counter} from './ModComponents/counter'
+import { CarouselScreens } from "./ModComponents/CarouselScreens";
+import { Counter } from './ModComponents/counter'
+import { availableSocialMedias, productos } from './ModComponents/usefulObjectes'
 
-import {availableSocialMedias, productos} from './ModComponents/usefulObjectes'
 
-
-const ModPreferencias = () => {
+const ModPreferencias = ({ pantallas, onFetchPantallas, handleEditarPantallas, setPantallas, handleAgregarPantallas }) => {
     //Datos inmutables entre pantallas
     const [title, setTitle] = useState('NTQJ PANADERIA');
     const [image, setImage] = useState(null);
@@ -40,14 +39,15 @@ const ModPreferencias = () => {
             socialMedias: availableSocialMedias
         }
     ])
+
     const [currentScreen, setCurrentScreen] = useState(0)
     const [screenCounter, setScreenCounter] = useState(2)
 
     //Datos Variables entre pantallas
-    const [hexNav, setHexNav] = useState(preferences[currentScreen].hexNav);
-    const [hexBack, setHexBack] = useState(preferences[currentScreen].hexBack);
-    const [hexProduct, setHexProduct] = useState(preferences[currentScreen].hexProduct);
-    const [socialMedias, setSocialMedias] = useState(preferences[currentScreen].socialMedias);
+    const [hexNav, setHexNav] = useState('#000');
+    const [hexBack, setHexBack] = useState('#1A202C');
+    const [hexProduct, setHexProduct] = useState('#EBEBEB');
+    const [socialMedias, setSocialMedias] = useState(availableSocialMedias);
 
     const handlehexNav = (color) => setHexNav(color)
     const handlehexBack = (color) => setHexBack(color)
@@ -57,36 +57,56 @@ const ModPreferencias = () => {
     const handleTitle = (value) => setTitle(value.target.value)
     const handleImage = (value) => setImage(value.target.files[0])
 
+    useEffect(() => {
+        onFetchPantallas()
+    }, [])
+
+    useEffect(() => {
+        try {
+            setTitle(pantallas.Title)
+            setImage(pantallas.Image)
+            setPreferences(pantallas.Preferences)
+            setScreenCounter(pantallas.Preferences.length)
+
+            handlehexNav(pantallas.Preferences[currentScreen].hexNav)
+            handlehexBack(pantallas.Preferences[currentScreen].hexBack)
+            handlehexProduct(pantallas.Preferences[currentScreen].hexProduct)
+            handlesocialMedias(pantallas.Preferences[currentScreen].socialMedias)
+        } catch {
+            console.log('nao nao mano')
+        }
+    }, [pantallas])
+
     const HandleCarousel = (index, item) => {
         console.log(index)
-            setPreferences(
-                x => {
-                    const arr = [...x]
-                    arr[currentScreen] = {
-                        hexNav: hexNav,
-                        hexBack: hexBack,
-                        hexProduct: hexProduct,
-                        socialMedias: socialMedias
-                    }
-                    return arr
+        setPreferences(
+            x => {
+                const arr = [...x]
+                arr[currentScreen] = {
+                    hexNav: hexNav,
+                    hexBack: hexBack,
+                    hexProduct: hexProduct,
+                    socialMedias: socialMedias
                 }
-            )
-            setCurrentScreen(index)
+                return arr
+            }
+        )
+        setCurrentScreen(index)
 
-            setHexNav(preferences[index].hexNav);
-            setHexBack(preferences[index].hexBack);
-            setHexProduct(preferences[index].hexProduct);
-            setSocialMedias(preferences[index].socialMedias);
+        setHexNav(preferences[index].hexNav);
+        setHexBack(preferences[index].hexBack);
+        setHexProduct(preferences[index].hexProduct);
+        setSocialMedias(preferences[index].socialMedias);
     }
-    
-    const AddScreenCounter = () => { 
-        if(screenCounter<10){
+
+    const AddScreenCounter = () => {
+        if (screenCounter < 10) {
             preferences.push(preferences[0])
             handleScreenCounter(screenCounter + 1)
         }
     }
-    const SubstractScreenCounter = () => { 
-        if(screenCounter>1){
+    const SubstractScreenCounter = () => {
+        if (screenCounter > 1) {
             preferences.pop()
             handleScreenCounter(screenCounter - 1)
         }
@@ -178,7 +198,25 @@ const ModPreferencias = () => {
                 HandleCarousel={HandleCarousel}
             />
             <Box p='2em'>
-                <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={() => { console.log('mando a servidor') }} />
+                <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={() => {
+                    console.log(pantallas)
+
+                    const _preferences = [...preferences]
+                    _preferences[currentScreen] = {
+                        hexNav: hexNav,
+                        hexNav: hexBack,
+                        hexNav: hexProduct,
+                        socialMedias: socialMedias,
+                    }
+
+                    handleEditarPantallas({
+                        Title: title,
+                        Image: image,
+                        Preferences: _preferences
+                    })
+
+                }
+                } />
             </Box>
         </>
     )

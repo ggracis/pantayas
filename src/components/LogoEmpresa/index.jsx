@@ -8,8 +8,8 @@ const LogoEmpresa = ({ title, image }) => {
 
   if (image == null)
     image = '/panaderia.png'
-  else
-    image = URL.createObjectURL(image)
+  else 
+    image= image.url
 
   return (
     <Box borderRadius="md" textAlign="center">

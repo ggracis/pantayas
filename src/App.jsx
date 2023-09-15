@@ -13,13 +13,21 @@ import {
   agregarProducto,
   editarProducto,
 } from "./productService"; // Importar las funciones
+import {
+  fetchPantallas,
+  agregarPantallas,
+  editarPantalla,
+} from "./preferenceService"; // Importar las funciones
 import EditarAgregarProducto from "./components/products/EditarAgregarProducto";
 import ModPreferencias from "./components/ModPreferencias";
 
 function App() {
   const [productos, setProductos] = useState([]);
+  const [pantallas, setPantallas] = useState({});
+
   useEffect(() => {
     cargarProductos();
+    cargarPantallas();
   }, []);
 
   const cargarProductos = async () => {
@@ -40,6 +48,30 @@ function App() {
     try {
       await editarProducto(productoEdit);
       await cargarProductos();
+    } catch (error) {
+      // Manejar el error
+    }
+  };
+
+
+  const cargarPantallas = async () => {
+    const data = await fetchPantallas();
+    setPantallas(data[0]);
+  };
+
+  const handleAgregarPantallas = async (nuevo) => {
+    try {
+      await agregarPantallas(nuevo);
+      await cargarPantallas();
+    } catch (error) {
+      // Manejar el error
+    }
+  };
+
+  const handleEditarPantallas = async (edit) => {
+    try {
+      await editarPantalla(edit);
+      await cargarPantallas();
     } catch (error) {
       // Manejar el error
     }
@@ -109,8 +141,8 @@ function App() {
               setProductos={setProductos}
             />
             <ModPreferencias
-              productos={productos}
-              onFetchProductos={fetchProductos}
+              pantallas={pantallas}
+              onFetchPantallas={fetchPantallas}
             />
           </>
         }
@@ -126,10 +158,11 @@ function App() {
               bajadaEncabezado="Personaliza todas tus pantallas"
             />
             <ModPreferencias
-              productos={productos}
-              onFetchProductos={fetchProductos}
-              onEditProducto={handleEditarProducto}
-              setProductos={setProductos}
+              pantallas={pantallas}
+              onFetchPantallas={fetchPantallas}
+              handleEditarPantallas={handleEditarPantallas}
+              handleAgregarPantallas={handleAgregarPantallas}
+              setPantallas={setPantallas}
             />
           </>
         }
