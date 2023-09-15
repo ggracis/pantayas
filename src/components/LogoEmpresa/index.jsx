@@ -1,26 +1,21 @@
 import { Box, Text, Image, Flex } from "@chakra-ui/react";
 import React from "react";
 
-const LogoEmpresa = ({title}) => {
+const LogoEmpresa = ({ title, image }) => {
 
-  if(title == null){
-    title={
-      image: '/panaderia.png',
-      title: 'NTQJ PANADERIA'
-    }
-  }
-  else{
-    title={
-      ...title,
-      image: title.image==null?'/panaderia.png':URL.createObjectURL(title.image),
-    }
-  }
+  if (title == null)
+    title = 'NTQJ PANADERIA'
+
+  if (image == null)
+    image = '/panaderia.png'
+  else
+    image = URL.createObjectURL(image)
 
   return (
     <Box borderRadius="md" textAlign="center">
       <Flex align="center" justify="center">
         <Image
-          src={title.image}
+          src={image}
           alt="Logotipo de la empresa"
           boxSize={24}
           mr={2}
@@ -28,7 +23,7 @@ const LogoEmpresa = ({title}) => {
           maxH={'6em'}
         />
         <Text fontSize="1.5em" fontWeight="bold">
-          {title.title}
+          {title}
         </Text>
       </Flex>
     </Box>

@@ -4,7 +4,7 @@ import HoraYClima from "../HoraYClima";
 import LogoEmpresa from "../LogoEmpresa";
 import RedesSociales from "../RedesSociales";
 
-const ScHeader = ({bg, color, socialMedias, title}) => {
+const ScHeader = ({bg, color, socialMedias, title, image}) => {
   const numColumns = useBreakpointValue({ base: 1, md: 3 });
 
   return (
@@ -22,7 +22,7 @@ const ScHeader = ({bg, color, socialMedias, title}) => {
 
         {/* Columna del Medio */}
         <GridItem>
-          <LogoEmpresa title={title}/>
+          <LogoEmpresa title={title} image={image}/>
         </GridItem>
 
         {/* Columna Derecha */}
