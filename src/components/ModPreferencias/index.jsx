@@ -201,7 +201,7 @@ const ModPreferencias = ({ pantallas, onFetchPantallas, handleEditarPantallas, s
                 <IconButton icon={<FaRegSave />} width='100%' minW='70em' onClick={() => {
                     console.log(pantallas)
 
-                    const _preferences = [...preferences]
+                    let _preferences = [...preferences]
                     _preferences[currentScreen] = {
                         hexNav: hexNav,
                         hexNav: hexBack,
