@@ -118,8 +118,8 @@ function App() {
           <>
             <NavBar />
             <Encabezado
-              tituloEncabezado="Preferencias"
-              bajadaEncabezado="Modifica como queres que se vean las pantallas"
+              tituloEncabezado="Tabla de Preferencias"
+              bajadaEncabezado="Personaliza todas tus pantallas"
             />
             <ModPreferencias
               productos={productos}

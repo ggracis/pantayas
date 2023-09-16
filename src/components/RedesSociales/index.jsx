@@ -3,14 +3,20 @@ import { FaFacebook, FaInstagram, FaTiktok, FaGlobe } from "react-icons/fa";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import styles from "./RedesSociales.module.css";
+import { useEffect } from "react";
 
-const RedesSociales = () => {
-  const redes = [
-    { nombre: "Facebook", icono: FaFacebook, enlace: "/PanaderiaNTQJ" },
-    { nombre: "Instagram", icono: FaInstagram, enlace: "@PanaderiaNTQJ" },
-    { nombre: "TikTok", icono: FaTiktok, enlace: "@PanaderiaNTQJ" },
-    { nombre: "Web", icono: FaGlobe, enlace: "www.PanaderiaNTQJ.com" },
-  ];
+const RedesSociales = ({socialMedias}) => {
+
+  if(socialMedias==null){
+    socialMedias = [
+      { value: "Facebook", icon: FaFacebook, link: "/PanaderiaNTQJ" },
+      { value: "Instagram", icon: FaInstagram, link: "@PanaderiaNTQJ" },
+      { value: "TikTok", icon: FaTiktok, link: "@PanaderiaNTQJ" },
+      { value: "Web", icon: FaGlobe, link: "www.PanaderiaNTQJ.com" },
+    ];
+  }
+
+  
 
   return (
     <Carousel
@@ -23,12 +29,12 @@ const RedesSociales = () => {
       showIndicators={false}
       className={styles.carousel}
     >
-      {redes.map((red) => (
-        <div key={red.nombre} className={styles.carouselItem}>
+      {socialMedias.map((red) => (
+        <div key={red.value} className={styles.carouselItem}>
           <Flex borderRadius="md" textAlign="center" justifyContent="center">
             <Flex alignItems="center" fontSize="2xl" verticalAlign="middle">
-              <Icon as={red.icono} boxSize={6} mr={3} />
-              <Text>{red.enlace}</Text>
+              <Icon as={red.icon} boxSize={6} mr={3} />
+              <Text>{red.link}</Text>
             </Flex>
           </Flex>
         </div>

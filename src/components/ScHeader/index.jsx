@@ -4,11 +4,11 @@ import HoraYClima from "../HoraYClima";
 import LogoEmpresa from "../LogoEmpresa";
 import RedesSociales from "../RedesSociales";
 
-const ScHeader = () => {
+const ScHeader = ({bg, color, socialMedias, title, image}) => {
   const numColumns = useBreakpointValue({ base: 1, md: 3 });
 
   return (
-    <Box bg="#000" color="#fff">
+    <Box bg={bg} color={color}>
       <Grid
         templateColumns={`repeat(${numColumns}, 1fr)`}
         gap={numColumns === 1 ? 2 : 4}
@@ -17,12 +17,12 @@ const ScHeader = () => {
       >
         {/* Columna Izquierda */}
         <GridItem>
-          <RedesSociales />
+          <RedesSociales socialMedias={socialMedias} />
         </GridItem>
 
         {/* Columna del Medio */}
         <GridItem>
-          <LogoEmpresa />
+          <LogoEmpresa title={title} image={image}/>
         </GridItem>
 
         {/* Columna Derecha */}

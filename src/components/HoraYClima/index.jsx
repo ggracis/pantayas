@@ -75,13 +75,12 @@ const HoraYClima = () => {
     }
     return null;
   };
-
   return (
     <Flex align="center" justifyContent="center" flexWrap="wrap">
       <Box p={2} borderRadius="md" mb={2}>
         <Text fontSize="1.5em">
           <Icon as={FaClock} mr={2} />
-          {horaActual.toLocaleTimeString()}
+          {horaActual.toLocaleTimeString('it-IT').slice(0,horaActual.toLocaleTimeString('it-IT').length-3)}
         </Text>
       </Box>
       <Box p={2} borderRadius="md" mb={2}>
