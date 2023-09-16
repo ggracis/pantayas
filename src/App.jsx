@@ -118,7 +118,7 @@ function App() {
           <>
             <NavBar />
             <Encabezado
-              tituloEncabezado="Tabla de Preferencias"
+              tituloEncabezado="Preferencias de usuario"
               bajadaEncabezado="Personaliza todas tus pantallas"
             />
             <ModPreferencias

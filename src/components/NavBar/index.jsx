@@ -48,6 +48,9 @@ export default function NavBar() {
         <NavLink className={styles.enlaces} to="/screen2">
           📺 2
         </NavLink>
+        <NavLink className={styles.enlaces} to="/screen3">
+          📺 3
+        </NavLink>
       </nav>
     );
   };

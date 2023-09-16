@@ -1,12 +1,65 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import useInterval from "../../../hooks/useInterval";
 import ScHeader from "../../ScHeader";
 import Masonry from "react-masonry-css";
 import styles from "./ListadoProductos.module.css";
 import Producto from "../../products/Producto";
+import { SummaCorrection } from "../../../colorFunctions"; // Importar las funciones
+import { availableSocialMedias } from "../../ModPreferencias/ModComponents/usefulObjectes";
 
-const ListadoProductos = ({ productos, onFetchProductos }) => {
+const ListadoProductos = ({
+  productos,
+  onFetchProductos,
+  nav,
+  background,
+  product,
+  title,
+  socialMedia = [],
+  image,
+}) => {
+  const navSelected = useMemo(
+    () => (nav === null || nav === undefined ? "#000" : nav),
+    [nav]
+  );
+  const backgroundSelected = useMemo(
+    () =>
+      background === null || background === undefined ? "#1A202C" : background,
+    [background]
+  );
+  const productSelected = useMemo(
+    () => (product === null || product === undefined ? "#EBEBEB" : product),
+    [product]
+  );
+  const textProductSelected = useMemo(
+    () =>
+      product === null || product === undefined
+        ? "#000000"
+        : SummaCorrection(product),
+    [product]
+  );
+  const textCategoriesSelected = useMemo(
+    () =>
+      background === null || background === undefined
+        ? "#ffffff"
+        : SummaCorrection(background),
+    [background]
+  );
+  const textNavSelected = useMemo(
+    () =>
+      nav === null || nav === undefined ? "#ffffff" : SummaCorrection(nav),
+    [nav]
+  );
+  const titleSelected = useMemo(
+    () => (title === null || title === undefined ? "NTQJ PANADERIA" : title),
+    [title]
+  );
+  const imageSelected = useMemo(() => image, [image]);
+  const socialMediaSelected = useMemo(
+    () => (socialMedia.length <= 0 ? availableSocialMedias : socialMedia),
+    [socialMedia]
+  );
+
   const [grupoActual, setGrupoActual] = useState(0);
 
   useEffect(() => {
@@ -52,11 +105,18 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
 
   return (
     <>
-      <ScHeader />
+      <ScHeader
+        bg={navSelected}
+        color={textNavSelected}
+        socialMedias={socialMediaSelected}
+        title={titleSelected}
+        image={imageSelected}
+      />
       <Masonry
         breakpointCols={{ default: 4, 1100: 3, 700: 2, 500: 1 }}
         className={styles.myMasonryGrid}
         columnClassName={styles.myMasonryGridColumn}
+        bg={backgroundSelected}
       >
         {categoriasArray.map((categoria, index) => (
           <div className={styles.myMasonryGridItem} key={index}>
@@ -68,10 +128,20 @@ const ListadoProductos = ({ productos, onFetchProductos }) => {
                 ? categorias[categoria]
                     .slice(grupoActual * 9, grupoActual * 9 + 9)
                     .map((producto) => (
-                      <Producto key={producto.objectId} producto={producto} />
+                      <Producto
+                        key={`${categoria}-${producto.objectId}`}
+                        producto={producto}
+                        bg={productSelected}
+                        textProduct={textProductSelected}
+                      />
                     ))
                 : categorias[categoria].map((producto) => (
-                    <Producto key={producto.objectId} producto={producto} />
+                    <Producto
+                      key={`${categoria}-${producto.objectId}`}
+                      producto={producto}
+                      bg={productSelected}
+                      textProduct={textProductSelected}
+                    />
                   ))}
             </Flex>
           </div>
