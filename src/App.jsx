@@ -15,6 +15,9 @@ import {
 } from "./productService"; // Importar las funciones
 import EditarAgregarProducto from "./components/products/EditarAgregarProducto";
 import ModPreferencias from "./components/Users/ModPreferencias";
+import CustomView1 from "./views/Custom1";
+import graphQLClient from "./graphqlClient";
+import { GET_PANTALLA } from "./graphqlQueries";
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -44,6 +47,49 @@ function App() {
       // Manejar el error
     }
   };
+
+  // Define el estado para las opciones del usuario
+  const [opciones, setOpciones] = useState({
+    hexHead: "",
+    hexBg: "",
+    hexTexto: "",
+    hexBrand1: "",
+    hexBrand2: "",
+    facebook: "",
+    instagram: "",
+    tiktok: "",
+    whatsapp: "",
+    web: "",
+    nombreLocal: "",
+    direccion: "",
+  });
+  // Carga las opciones desde el almacenamiento local al cargar la aplicación
+  useEffect(() => {
+    const storedOpciones = localStorage.getItem("userOpciones");
+    if (storedOpciones) {
+      setOpciones(JSON.parse(storedOpciones));
+    }
+  }, []);
+
+  // Guarda las opciones en el almacenamiento local cuando cambian
+  useEffect(() => {
+    localStorage.setItem("userOpciones", JSON.stringify(opciones));
+  }, [opciones]);
+
+  // Traer las opciones de DB
+  useEffect(() => {
+    graphQLClient
+      .request(GET_PANTALLA)
+      .then((data) => {
+        const opciones =
+          data.pantalla.data.attributes.opciones.attributes.opciones;
+        setOpciones(opciones);
+        console.log(opciones);
+      })
+      .catch((error) => {
+        console.error("Error al cargar la configuración:", error);
+      });
+  }, []);
 
   return (
     <Routes>
@@ -121,12 +167,7 @@ function App() {
               tituloEncabezado="Preferencias de usuario"
               bajadaEncabezado="Personaliza todas tus pantallas"
             />
-            <ModPreferencias
-              productos={productos}
-              onFetchProductos={fetchProductos}
-              onEditProducto={handleEditarProducto}
-              setProductos={setProductos}
-            />
+            <ModPreferencias />
           </>
         }
       />
@@ -154,6 +195,15 @@ function App() {
         element={
           <>
             <Screen3 productos={productos} onFetchProductos={fetchProductos} />
+          </>
+        }
+      />
+
+      <Route
+        path="/c1"
+        element={
+          <>
+            <CustomView1 />
           </>
         }
       />

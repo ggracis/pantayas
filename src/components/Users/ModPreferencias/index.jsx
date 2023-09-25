@@ -7,90 +7,143 @@ import {
   Tr,
   Th,
   useColorMode,
-  Icon,
   Input,
   Stack,
-  IconButton,
-  SimpleGrid,
+  Button,
+  FormControl,
+  Td,
+  InputGroup,
+  InputLeftElement,
+  Image,
 } from "@chakra-ui/react";
-import Select, { components } from "react-select";
 import {
   FaFacebook,
   FaInstagram,
   FaTiktok,
   FaGlobe,
   FaWhatsapp,
+  FaMapMarkerAlt,
+  FaTag,
+  FaUpload,
 } from "react-icons/fa";
 import Colorful from "@uiw/react-color-colorful";
-import Screen2 from "../../screens/Screen2";
 import styles from "./ModPreferencias.module.css";
-import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import CustomView1 from "../../../views/Custom1";
+import { GET_PANTALLA, UPDATE_PANTALLA } from "../../../graphqlQueries";
+import graphQLClient from "../../../graphqlClient";
 
-const socialMedias = [
-  { value: "WPP", icon: FaWhatsapp },
-  { value: "FB", icon: FaFacebook },
-  { value: "IG", icon: FaInstagram },
-  { value: "TT", icon: FaTiktok },
-  { value: "Gl", icon: FaGlobe },
-];
-
-const ModPreferencias = ({ productos, onFetchProductos }) => {
+const ModPreferencias = () => {
   const { colorMode } = useColorMode();
-
-  const [hexNav, setHexNav] = useState("#190B07");
-  const [hexBack, setHexBack] = useState("#FBEFEF");
-  const [hexProduct, setHexProduct] = useState("#6E6E6E");
-
-  const [selectedSocial, setSelectedSocial] = useState(socialMedias[0]);
-
-  const Option = (props) => (
-    <components.Option {...props} className={styles.SelectForm}>
-      <Icon as={props.data.icon} alt="logo" width="30%" height="30%" m="auto" />
-    </components.Option>
-  );
-
-  const SingleValue = ({ children, ...props }) => (
-    <components.SingleValue {...props} className={styles.SelectForm}>
-      <Icon
-        as={props.data.icon}
-        alt="s-logo"
-        width="50%"
-        height="50%"
-        m="auto"
-      />
-    </components.SingleValue>
-  );
-
-  const handleChange = (value) => {
-    setSelectedSocial(value);
-  };
+  const [opciones, setOpciones] = useState({
+    hexHead: "",
+    hexBg: "",
+    hexTexto: "",
+    hexBrand1: "",
+    hexBrand2: "",
+    facebook: "",
+    instagram: "",
+    tiktok: "",
+    whatsapp: "",
+    web: "",
+    nombreLocal: "",
+    direccion: "",
+  });
 
   useEffect(() => {
-    fetchProductos();
+    graphQLClient
+      .request(GET_PANTALLA)
+      .then((data) => {
+        const opciones =
+          data.pantalla.data.attributes.opciones.attributes.opciones;
+        setOpciones(opciones);
+      })
+      .catch((error) => {
+        console.error("Error al cargar la configuración:", error);
+      });
   }, []);
 
-  const fetchProductos = async () => {
-    await onFetchProductos();
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    // Divide el nombre en partes usando el punto como separador
+    const nameParts = name.split(".");
+
+    // Realiza una actualización profunda del estado en función de las partes del nombre
+    setOpciones((prevOpciones) => {
+      let updatedOpciones = { ...prevOpciones };
+      let currentOpciones = updatedOpciones;
+
+      // Itera a través de las partes del nombre, excepto la última
+      for (let i = 0; i < nameParts.length - 1; i++) {
+        const part = nameParts[i];
+        if (!currentOpciones[part]) {
+          currentOpciones[part] = {};
+        }
+        currentOpciones = currentOpciones[part];
+      }
+      // Establece el valor en la parte final del objeto
+      currentOpciones[nameParts[nameParts.length - 1]] = value;
+
+      return updatedOpciones;
+    });
+  };
+
+  const handleLogoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Generar una URL relativa
+      const relativeURL = `/images/${file.name}`;
+      setOpciones((prevOpciones) => ({
+        ...prevOpciones,
+        logoURL: relativeURL,
+      }));
+      // Mostrar la URL relativa en la consola
+      console.log("URL relativa del archivo subido:", relativeURL);
+      // Copiar el archivo seleccionado a la carpeta 'public/images'
+      copyFileToPublicFolder(file);
+    }
+  };
+
+  const handleGuardar = () => {
+    graphQLClient
+      .request(UPDATE_PANTALLA, {
+        data: {
+          attributes: {
+            opciones: opciones,
+          },
+        },
+        id: 1,
+      })
+      .then((data) => {
+        console.log("Datos actualizados con éxito:", data);
+        // Mostrar un mensaje de éxito o realizar otras acciones necesarias
+      })
+      .catch((error) => {
+        console.error("Error al guardar los datos:", error);
+        // Mostrar un mensaje de error al usuario
+      });
   };
 
   return (
     <>
-      <Box
+      <FormControl
         w="80vw"
         p={4}
-        bg="whiteAlpha.50"
+        bg="whiteAlpha.500"
         m="auto"
         mt={8}
         mb={8}
         borderRadius="lg"
       >
-        <Table variant="striped">
+        <Table>
           <Thead>
             <Tr fontSize="1.5em" fontWeight="bold" textAlign="center" m="2">
-              <Th textAlign="center">Redes Sociales</Th>
-              <Th textAlign="center">Color nav</Th>
-              <Th textAlign="center">Color back</Th>
-              <Th textAlign="center">Color producto</Th>
+              <Th textAlign="center">Información</Th>
+              <Th textAlign="center">Color header</Th>
+              <Th textAlign="center">Color fondo</Th>
+              <Th textAlign="center">Color texto</Th>
+              <Th textAlign="center">Color Brand 1</Th>
+              <Th textAlign="center">Color Brand 2</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -100,80 +153,215 @@ const ModPreferencias = ({ productos, onFetchProductos }) => {
               textAlign="center"
               alignItems="center"
             >
-              <Th textAlign="center">
-                <Stack>
-                  <Box display="flex">
-                    <Box minWidth="25%" pr="1em">
-                      <Select
-                        className={styles.SelectForm}
-                        value={selectedSocial}
-                        options={socialMedias}
-                        onChange={handleChange}
-                        isRtl={true}
-                        styles={{
-                          singleValue: (base) => ({
-                            ...base,
-                            display: "flex",
-                            alignItems: "center",
-                          }),
+              <Td>
+                <Stack spacing={2}>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <FaTag />
+                    </InputLeftElement>
+                    <Input
+                      name="nombreLocal"
+                      placeholder="Nombre"
+                      value={opciones.nombreLocal}
+                      onChange={handleInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <FaMapMarkerAlt />
+                    </InputLeftElement>
+                    <Input
+                      name="direccion"
+                      placeholder="Dirección"
+                      value={opciones.direccion}
+                      onChange={handleInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <FaWhatsapp />
+                    </InputLeftElement>
+                    <Input
+                      name="redes.whatsapp"
+                      placeholder="Whatsapp"
+                      value={opciones.redes ? opciones.redes.whatsapp : ""}
+                      onChange={handleInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <FaFacebook />
+                    </InputLeftElement>
+                    <Input
+                      name="redes.facebook"
+                      placeholder="Facebook"
+                      value={opciones.redes ? opciones.redes.facebook : ""}
+                      onChange={handleInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <FaInstagram />
+                    </InputLeftElement>
+                    <Input
+                      name="redes.instagram"
+                      placeholder="Instagram"
+                      value={opciones.redes ? opciones.redes.instagram : ""}
+                      onChange={handleInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <FaTiktok />
+                    </InputLeftElement>
+                    <Input
+                      name="redes.tiktok"
+                      placeholder="Tiktok"
+                      value={opciones.redes ? opciones.redes.tiktok : ""}
+                      onChange={handleInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <FaGlobe />
+                    </InputLeftElement>
+                    <Input
+                      name="redes.web"
+                      placeholder="Web"
+                      value={opciones.redes ? opciones.redes.web : ""}
+                      onChange={handleInputChange}
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement>
+                      <Button
+                        onClick={() => {
+                          // Abre la ventana de selección de archivo cuando se hace clic en el botón
+                          document.querySelector('input[type="file"]').click();
                         }}
-                        components={{
-                          Option,
-                          SingleValue,
-                        }}
-                      />
-                    </Box>
-                    <Input placeholder="Ej: @NTQJ" />
-                  </Box>
-                  <SimpleGrid columns={2} spacing={4}>
-                    <IconButton icon={<AddIcon />} />
-                    <IconButton icon={<CloseIcon />} />
-                  </SimpleGrid>
+                        size="sm"
+                      >
+                        <FaUpload />
+                      </Button>
+                    </InputLeftElement>
+                    <Input
+                      name="logoURL"
+                      placeholder="Logo URL"
+                      value={opciones.logoURL}
+                      onChange={handleLogoUpload}
+                    />
+                    <input
+                      type="file" // Establece el tipo de entrada como archivo
+                      accept="image/*" // Acepta cualquier tipo de imagen
+                      style={{ display: "none" }} // Oculta el elemento de entrada para que no se vea
+                      onChange={handleLogoUpload} // Maneja el cambio de archivo
+                    />
+                    {opciones.logoURL && (
+                      <>
+                        <Image
+                          maxH={45}
+                          src={opciones.logoURL}
+                          alt={opciones.nombreLocal}
+                          title={opciones.nombreLocal}
+                        />
+                      </>
+                    )}
+                  </InputGroup>
                 </Stack>
-              </Th>
-              <Th>
+              </Td>
+              <Td>
                 <Colorful
                   className={styles.colorful}
-                  color={hexNav}
+                  color={opciones.hexHead} // Acceder a hexHead desde opciones
                   disableAlpha={true}
                   onChange={(color) => {
-                    setHexNav(color.hexa);
+                    setOpciones((prevOpciones) => ({
+                      ...prevOpciones,
+                      hexHead: color.hexa, // Actualizar hexHead en opciones
+                    }));
                   }}
                 />
-              </Th>
-              <Th>
+              </Td>
+              <Td>
                 <Colorful
                   className={styles.colorful}
-                  color={hexBack}
+                  color={opciones.hexBg}
                   disableAlpha={true}
                   onChange={(color) => {
-                    setHexBack(color.hexa);
+                    setOpciones((prevOpciones) => ({
+                      ...prevOpciones,
+                      hexBg: color.hexa,
+                    }));
                   }}
                 />
-              </Th>
-              <Th>
+              </Td>
+              <Td>
                 <Colorful
                   className={styles.colorful}
-                  color={hexProduct}
+                  color={opciones.hexTexto}
                   disableAlpha={true}
                   onChange={(color) => {
-                    setHexProduct(color.hexa);
+                    setOpciones((prevOpciones) => ({
+                      ...prevOpciones,
+                      hexTexto: color.hexa,
+                    }));
                   }}
                 />
-              </Th>
+              </Td>
+              <Td>
+                <Colorful
+                  className={styles.colorful}
+                  color={opciones.hexBrand1}
+                  disableAlpha={true}
+                  onChange={(color) => {
+                    setOpciones((prevOpciones) => ({
+                      ...prevOpciones,
+                      hexBrand1: color.hexa,
+                    }));
+                  }}
+                />
+              </Td>
+              <Td>
+                <Colorful
+                  className={styles.colorful}
+                  color={opciones.hexBrand2}
+                  disableAlpha={true}
+                  onChange={(color) => {
+                    setOpciones((prevOpciones) => ({
+                      ...prevOpciones,
+                      hexBrand2: color.hexa,
+                    }));
+                  }}
+                />
+              </Td>
             </Tr>
           </Tbody>
         </Table>
-        <Box
-          borderColor={colorMode === "light" ? "black" : "white"}
-          borderWidth="0.2em"
-          borderRadius="2em"
+        <Button
+          onClick={handleGuardar}
+          // isLoading
           width="100%"
-          maxHeight="30em"
-          overflow="hidden"
+          loadingText="Guardando"
+          variant="outline"
+          colorScheme="teal"
+          size="lg"
+          spinnerPlacement="end"
         >
-          <Screen2 productos={productos} onFetchProductos={fetchProductos} />
-        </Box>
+          Guardar
+        </Button>
+      </FormControl>
+
+      <Box
+        borderColor={colorMode === "light" ? "black" : "white"}
+        width="90%"
+        maxHeight="30em"
+        overflow="hidden"
+        p={4}
+        m="auto"
+        mt={8}
+        mb={8}
+      >
+        <CustomView1 />
       </Box>
     </>
   );

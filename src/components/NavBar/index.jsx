@@ -21,6 +21,13 @@ import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { NavLink } from "react-router-dom";
 import styles from "./NavBar.module.css";
 
+const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
+if (storedOpciones) {
+  console.log("Hex Head:", storedOpciones.hexHead);
+}
+const logoURL = storedOpciones ? storedOpciones.logoURL : "/chopin.png";
+const nombreLocal = storedOpciones ? storedOpciones.nombreLocal : "Pantayas";
+
 export default function NavBar() {
   const { colorMode, toggleColorMode } = useColorMode();
 
@@ -108,16 +115,16 @@ export default function NavBar() {
               {colorMode === "light" ? (
                 <Image
                   maxH={55}
-                  src="/chopin.png"
-                  alt="PANTAYAS"
-                  title="PANTAYAS"
+                  src={logoURL}
+                  alt={nombreLocal}
+                  title={nombreLocal}
                 />
               ) : (
                 <Image
                   maxH={55}
-                  src="/chopin_w.png"
-                  alt="PANTAYAS"
-                  title="PANTAYAS"
+                  src={logoURL} // version Dark
+                  alt={nombreLocal}
+                  title={nombreLocal}
                 />
               )}
             </Heading>

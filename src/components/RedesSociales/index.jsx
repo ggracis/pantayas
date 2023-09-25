@@ -3,11 +3,9 @@ import { FaFacebook, FaInstagram, FaTiktok, FaGlobe } from "react-icons/fa";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import styles from "./RedesSociales.module.css";
-import { useEffect } from "react";
 
-const RedesSociales = ({socialMedias}) => {
-
-  if(socialMedias==null){
+const RedesSociales = ({ socialMedias }) => {
+  if (socialMedias == null) {
     socialMedias = [
       { value: "Facebook", icon: FaFacebook, link: "/PanaderiaNTQJ" },
       { value: "Instagram", icon: FaInstagram, link: "@PanaderiaNTQJ" },
@@ -15,8 +13,6 @@ const RedesSociales = ({socialMedias}) => {
       { value: "Web", icon: FaGlobe, link: "www.PanaderiaNTQJ.com" },
     ];
   }
-
-  
 
   return (
     <Carousel
