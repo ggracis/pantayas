@@ -48,6 +48,7 @@ const ModPreferencias = () => {
     nombreLocal: "",
     direccion: "",
   });
+  const [logoURL, setLogoURL] = useState("");
 
   useEffect(() => {
     graphQLClient
@@ -56,6 +57,12 @@ const ModPreferencias = () => {
         const opciones =
           data.pantalla.data.attributes.opciones.attributes.opciones;
         setOpciones(opciones);
+
+        // Actualiza la URL del logo
+        const relativeURL =
+          data.pantalla.data.attributes.logoURL.data.attributes.url;
+        const fullURL = `http://54.94.34.59:1337${relativeURL}`; // Concatena la URL base
+        setLogoURL(fullURL); // Actualiza la URL del logo con la URL completa
       })
       .catch((error) => {
         console.error("Error al cargar la configuración:", error);
@@ -88,19 +95,52 @@ const ModPreferencias = () => {
     });
   };
 
+  const copyFileToPublicFolder = (file) => {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const fileContent = e.target.result;
+
+      // A continuación, puedes realizar acciones con el contenido del archivo
+      // Por ejemplo, puedes enviarlo a través de una solicitud AJAX para guardarlo en el servidor
+      // O realizar otras acciones necesarias
+
+      console.log("Contenido del archivo:", fileContent);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
   const handleLogoUpload = (e) => {
     const file = e.target.files[0];
+    console.log(file);
+
     if (file) {
-      // Generar una URL relativa
-      const relativeURL = `/images/${file.name}`;
-      setOpciones((prevOpciones) => ({
-        ...prevOpciones,
-        logoURL: relativeURL,
-      }));
-      // Mostrar la URL relativa en la consola
-      console.log("URL relativa del archivo subido:", relativeURL);
-      // Copiar el archivo seleccionado a la carpeta 'public/images'
-      copyFileToPublicFolder(file);
+      // Crea un objeto FormData para enviar el archivo a Strapi
+      const formData = new FormData();
+      formData.append("files", file);
+      formData.append("ref", "api::pantalla.pantalla"); // Nombre del modelo
+      formData.append("refId", "1"); // ID de la entidad pantalla
+      formData.append("field", "logoURL"); // Nombre del campo donde se guardará el archivo
+      // Realiza una solicitud POST a Strapi para cargar el archivo
+      fetch("http://54.94.34.59:1337/api/upload/", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Extrae la URL del archivo cargado desde la respuesta de Strapi
+          const logoURL = data[0].url;
+
+          // Actualiza el estado con la URL del logo
+          setOpciones((prevOpciones) => ({
+            ...prevOpciones,
+            logoURL: logoURL,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error al cargar el archivo:", error);
+        });
     }
   };
 
@@ -247,7 +287,7 @@ const ModPreferencias = () => {
                     <Input
                       name="logoURL"
                       placeholder="Logo URL"
-                      value={opciones.logoURL}
+                      value={logoURL} // Usa el estado para mostrar la URL del logo
                       onChange={handleLogoUpload}
                     />
                     <input
@@ -256,11 +296,11 @@ const ModPreferencias = () => {
                       style={{ display: "none" }} // Oculta el elemento de entrada para que no se vea
                       onChange={handleLogoUpload} // Maneja el cambio de archivo
                     />
-                    {opciones.logoURL && (
+                    {logoURL && (
                       <>
                         <Image
                           maxH={45}
-                          src={opciones.logoURL}
+                          src={logoURL} // Muestra la URL del logo como fuente de la imagen
                           alt={opciones.nombreLocal}
                           title={opciones.nombreLocal}
                         />

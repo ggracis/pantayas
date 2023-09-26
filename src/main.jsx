@@ -49,7 +49,7 @@ function Main() {
 
   if (!customTheme) {
     // Puedes mostrar una pantalla de carga aquí mientras se obtiene la configuración
-    return <div>Loading...</div>;
+    return <div>Conectacndo a la API...</div>;
   }
 
   return (

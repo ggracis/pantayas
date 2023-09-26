@@ -67,6 +67,13 @@ export const GET_PANTALLA = gql`
     pantalla(id: 1) {
       data {
         attributes {
+          logoURL {
+            data {
+              attributes {
+                url
+              }
+            }
+          }
           opciones
         }
       }
@@ -84,6 +91,13 @@ export const UPDATE_PANTALLA = gql`
     updatePantalla(data: { opciones: $data }, id: $id) {
       data {
         attributes {
+          logoURL {
+            data {
+              attributes {
+                url
+              }
+            }
+          }
           opciones
         }
       }
