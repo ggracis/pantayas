@@ -1,18 +1,34 @@
-import { Box, Text, Icon, Flex } from "@chakra-ui/react";
-import { FaFacebook, FaInstagram, FaTiktok, FaGlobe } from "react-icons/fa";
+import React from "react";
+import { Box, Text, Icon, Flex, Link } from "@chakra-ui/react";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaTiktok,
+  FaGlobe,
+  FaTwitter,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import styles from "./RedesSociales.module.css";
 
-const RedesSociales = ({ socialMedias }) => {
-  if (socialMedias == null) {
-    socialMedias = [
-      { value: "Facebook", icon: FaFacebook, link: "/PanaderiaNTQJ" },
-      { value: "Instagram", icon: FaInstagram, link: "@PanaderiaNTQJ" },
-      { value: "TikTok", icon: FaTiktok, link: "@PanaderiaNTQJ" },
-      { value: "Web", icon: FaGlobe, link: "www.PanaderiaNTQJ.com" },
-    ];
-  }
+const socialMediaIcons = {
+  facebook: FaFacebook,
+  instagram: FaInstagram,
+  tiktok: FaTiktok,
+  web: FaGlobe,
+  twitter: FaTwitter,
+  whatsapp: FaWhatsapp,
+};
+
+const RedesSociales = () => {
+  const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
+  const redesSocialesEnLocalStorage = storedOpciones
+    ? storedOpciones.redes
+    : {};
+  const redesSociales = Object.entries(redesSocialesEnLocalStorage).filter(
+    ([key, value]) => value // Filtra las redes sociales con valores no vacíos
+  );
 
   return (
     <Carousel
@@ -25,12 +41,14 @@ const RedesSociales = ({ socialMedias }) => {
       showIndicators={false}
       className={styles.carousel}
     >
-      {socialMedias.map((red) => (
-        <div key={red.value} className={styles.carouselItem}>
+      {redesSociales.map(([nombre, valor]) => (
+        <div key={nombre} className={styles.carouselItem}>
           <Flex borderRadius="md" textAlign="center" justifyContent="center">
             <Flex alignItems="center" fontSize="2xl" verticalAlign="middle">
-              <Icon as={red.icon} boxSize={6} mr={3} />
-              <Text>{red.link}</Text>
+              <Icon as={socialMediaIcons[nombre]} boxSize={6} mr={3} />
+              <Link href={valor} target="_blank">
+                <Text>{valor}</Text>
+              </Link>
             </Flex>
           </Flex>
         </div>

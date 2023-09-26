@@ -4,6 +4,19 @@ import { GET_CUSTOMVIEWS, GET_PANTALLA } from "../../graphqlQueries";
 import ScHeader from "../../components/ScHeader";
 import ListaProductos from "../../components/products/ListaProductos";
 
+const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
+
+const hexBg = storedOpciones.hexBg;
+/* 
+const hexTexto = storedOpciones.hexTexto;
+const hexHead = storedOpciones.hexHead;
+fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+hexBrand1: "#b369cfff"
+hexBrand2: "#6172e2ff"
+hexHead: "#807435ff"
+hexTexto: "#5da763ff"
+ */
+
 function CustomView1() {
   const [customViewData, setCustomViewData] = useState(null);
   const [selectedComponents, setSelectedComponents] = useState([]);
@@ -33,8 +46,7 @@ function CustomView1() {
 
         // Verificar si el valor de "header" es "ScHeader" y renderizar el componente correspondiente
         if (customViewData.header === "ScHeader") {
-          const ScBg = customViewData.ScBg || "gray.500";
-          newSelectedComponents.push(<ScHeader key="ScHeader" ScBg={ScBg} />);
+          newSelectedComponents.push(<ScHeader key="ScHeader" />);
         }
 
         if (
@@ -55,11 +67,11 @@ function CustomView1() {
   }, [customViewData]);
 
   return (
-    <>
+    <div bg={hexBg}>
       {selectedComponents.map((component, index) => (
         <div key={index}>{component}</div>
       ))}
-    </>
+    </div>
   );
 }
 

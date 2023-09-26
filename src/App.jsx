@@ -62,6 +62,7 @@ function App() {
     web: "",
     nombreLocal: "",
     direccion: "",
+    logoURL: "",
   });
   // Carga las opciones desde el almacenamiento local al cargar la aplicación
   useEffect(() => {
@@ -81,10 +82,19 @@ function App() {
     graphQLClient
       .request(GET_PANTALLA)
       .then((data) => {
-        const opciones =
+        const opcionesData =
           data.pantalla.data.attributes.opciones.attributes.opciones;
-        setOpciones(opciones);
-        console.log(opciones);
+        // Extraer el valor de "logoURL" de las opcionesData
+        const logoURL =
+          "http://54.94.34.59:1337" +
+          data.pantalla.data.attributes.logoURL.data.attributes.url;
+
+        // Actualizar el estado de opciones, incluyendo logoURL << Esto se guarda en el localStorage
+        setOpciones({
+          ...opciones,
+          ...opcionesData,
+          logoURL: logoURL,
+        });
       })
       .catch((error) => {
         console.error("Error al cargar la configuración:", error);

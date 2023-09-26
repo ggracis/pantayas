@@ -95,25 +95,8 @@ const ModPreferencias = () => {
     });
   };
 
-  const copyFileToPublicFolder = (file) => {
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const fileContent = e.target.result;
-
-      // A continuación, puedes realizar acciones con el contenido del archivo
-      // Por ejemplo, puedes enviarlo a través de una solicitud AJAX para guardarlo en el servidor
-      // O realizar otras acciones necesarias
-
-      console.log("Contenido del archivo:", fileContent);
-    };
-
-    reader.readAsDataURL(file);
-  };
-
   const handleLogoUpload = (e) => {
     const file = e.target.files[0];
-    console.log(file);
 
     if (file) {
       // Crea un objeto FormData para enviar el archivo a Strapi
@@ -137,6 +120,7 @@ const ModPreferencias = () => {
             ...prevOpciones,
             logoURL: logoURL,
           }));
+          console.log("Logo actualizado!");
         })
         .catch((error) => {
           console.error("Error al cargar el archivo:", error);

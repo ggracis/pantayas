@@ -39,7 +39,7 @@ function ListaProductos({ productIds }) {
         }, []);
         setPreciosKeys(allPreciosKeys);
 
-        console.log(productosData);
+        console.log("Productos: ", productosData);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -50,12 +50,7 @@ function ListaProductos({ productIds }) {
 
   return (
     <TableContainer>
-      <Table
-        variant="striped"
-        colorScheme="blackAlpha"
-        size="sm"
-        bg="brand.100"
-      >
+      <Table variant="striped" colorScheme="whiteAlpha" size="sm">
         <Thead>
           <Tr>
             <Th></Th>

@@ -22,9 +22,6 @@ import { NavLink } from "react-router-dom";
 import styles from "./NavBar.module.css";
 
 const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
-if (storedOpciones) {
-  console.log("Hex Head:", storedOpciones.hexHead);
-}
 const logoURL = storedOpciones ? storedOpciones.logoURL : "/chopin.png";
 const nombreLocal = storedOpciones ? storedOpciones.nombreLocal : "Pantayas";
 

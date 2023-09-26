@@ -4,11 +4,22 @@ import HoraYClima from "../HoraYClima";
 import LogoEmpresa from "../LogoEmpresa";
 import RedesSociales from "../RedesSociales";
 
-const ScHeader = ({ ScBg, color, socialMedias, title, image }) => {
+const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
+const hexTexto = storedOpciones.hexTexto;
+const hexHead = storedOpciones.hexHead;
+/* 
+fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+const hexBg = storedOpciones.hexBg;
+hexBrand1: "#b369cfff"
+hexBrand2: "#6172e2ff"
+hexHead: "#807435ff"
+hexTexto: "#5da763ff"
+ */
+const ScHeader = () => {
   const numColumns = useBreakpointValue({ base: 1, md: 3 });
 
   return (
-    <Box bg={ScBg} color={color}>
+    <Box bg={hexHead} color={hexTexto}>
       <Grid
         templateColumns={`repeat(${numColumns}, 1fr)`}
         gap={numColumns === 1 ? 2 : 4}
@@ -17,12 +28,12 @@ const ScHeader = ({ ScBg, color, socialMedias, title, image }) => {
       >
         {/* Columna Izquierda */}
         <GridItem>
-          <RedesSociales socialMedias={socialMedias} />
+          <RedesSociales />
         </GridItem>
 
         {/* Columna del Medio */}
         <GridItem>
-          <LogoEmpresa title={title} image={image} />
+          <LogoEmpresa />
         </GridItem>
 
         {/* Columna Derecha */}

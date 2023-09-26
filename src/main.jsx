@@ -36,7 +36,7 @@ function Main() {
       .request(GET_PANTALLA)
       .then((data) => {
         const opciones = data.pantalla.data.attributes.opciones;
-        console.log(opciones);
+        console.log("Opciones del usuario: ", opciones);
         // Crea el tema personalizado a partir de la configuración
         const theme = createCustomTheme(opciones);
         // Establece el tema personalizado
