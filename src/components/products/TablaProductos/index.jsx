@@ -13,8 +13,7 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { eliminarProducto } from "../../../productService";
-import ProductTableCell from "../TablaProductosCelda";
+import { eliminarProducto } from "../../../productService.jsx";
 
 const ProductTable = ({
   productos,
@@ -27,7 +26,10 @@ const ProductTable = ({
   }, []);
 
   const handleCellSave = async (product, field, newValue) => {
-    const updatedProduct = { ...product, [field]: newValue };
+    const updatedProduct = {
+      ...product,
+      attributes: { ...product.attributes, [field]: newValue },
+    };
     await onEditProducto(updatedProduct);
   };
 
@@ -35,36 +37,44 @@ const ProductTable = ({
     if (e.key === "Enter") {
       const updatedProductos = [...productos];
       const updatedPrecios = [
-        ...updatedProductos[productIndex].preciosVariantes,
+        ...updatedProductos[productIndex].attributes.precios,
       ];
       updatedPrecios[precioIndex] = e.target.value;
-      updatedProductos[productIndex].preciosVariantes = updatedPrecios;
+      updatedProductos[productIndex].attributes.precios = updatedPrecios;
 
       // Actualizar los precios en la base de datos usando onEditProducto
       const updatedProduct = { ...updatedProductos[productIndex] };
-      updatedProduct.preciosVariantes = updatedPrecios;
+      updatedProduct.attributes.precios = updatedPrecios;
 
       onEditProducto(updatedProduct);
     }
   };
 
   const fetchProductos = async () => {
-    await onFetchProductos();
+    try {
+      await onFetchProductos();
+      console.log("Productos cargados correctamente:", productos);
+    } catch (error) {
+      console.error("Error al cargar productos:", error);
+    }
   };
 
   const [editingCell, setEditingCell] = useState(null);
   const [editedValue, setEditedValue] = useState("");
 
   const handleCellDoubleClick = (product, field) => {
-    setEditingCell({ productId: product.objectId, field });
-    setEditedValue(product[field]);
+    setEditingCell({ productId: product.id, field });
+    setEditedValue(product.attributes[field]);
   };
 
   const handleBlur = async (product, field) => {
     if (editingCell) {
       const { productId } = editingCell;
-      if (productId === product.objectId && editingCell.field === field) {
-        const updatedProduct = { ...product, [field]: editedValue };
+      if (productId === product.id && editingCell.field === field) {
+        const updatedProduct = {
+          ...product,
+          attributes: { ...product.attributes, [field]: editedValue },
+        };
         await onEditProducto(updatedProduct);
         await fetchProductos();
         setEditingCell(null);
@@ -72,6 +82,16 @@ const ProductTable = ({
       }
     }
   };
+
+  // Función de utilidad para acceder a propiedades anidadas de un objeto de forma segura
+  function getNestedPropertyValue(obj, path, defaultValue = "") {
+    try {
+      const keys = Array.isArray(path) ? path : path.split(".");
+      return keys.reduce((acc, key) => acc[key], obj) || defaultValue;
+    } catch (error) {
+      return defaultValue;
+    }
+  }
 
   return (
     <>
@@ -167,85 +187,157 @@ const ProductTable = ({
             </Tr>
           </Thead>
           <Tbody>
-            {productos.map((product, productIndex) => (
-              <Tr key={product.objectId}>
-                <ProductTableCell
-                  value={product.tituloProducto}
-                  onSave={(value) =>
-                    handleCellSave(product, "tituloProducto", value)
+            {productos.map((product) => (
+              <Tr key={product.id}>
+                <Td
+                  onDoubleClick={() =>
+                    handleCellDoubleClick(product, "categorias")
                   }
-                />
-                <ProductTableCell
-                  value={product.categoria}
-                  onSave={(value) =>
-                    handleCellSave(product, "categoria", value)
-                  }
-                />
-                <ProductTableCell
-                  value={product.subcategoria}
-                  onSave={(value) =>
-                    handleCellSave(product, "subcategoria", value)
-                  }
-                />
-                <ProductTableCell
-                  value={product.descripcion}
-                  onSave={(value) =>
-                    handleCellSave(product, "descripcion", value)
-                  }
-                />
+                >
+                  {editingCell &&
+                  editingCell.productId === product.id &&
+                  editingCell.field === "categorias" ? (
+                    <Input
+                      autoFocus
+                      value={editedValue}
+                      onChange={(e) => setEditedValue(e.target.value)}
+                      onBlur={() => handleBlur(product, "categorias")}
+                    />
+                  ) : (
+                    getNestedPropertyValue(
+                      product,
+                      "attributes.categorias.data",
+                      []
+                    )
+                      .map((categoria) =>
+                        getNestedPropertyValue(
+                          categoria,
+                          "attributes.nombre",
+                          ""
+                        )
+                      )
+                      .join(", ")
+                  )}
+                </Td>
 
-                <Td>{product.unidadMedida}</Td>
+                <Td
+                  onDoubleClick={() =>
+                    handleCellDoubleClick(product, "categorias")
+                  }
+                >
+                  {editingCell &&
+                  editingCell.productId === product.id &&
+                  editingCell.field === "categorias" ? (
+                    <Input
+                      autoFocus
+                      value={editedValue}
+                      onChange={(e) => setEditedValue(e.target.value)}
+                      onBlur={() => handleBlur(product, "categorias")}
+                    />
+                  ) : (
+                    product.attributes.categorias.data
+                      .map((categoria) => attributes.nombre)
+                      .join(", ")
+                  )}
+                </Td>
+                <Td
+                  onDoubleClick={() =>
+                    handleCellDoubleClick(product, "subcategorias")
+                  }
+                >
+                  {editingCell &&
+                  editingCell.productId === product.id &&
+                  editingCell.field === "subcategorias" ? (
+                    <Input
+                      autoFocus
+                      value={editedValue}
+                      onChange={(e) => setEditedValue(e.target.value)}
+                      onBlur={() => handleBlur(product, "subcategorias")}
+                    />
+                  ) : (
+                    product.attributes.subcategorias.data
+                      .map((subcategoria) => subcategoria.attributes.nombre)
+                      .join(", ")
+                  )}
+                </Td>
+                <Td
+                  onDoubleClick={() =>
+                    handleCellDoubleClick(product, "descripcion")
+                  }
+                >
+                  {editingCell &&
+                  editingCell.productId === product.id &&
+                  editingCell.field === "descripcion" ? (
+                    <Input
+                      autoFocus
+                      value={editedValue}
+                      onChange={(e) => setEditedValue(e.target.value)}
+                      onBlur={() => handleBlur(product, "descripcion")}
+                    />
+                  ) : (
+                    product.attributes.descripcion || "-"
+                  )}
+                </Td>
+
+                <Td>{product.attributes.unidadMedida}</Td>
                 <Td>
                   <Table size="sm">
-                    <Thead>
-                      <Tr>
-                        {product.titulosVariantes.map((titulo, index) => (
-                          <Th key={index}>{titulo}</Th>
-                        ))}
-                      </Tr>
-                    </Thead>
                     <Tbody>
                       <Tr>
-                        {product.preciosVariantes.map((precio, precioIndex) => (
-                          <Td key={precioIndex}>
-                            <InputGroup>
-                              <InputLeftElement
-                                pointerEvents="none"
-                                color="gray.300"
-                                children="$"
-                              />
-                              <Input
-                                type="number"
-                                placeholder={precio}
-                                onChange={(e) => setEditedValue(e.target.value)}
-                                onKeyDown={(e) =>
-                                  handlePrecioChange(
-                                    e,
-                                    productIndex,
-                                    precioIndex
-                                  )
-                                }
-                              />
-                            </InputGroup>
-                          </Td>
-                        ))}
+                        {product.attributes.precios &&
+                          Object.keys(product.attributes.precios).map(
+                            (precioVariante, precioIndex) => (
+                              <Td key={precioIndex}>
+                                {editingCell &&
+                                editingCell.productId === product.id &&
+                                editingCell.field === "precios" ? (
+                                  <InputGroup>
+                                    <InputLeftElement
+                                      pointerEvents="none"
+                                      color="gray.300"
+                                      children="$"
+                                    />
+                                    <Input
+                                      type="number"
+                                      autoFocus
+                                      value={editedValue}
+                                      onChange={(e) =>
+                                        setEditedValue(e.target.value)
+                                      }
+                                      onKeyDown={(e) =>
+                                        handlePrecioChange(
+                                          e,
+                                          productIndex,
+                                          precioVariante
+                                        )
+                                      }
+                                      onBlur={() =>
+                                        handleBlur(product, "precios")
+                                      }
+                                    />
+                                  </InputGroup>
+                                ) : (
+                                  product.attributes.precios[precioVariante]
+                                )}
+                              </Td>
+                            )
+                          )}
                       </Tr>
                     </Tbody>
                   </Table>
                 </Td>
 
                 <Td>
-                  {" "}
                   <IconButton
                     variant="outline"
                     width="40%"
                     colorScheme="red"
                     icon={<DeleteIcon />}
                     onClick={async () => {
-                      await eliminarProducto(product.objectId);
+                      await eliminarProducto(product.id);
                       fetchProductos();
                     }}
-                  />{" "}
+                  />
                 </Td>
               </Tr>
             ))}

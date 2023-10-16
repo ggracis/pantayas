@@ -18,6 +18,7 @@ import ModPreferencias from "./components/Users/ModPreferencias";
 import CustomView1 from "./views/Custom1";
 import graphQLClient from "./graphqlClient";
 import { GET_PANTALLA } from "./graphqlQueries";
+import BuscarProductos from "./components/products/BuscarProductos";
 
 function App() {
   const [productos, setProductos] = useState([]);
@@ -132,7 +133,7 @@ function App() {
         }
       />
 
-      <Route
+      {/*   <Route
         path="/productos"
         element={
           <>
@@ -146,9 +147,20 @@ function App() {
             />
           </>
         }
-      />
+      /> */}
 
       <Route
+        path="/productos"
+        element={
+          <>
+            <NavBar />
+            <Encabezado tituloEncabezado="Buscar de productos" />
+            <BuscarProductos />
+          </>
+        }
+      />
+
+      {/* <Route
         path="/tablaProductos"
         element={
           <>
@@ -166,7 +178,7 @@ function App() {
             />
           </>
         }
-      />
+      /> */}
 
       <Route
         path="/preferencias"

@@ -35,13 +35,10 @@ export default function NavBar() {
           Inicio
         </NavLink>
         <NavLink className={styles.enlaces} to="/usuario">
-          Agregar usuario
+          Usuarios
         </NavLink>
         <NavLink className={styles.enlaces} to="/productos">
-          Agregar productos
-        </NavLink>
-        <NavLink className={styles.enlaces} to="/tablaProductos">
-          Tabla de productos
+          Productos
         </NavLink>
         <NavLink className={styles.enlaces} to="/preferencias">
           Preferencias
@@ -54,6 +51,9 @@ export default function NavBar() {
         </NavLink>
         <NavLink className={styles.enlaces} to="/screen3">
           📺 3
+        </NavLink>
+        <NavLink className={styles.enlaces} to="/c1">
+          📺 🖌
         </NavLink>
       </nav>
     );
@@ -74,20 +74,46 @@ export default function NavBar() {
             <MenuItem>
               <NavLink to="/">Inicio</NavLink>
             </MenuItem>
+
             <MenuItem>
-              <NavLink to="/usuario">Agregar usuario</NavLink>
+              <NavLink className={styles.enlaces} to="/">
+                Inicio
+              </NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink to="/productos">Agregar productos</NavLink>
+              <NavLink className={styles.enlaces} to="/usuario">
+                Usuarios
+              </NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink to="/tablaProductos">Tabla de productos</NavLink>
+              <NavLink className={styles.enlaces} to="/productos">
+                Productos
+              </NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink to="/screen">📺 1</NavLink>
+              <NavLink className={styles.enlaces} to="/preferencias">
+                Preferencias
+              </NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink to="/screen2">📺 2</NavLink>
+              <NavLink className={styles.enlaces} to="/screen">
+                📺 1
+              </NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink className={styles.enlaces} to="/screen2">
+                📺 2
+              </NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink className={styles.enlaces} to="/screen3">
+                📺 3
+              </NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink className={styles.enlaces} to="/c1">
+                📺 🖌
+              </NavLink>
             </MenuItem>
           </MenuList>
         </Menu>

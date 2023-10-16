@@ -12,22 +12,36 @@ import {
   ModalBody,
   ModalFooter,
   Select,
+  useDisclosure,
+  IconButton,
   Table,
   Thead,
-  Tbody,
   Tr,
   Th,
+  Tbody,
   Td,
-  useDisclosure,
+  Text,
+  HStack,
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
-import { MdOutlineSave, MdModeEdit } from "react-icons/md";
+import { MdOutlineSave } from "react-icons/md";
+import { FaDollarSign, FaRegEdit } from "react-icons/fa";
 
-const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
+import {
+  GET_CATEGORIAS,
+  GET_SUBCATEGORIAS,
+  GET_PRODUCTO,
+} from "../../../graphqlQueries";
+import graphQLClient from "../../../graphqlClient";
+
+const EditarAgregarProducto = ({ onAction, productoEdicion }) => {
+  const [categorias, setCategorias] = useState([]);
+  const [subcategorias, setSubcategorias] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+
   const [producto, setProducto] = useState({
-    ID_Usuario: "",
-    tituloProducto: "",
+    nombre: "",
     descripcion: "",
     categoria: "",
     subcategoria: "",
@@ -38,10 +52,100 @@ const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
   });
 
   useEffect(() => {
-    if (modoEdicion && productoEdicion) {
-      setProducto(productoEdicion);
+    const fetchCategorias = async () => {
+      try {
+        const { categorias } = await graphQLClient.request(GET_CATEGORIAS);
+        if (categorias) {
+          setCategorias(categorias.data);
+        } else {
+          setCategorias([]);
+        }
+      } catch (error) {
+        console.error("Error al obtener categorías:", error);
+        setCategorias([]);
+      }
+    };
+
+    const fetchSubcategorias = async () => {
+      try {
+        const { subcategorias } = await graphQLClient.request(
+          GET_SUBCATEGORIAS
+        );
+        if (subcategorias) {
+          setSubcategorias(subcategorias.data);
+        } else {
+          setSubcategorias([]);
+        }
+      } catch (error) {
+        console.error("Error al obtener subcategorías:", error);
+        setSubcategorias([]);
+      }
+    };
+
+    fetchCategorias();
+    fetchSubcategorias();
+  }, []);
+
+  // Este efecto se ejecutará cuando cambie productoEdicion
+  useEffect(() => {
+    const loadProductoData = async () => {
+      if (productoEdicion) {
+        setIsEditMode(true);
+        editarProducto(productoEdicion);
+      } else {
+        setIsEditMode(false);
+        resetProducto();
+      }
+    };
+
+    loadProductoData();
+  }, [productoEdicion]);
+
+  const editarProducto = async (productId) => {
+    console.log("Editar Producto ", productId);
+    try {
+      const { producto } = await graphQLClient.request(GET_PRODUCTO, {
+        productId,
+      });
+      if (producto) {
+        console.log("Producto: ", producto);
+
+        const productoAttributes = producto.data.attributes;
+        const categoria =
+          productoAttributes.categorias.data.length > 0
+            ? productoAttributes.categorias.data[0].attributes.nombre
+            : "";
+
+        const subcategoria =
+          productoAttributes.subcategorias.data.length > 0
+            ? productoAttributes.subcategorias.data[0].attributes.nombre
+            : "";
+
+        setProducto({
+          ...productoAttributes,
+          categoria,
+          subcategoria, // Establece el valor de subcategoria
+        });
+      } else {
+        console.error("Producto no encontrado");
+      }
+    } catch (error) {
+      console.error("Error al obtener el producto:", error);
     }
-  }, [modoEdicion, productoEdicion]);
+  };
+
+  const resetProducto = () => {
+    setProducto({
+      nombre: "",
+      descripcion: "",
+      categoria: "",
+      subcategoria: "",
+      unidadMedida: "Kg.",
+      titulosVariantes: ["1/4 Kg.", "1/2 Kg.", "1 Kg."],
+      preciosVariantes: Array(3).fill(""),
+      activo: true,
+    });
+  };
 
   const handleUnidadMedidaChange = (e) => {
     const unidadMedida = e.target.value;
@@ -52,37 +156,6 @@ const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
       unidadMedida,
       titulosVariantes,
       preciosVariantes,
-    }));
-  };
-  const handleTituloChange = (e) => {
-    const { value } = e.target;
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      tituloProducto: value,
-    }));
-  };
-
-  const handleCategoriaChange = (e) => {
-    const { value } = e.target;
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      categoria: value,
-    }));
-  };
-
-  const handleSubcategoriaChange = (e) => {
-    const { value } = e.target;
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      subcategoria: value,
-    }));
-  };
-
-  const handleDescripcionChange = (e) => {
-    const { value } = e.target;
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      descripcion: value,
     }));
   };
 
@@ -112,52 +185,53 @@ const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await onAction(producto);
-    setProducto({
-      ID_Usuario: "",
-      tituloProducto: "",
-      descripcion: "",
-      categoria: "",
-      subcategoria: "",
-      unidadMedida: "Kg.",
-      titulosVariantes: ["1/4 Kg.", "1/2 Kg.", "1 Kg."],
-      preciosVariantes: Array(3).fill(""),
-      activo: true,
-    });
+    resetProducto();
+    setIsEditMode(false);
+    onClose();
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const initialRef = useRef(null);
 
+  // Renderizar el botón y el encabezado del modal en función de isEditMode
+  const modalButtonText = isEditMode ? "Guardar" : "Agregar";
+  const modalHeader = isEditMode
+    ? "Editar producto"
+    : "Agregar un nuevo producto";
+
   return (
     <>
-      <Box alignItems="center" display="flex" flexDir="column">
-        <Button
-          onClick={onOpen}
-          rightIcon={<MdModeEdit fontSize="1.75em" />}
+      {isEditMode ? (
+        <IconButton
+          onClick={() => {
+            onOpen();
+            console.log(producto.unidadMedida);
+          }}
+          ml={2}
           colorScheme="teal"
-          variant="outline"
-        >
-          {modoEdicion ? "Editar producto" : "Agregar producto"}
-        </Button>
-      </Box>
+          icon={<FaRegEdit />}
+        />
+      ) : (
+        <Box alignItems="center" display="flex" flexDir="column">
+          <Button onClick={onOpen} rightIcon={<FaRegEdit />} colorScheme="teal">
+            {modalButtonText}
+          </Button>
+        </Box>
+      )}
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            {modoEdicion ? "Editar producto" : "Agregar un nuevo producto"}
-          </ModalHeader>
+          <ModalHeader>{modalHeader}</ModalHeader>
           <form onSubmit={handleSubmit}>
             <ModalBody pb={6}>
               <FormControl>
-                <FormLabel htmlFor="tituloProducto">
-                  Título del producto:
-                </FormLabel>
+                <FormLabel htmlFor="nombre">Nombre del producto:</FormLabel>
                 <Input
                   type="text"
-                  name="tituloProducto"
-                  value={producto.tituloProducto}
-                  onChange={handleTituloChange}
+                  name="nombre"
+                  value={producto.nombre || ""}
+                  onChange={(e) => handleInputChange(e, 0)}
                 />
               </FormControl>
               <FormControl>
@@ -165,82 +239,90 @@ const EditarAgregarProducto = ({ onAction, modoEdicion, productoEdicion }) => {
                 <Input
                   type="text"
                   name="descripcion"
-                  value={producto.descripcion}
-                  onChange={handleDescripcionChange}
+                  value={producto.descripcion || ""}
+                  onChange={(e) => handleInputChange(e, 1)}
                 />
               </FormControl>
+
               <FormControl>
                 <FormLabel htmlFor="categoria">Categoría:</FormLabel>
-                <Input
-                  type="text"
+                <Select
+                  key={producto.id}
                   name="categoria"
                   value={producto.categoria}
-                  onChange={handleCategoriaChange}
-                />
+                  onChange={(e) => handleInputChange(e, 2)}
+                >
+                  <option value={null}>Elegir categoría</option>
+                  {categorias.map((categoria) => (
+                    <option
+                      key={categoria.id}
+                      value={categoria.attributes.nombre}
+                    >
+                      {categoria.attributes.nombre}
+                    </option>
+                  ))}
+                </Select>
               </FormControl>
+
               <FormControl>
                 <FormLabel htmlFor="subcategoria">Subcategoría:</FormLabel>
-                <Input
-                  type="text"
+                <Select
                   name="subcategoria"
                   value={producto.subcategoria}
-                  onChange={handleSubcategoriaChange}
-                />
+                  onChange={(e) => handleInputChange(e, 3)}
+                >
+                  <option value={null}>Elegir subcategoría</option>
+                  {subcategorias.map((subcategoria) => (
+                    <option
+                      key={subcategoria.id}
+                      value={subcategoria.attributes.nombre}
+                    >
+                      {subcategoria.attributes.nombre}
+                    </option>
+                  ))}
+                </Select>
               </FormControl>
+
               <FormControl>
                 <FormLabel htmlFor="unidadMedida">Unidad de Medida:</FormLabel>
                 <Select
                   name="unidadMedida"
                   value={producto.unidadMedida}
-                  onChange={handleUnidadMedidaChange}
+                  onChange={(e) => handleUnidadMedidaChange(e)}
                 >
                   <option value="Kg.">Kg.</option>
                   <option value="Unidad">Unidad</option>
-                  <option value="Tamaño">Tamaño</option>
+                  <option value="Porcion">Porción</option>
                 </Select>
               </FormControl>
-              <Table>
-                <Thead>
-                  <Tr>
-                    {producto.titulosVariantes.map((titulo, index) => (
-                      <Th key={index}>{titulo}</Th>
-                    ))}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  <Tr>
-                    {producto.preciosVariantes.map((precio, index) => (
-                      <Td key={index}>
-                        <InputGroup>
-                          <InputLeftElement
-                            pointerEvents="none"
-                            color="gray.300"
-                            children="$"
-                          />
-                          <Input
-                            placeholder="0.00"
-                            type="number"
-                            value={precio}
-                            onChange={(e) => handleInputChange(e, index)}
-                          />
-                        </InputGroup>
-                      </Td>
-                    ))}
-                  </Tr>
-                </Tbody>
-              </Table>
-            </ModalBody>
+              <Text>Precios</Text>
 
+              {producto.precios && Object.keys(producto.precios).length > 0 && (
+                <HStack spacing={4}>
+                  {Object.keys(producto.precios).map((titulo) => (
+                    <InputGroup key={titulo} flex={1}>
+                      <Text>{titulo}</Text>
+                      <Input
+                        size="sm"
+                        type="text"
+                        name={titulo}
+                        value={producto.precios[titulo] || ""}
+                        onChange={(e) => handleInputChange(e, titulo)}
+                      />
+                    </InputGroup>
+                  ))}
+                </HStack>
+              )}
+            </ModalBody>
             <ModalFooter alignItems="flex-end">
               <Button
                 mr={3}
                 type="submit"
-                onClick={onClose}
                 rightIcon={<MdOutlineSave fontSize="1.75em" />}
                 colorScheme="teal"
                 variant="outline"
               >
-                {modoEdicion ? "Guardar cambios" : "Agregar"}
+                {modalButtonText}
               </Button>
               <Button onClick={onClose} colorScheme="red" variant="outline">
                 Salir

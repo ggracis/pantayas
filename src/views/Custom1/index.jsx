@@ -30,6 +30,8 @@ function CustomView1() {
         // Obtén los IDs de productos de productList y guárdalos en productIds
         const productListIds =
           data.customview.data.attributes.componentes.productList.productIds;
+        console.log(productListIds);
+
         setProductIds(productListIds);
       } catch (error) {
         console.error("Error:", error);
