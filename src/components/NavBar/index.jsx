@@ -1,20 +1,15 @@
 import {
   Box,
   Flex,
-  Avatar,
   Button,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  MenuDivider,
-  useColorModeValue,
   Stack,
   useColorMode,
-  Center,
   Heading,
   Image,
-  WrapItem,
   IconButton,
 } from "@chakra-ui/react";
 import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
@@ -43,17 +38,12 @@ export default function NavBar() {
         <NavLink className={styles.enlaces} to="/preferencias">
           Preferencias
         </NavLink>
-        <NavLink className={styles.enlaces} to="/screen">
+
+        <NavLink className={styles.enlaces} to="/c1">
           📺 1
         </NavLink>
-        <NavLink className={styles.enlaces} to="/screen2">
+        <NavLink className={styles.enlaces} to="/c2">
           📺 2
-        </NavLink>
-        <NavLink className={styles.enlaces} to="/screen3">
-          📺 3
-        </NavLink>
-        <NavLink className={styles.enlaces} to="/c1">
-          📺 🖌
         </NavLink>
       </nav>
     );
@@ -74,46 +64,20 @@ export default function NavBar() {
             <MenuItem>
               <NavLink to="/">Inicio</NavLink>
             </MenuItem>
-
             <MenuItem>
-              <NavLink className={styles.enlaces} to="/">
-                Inicio
-              </NavLink>
+              <NavLink to="/usuario">Usuarios</NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink className={styles.enlaces} to="/usuario">
-                Usuarios
-              </NavLink>
+              <NavLink to="/productos">Productos</NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink className={styles.enlaces} to="/productos">
-                Productos
-              </NavLink>
+              <NavLink to="/preferencias">Preferencias</NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink className={styles.enlaces} to="/preferencias">
-                Preferencias
-              </NavLink>
+              <NavLink to="/c1">📺 1</NavLink>
             </MenuItem>
             <MenuItem>
-              <NavLink className={styles.enlaces} to="/screen">
-                📺 1
-              </NavLink>
-            </MenuItem>
-            <MenuItem>
-              <NavLink className={styles.enlaces} to="/screen2">
-                📺 2
-              </NavLink>
-            </MenuItem>
-            <MenuItem>
-              <NavLink className={styles.enlaces} to="/screen3">
-                📺 3
-              </NavLink>
-            </MenuItem>
-            <MenuItem>
-              <NavLink className={styles.enlaces} to="/c1">
-                📺 🖌
-              </NavLink>
+              <NavLink to="/c2">📺 2</NavLink>
             </MenuItem>
           </MenuList>
         </Menu>
@@ -162,50 +126,6 @@ export default function NavBar() {
 
         <Flex alignItems="center">
           <Stack direction="row" spacing={7}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded="full"
-                variant="link"
-                cursor="pointer"
-                minW={0}
-              >
-                {/* <Avatar
-                  size={"md"}
-                  src={`https://avatars.dicebear.com/api/male/${userNombre}${userApellido}.svg`}
-                  alt={userNombre}
-                  title={userNombre}
-                /> */}
-              </MenuButton>
-              <MenuList alignItems="center">
-                <br />
-                <Center>
-                  <WrapItem>
-                    {/*  <Avatar
-                      size={"2xl"}
-                      src={`https://avatars.dicebear.com/api/male/${userNombre}${userApellido}.svg`}
-                      alt={userNombre}
-                      title={userNombre}
-                    /> */}
-                  </WrapItem>
-                </Center>
-                <br />
-                <Center>
-                  <p>Hola !</p>
-                </Center>
-                <br />
-                <MenuDivider />
-                <MenuItem>
-                  <NavLink to="/miscompras">Mis compras</NavLink>
-                </MenuItem>
-                <MenuItem>
-                  <NavLink to="/admProductos">
-                    ❗Administrar productos❗
-                  </NavLink>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-
             <Button onClick={toggleColorMode} size="l" p={5}>
               {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
             </Button>

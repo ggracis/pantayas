@@ -13,7 +13,6 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { eliminarProducto } from "../../../productService.jsx";
 
 const ProductTable = ({
   productos,

@@ -36,7 +36,7 @@ const BuscarProductos = () => {
       nombre: formData.get("nombre"),
       categoria: formData.get("categoria"),
       subcategoria: formData.get("subcategoria"),
-      pageSize: parseInt(formData.get("pagesize"), 15),
+      pageSize: parseInt(formData.get("pagesize"), 20),
       page: parseInt(formData.get("page"), 1),
     };
 
@@ -89,9 +89,9 @@ const BuscarProductos = () => {
                 <InputGroup>
                   <InputLeftAddon children="Resultados" />
                   <NumberInput
-                    step={15}
-                    defaultValue={15}
-                    min={15}
+                    step={20}
+                    defaultValue={20}
+                    min={20}
                     max={300}
                     allowMouseWheel
                     name="pagesize"

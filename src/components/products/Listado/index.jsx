@@ -4,7 +4,6 @@ import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import useNotify from "../../../hooks/useNotify";
 import EditarAgregarProducto from "../EditarAgregarProducto";
 import Producto from "../Producto";
-import { eliminarProducto } from "../../../productService.jsx";
 
 const Listado = ({ productos, onFetchProductos, onEditProducto }) => {
   const { notify } = useNotify();

@@ -1,0 +1,13 @@
+.titulos {
+  font-size: 2.5em;
+  line-height: 2em;
+}
+.nombres {
+  font-size: 2.25em;
+  line-height: 1em;
+  font-weight: bold;
+}
+.descripcion {
+  font-size: 0.9em;
+  line-height: 1em;
+}

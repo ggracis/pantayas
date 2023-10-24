@@ -26,6 +26,15 @@ Esta aplicación, desarrollada con Vite+React,
 - **React Use Window Size**: React Use Window Size es una biblioteca de React
   que permite obtener el tamaño de la ventana del navegador.
 
+### Strapi
+
+Usamos strapi para tener una API, con la que interactuamos con GraphQL
+http://54.94.34.59:1337/admin
+
+### App
+
+Acceso a la app deployada en EC2 http://18.228.23.150/
+
 ### Rutas
 
     / - Página de inicio que muestra un mensaje de bienvenida.
@@ -43,12 +52,4 @@ requests.
 Para ejecutar este proyecto, debes seguir los siguientes pasos: Ejecutar el
 comando `npm install` para instalar las dependencias del proyecto. Ejecutar el
 comando `npm run dev` para ejecutar el proyecto en modo de desarrollo. Abrir
-[http://localhost:5173](http://localhost:5173) para verlo en el navegador.
-
-### Cómo implementar el proyecto
-
-Para implementar este proyecto, debes seguir los siguientes pasos: Ejecutar el
-comando `npm install` para instalar las dependencias del proyecto. Ejecutar el
-comando `npm run build` para construir el proyecto. Ejecutar el comando
-`npm run serve` para ejecutar el proyecto en modo de producción. Abrir
-[http://localhost:5000](http://localhost:5000) para verlo en el navegador.
+[http://localhost:8080](http://localhost:5173) para verlo en el navegador.

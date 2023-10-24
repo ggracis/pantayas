@@ -8,8 +8,8 @@ import graphQLClient from "./graphqlClient";
 
 // Consulta para obtener una vista custom
 export const GET_CUSTOMVIEWS = gql`
-  query getCustomView {
-    customview(id: 1) {
+  query getCustomView($id: ID!) {
+    customview(id: $id) {
       data {
         attributes {
           componentes
@@ -104,10 +104,18 @@ export const GET_PRODUCTO = gql`
         attributes {
           nombre
           descripcion
+          foto {
+            data {
+              attributes {
+                url
+              }
+            }
+          }
           precios
           unidadMedida
           categorias {
             data {
+              id
               attributes {
                 nombre
               }
@@ -115,6 +123,7 @@ export const GET_PRODUCTO = gql`
           }
           subcategorias {
             data {
+              id
               attributes {
                 nombre
               }
@@ -154,6 +163,7 @@ export const GET_CATEGORIAS = gql`
   query getCategorias {
     categorias {
       data {
+        id
         attributes {
           nombre
         }
@@ -167,6 +177,7 @@ export const GET_SUBCATEGORIAS = gql`
   query getSubcategorias {
     subcategorias {
       data {
+        id
         attributes {
           nombre
         }
@@ -190,3 +201,21 @@ export const REMOVE_PRODUCTO = gql`
 
 // Crear producto
 export const CREATE_PRODUCTO = gql``;
+
+// ---------------- UPDATES ----------------
+
+export const UPDATE_PPRODUCTO = gql`
+  mutation updateProducto($id: ID!, $data: ProductoInput) {
+    updateProducto(id: $id, data: $data) {
+      producto {
+        id
+        nombre
+        descripcion
+        unidadMedida
+        precios
+        categorias
+        subcategorias
+      }
+    }
+  }
+`;

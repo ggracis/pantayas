@@ -1,0 +1,14 @@
+#titulos {
+  font-size: 1.25em;
+}
+
+#nombres {
+  font-size: 1.25em;
+  line-height: 1em;
+  font-weight: bold;
+}
+
+#descripcion {
+  font-size: 0.9em;
+  line-height: 1em;
+}

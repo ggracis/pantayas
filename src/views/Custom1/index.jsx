@@ -3,6 +3,7 @@ import graphQLClient from "../../graphqlClient";
 import { GET_CUSTOMVIEWS, GET_PANTALLA } from "../../graphqlQueries";
 import ScHeader from "../../components/ScHeader";
 import ListaProductos from "../../components/products/ListaProductos";
+import styles from "./Custom1.module.css";
 
 const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
 
@@ -25,7 +26,9 @@ function CustomView1() {
   useEffect(() => {
     const fetchCustomView = async () => {
       try {
-        const data = await graphQLClient.request(GET_CUSTOMVIEWS);
+        const data = await graphQLClient.request(GET_CUSTOMVIEWS, {
+          id: 1,
+        });
         setCustomViewData(data.customview.data.attributes.componentes);
         // Obtén los IDs de productos de productList y guárdalos en productIds
         const productListIds =

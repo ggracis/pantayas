@@ -1,0 +1,54 @@
+.titulos {
+  font-size: 1.5em;
+  line-height: 2em;
+}
+.nombres {
+  font-size: 1.5em;
+  line-height: 1em;
+  font-weight: bold;
+}
+.descripcion {
+  font-size: 0.9em;
+  line-height: 1em;
+}
+.precios {
+  font-size: 2em;
+  font-weight: bolder;
+}
+.precioContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+.precioBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.precioNumero1 {
+  font-size: 1.25em;
+  line-height: 2.75em;
+  font-weight: bold;
+  text-align: center;
+}
+.precioNumero2 {
+  font-size: 1.5em;
+  line-height: 2.25em;
+  font-weight: bold;
+  text-align: center;
+}
+.precioNumero3 {
+  font-size: 1.75em;
+  line-height: 2em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.precioDescripcion {
+  font-size: 0.8em;
+  line-height: 1em;
+  color: #777777;
+  text-align: center;
+}

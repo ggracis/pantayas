@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { GET_PRODUCTO } from "../../../graphqlQueries";
 import graphQLClient from "../../../graphqlClient";
 import {
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
+  VStack,
   Text,
-  Th,
-  Thead,
-  Tr,
+  Box,
+  StackDivider,
+  GridItem,
+  Grid,
 } from "@chakra-ui/react";
+
 import styles from "./ListaProductos.module.css";
 
-function ListaProductos({ productIds }) {
+function ListaProductosV2({ productIds }) {
   const [productos, setProductos] = useState([]);
   const [preciosKeys, setPreciosKeys] = useState([]);
 
@@ -50,45 +49,34 @@ function ListaProductos({ productIds }) {
   }, [productIds]);
 
   return (
-    <TableContainer>
-      <Table variant="striped" colorScheme="whiteAlpha" size="sm">
-        <Thead>
-          <Tr>
-            <Th></Th>
-            {preciosKeys.map((precioKey) => (
-              <Th key={precioKey}>
-                <Text
-                  className={styles.titulos}
-                  id="titulos"
-                >{`${precioKey}`}</Text>
-              </Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {productos.map((producto) => (
-            <Tr key={producto.nombre}>
-              <Td>
-                <Text className={styles.nombres} id="nombres">
-                  {producto.nombre}
-                </Text>
-                <Text className={styles.descripcion} id="descripcion">
-                  {producto.descripcion}
-                </Text>
-              </Td>
-              {preciosKeys.map((precioKey) => (
-                <Td key={precioKey}>
-                  <Text className={styles.precios}>
+    <VStack
+      divider={<StackDivider borderColor="gray.200" />}
+      spacing={2}
+      align="stretch"
+      mt={4}
+    >
+      {productos.map((producto, index) => (
+        <Grid templateColumns="repeat(6, 1fr)" key={index}>
+          <GridItem colSpan={4}>
+            <Text className={styles.nombres}>{producto.nombre}</Text>
+            <Text className={styles.descripcion}>{producto.descripcion}</Text>
+          </GridItem>
+          <GridItem colSpan={2}>
+            <Grid templateColumns="repeat(3, 1fr)" key={index}>
+              {preciosKeys.map((precioKey, index) => (
+                <GridItem className={styles.precioBox} key={index}>
+                  <Text className={`${styles[`precioNumero${index + 1}`]}`}>
                     ${producto.precios[precioKey]}
                   </Text>
-                </Td>
+                  <Text className={styles.precioDescripcion}>{precioKey}</Text>
+                </GridItem>
               ))}
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </TableContainer>
+            </Grid>
+          </GridItem>
+        </Grid>
+      ))}
+    </VStack>
   );
 }
 
-export default ListaProductos;
+export default ListaProductosV2;
