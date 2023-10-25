@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Table,
   Tbody,
   Thead,
   Tr,
   Th,
-  useColorMode,
   Input,
   Stack,
   Button,
@@ -15,6 +13,7 @@ import {
   InputGroup,
   InputLeftElement,
   Image,
+  Box,
 } from "@chakra-ui/react";
 import {
   FaFacebook,
@@ -28,12 +27,10 @@ import {
 } from "react-icons/fa";
 import Colorful from "@uiw/react-color-colorful";
 import styles from "./ModPreferencias.module.css";
-import CustomView1 from "../../../views/Custom1";
-import { GET_PANTALLA, UPDATE_PANTALLA } from "../../../graphqlQueries";
+import { GET_LOCAL, UPDATE_LOCAL } from "../../../graphqlQueries";
 import graphQLClient from "../../../graphqlClient";
 
 const ModPreferencias = () => {
-  const { colorMode } = useColorMode();
   const [opciones, setOpciones] = useState({
     hexHead: "",
     hexBg: "",
@@ -52,15 +49,15 @@ const ModPreferencias = () => {
 
   useEffect(() => {
     graphQLClient
-      .request(GET_PANTALLA)
+      .request(GET_LOCAL)
       .then((data) => {
         const opciones =
-          data.pantalla.data.attributes.opciones.attributes.opciones;
+          data.local.data.attributes.opciones.attributes.opciones;
         setOpciones(opciones);
 
         // Actualiza la URL del logo
         const relativeURL =
-          data.pantalla.data.attributes.logoURL.data.attributes.url;
+          data.local.data.attributes.logoURL.data.attributes.url;
         const fullURL = `http://54.94.34.59:1337${relativeURL}`; // Concatena la URL base
         setLogoURL(fullURL); // Actualiza la URL del logo con la URL completa
       })
@@ -102,7 +99,7 @@ const ModPreferencias = () => {
       // Crea un objeto FormData para enviar el archivo a Strapi
       const formData = new FormData();
       formData.append("files", file);
-      formData.append("ref", "api::pantalla.pantalla"); // Nombre del modelo
+      formData.append("ref", "api::local.local"); // Nombre del modelo
       formData.append("refId", "1"); // ID de la entidad pantalla
       formData.append("field", "logoURL"); // Nombre del campo donde se guardará el archivo
       // Realiza una solicitud POST a Strapi para cargar el archivo
@@ -130,7 +127,7 @@ const ModPreferencias = () => {
 
   const handleGuardar = () => {
     graphQLClient
-      .request(UPDATE_PANTALLA, {
+      .request(UPDATE_LOCAL, {
         data: {
           attributes: {
             opciones: opciones,
@@ -166,8 +163,8 @@ const ModPreferencias = () => {
               <Th textAlign="center">Color header</Th>
               <Th textAlign="center">Color fondo</Th>
               <Th textAlign="center">Color texto</Th>
-              <Th textAlign="center">Color Brand 1</Th>
-              <Th textAlign="center">Color Brand 2</Th>
+              {/*   <Th textAlign="center">Color Brand 1</Th>
+              <Th textAlign="center">Color Brand 2</Th> */}
             </Tr>
           </Thead>
           <Tbody>
@@ -296,15 +293,27 @@ const ModPreferencias = () => {
               <Td>
                 <Colorful
                   className={styles.colorful}
-                  color={opciones.hexHead} // Acceder a hexHead desde opciones
+                  color={opciones.hexHead}
                   disableAlpha={true}
                   onChange={(color) => {
                     setOpciones((prevOpciones) => ({
                       ...prevOpciones,
-                      hexHead: color.hexa, // Actualizar hexHead en opciones
+                      hexHead: color.hexa,
                     }));
                   }}
                 />
+                <Box
+                  style={{
+                    marginLeft: 45,
+                    background: opciones.hexHead,
+                    marginTop: 5,
+                    padding: 10,
+                    width: "69%",
+                    textAlign: "center",
+                  }}
+                >
+                  {opciones.hexHead}
+                </Box>
               </Td>
               <Td>
                 <Colorful
@@ -318,6 +327,18 @@ const ModPreferencias = () => {
                     }));
                   }}
                 />
+                <Box
+                  style={{
+                    marginLeft: 45,
+                    background: opciones.hexBg,
+                    marginTop: 5,
+                    padding: 10,
+                    width: "69%",
+                    textAlign: "center",
+                  }}
+                >
+                  {opciones.hexBg}
+                </Box>
               </Td>
               <Td>
                 <Colorful
@@ -331,8 +352,20 @@ const ModPreferencias = () => {
                     }));
                   }}
                 />
+                <Box
+                  style={{
+                    marginLeft: 45,
+                    background: opciones.hexTexto,
+                    marginTop: 5,
+                    padding: 10,
+                    width: "69%",
+                    textAlign: "center",
+                  }}
+                >
+                  {opciones.hexTexto}
+                </Box>
               </Td>
-              <Td>
+              {/*   <Td>
                 <Colorful
                   className={styles.colorful}
                   color={opciones.hexBrand1}
@@ -357,7 +390,7 @@ const ModPreferencias = () => {
                     }));
                   }}
                 />
-              </Td>
+              </Td> */}
             </Tr>
           </Tbody>
         </Table>
@@ -374,19 +407,6 @@ const ModPreferencias = () => {
           Guardar
         </Button>
       </FormControl>
-
-      <Box
-        borderColor={colorMode === "light" ? "black" : "white"}
-        width="90%"
-        maxHeight="30em"
-        overflow="hidden"
-        p={4}
-        m="auto"
-        mt={8}
-        mb={8}
-      >
-        <CustomView1 />
-      </Box>
     </>
   );
 };

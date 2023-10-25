@@ -16,34 +16,28 @@ import {
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 
 // Importa tus componentes de React para cada paso
-import DatosLocal from "../DatosLocal";
+import ModPreferencias from "../../Users/ModPreferencias";
+import TvsLocal from "../TvsLocal";
+import CrearCustomView from "../CrearCustomView";
 
 const steps = [
-  { title: "Local", description: "Datos del local", component: <DatosLocal /> },
   {
-    title: "TVs",
-    description: "Cargar televisores",
-    component: <DatosLocal />,
+    // Preferencias generales del usuario
+    title: "Preferencias",
+    description: "Datos del local",
+    component: <ModPreferencias />,
   },
   {
-    title: "Horarios",
-    description: "Rangos horarios de pantallas",
-    component: <DatosLocal />,
-  },
-  {
+    // Crea pantallas personalizadas y le asigna productos
     title: "Pantallas",
     description: "Diseñar pantallas",
-    component: <DatosLocal />,
+    component: <CrearCustomView />,
   },
   {
-    title: "Productos",
-    description: "Elegir productos/categorías",
-    component: <DatosLocal />,
-  },
-  {
-    title: "Asignar TVs",
-    description: "Asignar pantallas a TVs",
-    component: <DatosLocal />,
+    // Carga TVs del local y le asigna pantallas por horario
+    title: "TVs",
+    description: "Cargar televisores",
+    component: <TvsLocal />,
   },
 ];
 
@@ -86,15 +80,16 @@ function PasosOnboard() {
         ))}
       </Stepper>
 
-      <Box p={4} m={4}>
-        {currentComponent}
-      </Box>
-      <Stack p={4} m={4} direction="row" spacing={4}>
+      <Box>{currentComponent}</Box>
+      <Stack direction="row">
         {activeStep > 0 && (
           <Button
             leftIcon={<ArrowBackIcon />}
-            colorScheme="teal"
-            variant="outline"
+            colorScheme="gray"
+            border="2px"
+            size="lg"
+            width="50%"
+            borderColor="green.500"
             onClick={handlePrev}
           >
             Anterior
@@ -103,8 +98,11 @@ function PasosOnboard() {
         {activeStep < steps.length - 1 && (
           <Button
             rightIcon={<ArrowForwardIcon />}
-            colorScheme="teal"
-            variant="outline"
+            colorScheme="gray"
+            border="2px"
+            size="lg"
+            width="50%"
+            borderColor="green.500"
             onClick={handleNext}
           >
             Siguiente

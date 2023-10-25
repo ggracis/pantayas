@@ -35,6 +35,10 @@ export default function NavBar() {
         <NavLink className={styles.enlaces} to="/productos">
           Productos
         </NavLink>
+        <NavLink className={styles.enlaces} to="/wiz">
+          Wizard 🧙🏻‍♂️
+        </NavLink>
+
         <NavLink className={styles.enlaces} to="/preferencias">
           Preferencias
         </NavLink>
@@ -69,6 +73,11 @@ export default function NavBar() {
             </MenuItem>
             <MenuItem>
               <NavLink to="/productos">Productos</NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink className={styles.enlaces} to="/wiz">
+                Wizard 🧙🏻‍♂️
+              </NavLink>
             </MenuItem>
             <MenuItem>
               <NavLink to="/preferencias">Preferencias</NavLink>

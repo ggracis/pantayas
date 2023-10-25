@@ -4,7 +4,7 @@ import { Container } from "@chakra-ui/react";
 
 function OnBoarding() {
   return (
-    <Container maxW="75vw" p={2} mt={4} mb={4} color="white">
+    <Container maxW="80vw" p={2} mt={4} mb={4}>
       <PasosOnboard />
     </Container>
   );

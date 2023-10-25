@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import graphQLClient from "../../graphqlClient";
-import { GET_CUSTOMVIEWS, GET_PANTALLA } from "../../graphqlQueries";
+import { GET_CUSTOMVIEWS, GET_LOCAL } from "../../graphqlQueries";
 import ScHeader from "../../components/ScHeader";
 import { Grid, GridItem } from "@chakra-ui/react";
 import ListaProductos from "../../components/products/ListaProductos";

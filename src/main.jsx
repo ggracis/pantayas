@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
-import { GET_PANTALLA } from "./graphqlQueries";
+import { GET_LOCAL } from "./graphqlQueries";
 import graphQLClient from "./graphqlClient";
 
 // Función para crear el tema personalizado a partir de la configuración en JSON
@@ -33,9 +33,9 @@ function Main() {
   useEffect(() => {
     // Realiza la consulta GraphQL para obtener la configuración
     graphQLClient
-      .request(GET_PANTALLA)
+      .request(GET_LOCAL)
       .then((data) => {
-        const opciones = data.pantalla.data.attributes.opciones;
+        const opciones = data.local.data.attributes.opciones;
         console.log("Opciones del usuario: ", opciones);
         // Crea el tema personalizado a partir de la configuración
         const theme = createCustomTheme(opciones);

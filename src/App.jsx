@@ -9,7 +9,8 @@ import CustomView2 from "./views/Custom2";
 import BuscarProductos from "./components/products/BuscarProductos";
 import UpdatePrecios from "./UpdatePrecios";
 import graphQLClient from "./graphqlClient";
-import { GET_PANTALLA } from "./graphqlQueries";
+import { GET_LOCAL } from "./graphqlQueries";
+import OnBoarding from "./components/onboarding";
 
 /* Viejos
 import Listado from "./components/products/Listado";
@@ -53,14 +54,14 @@ function App() {
   // Traer las opciones de DB
   useEffect(() => {
     graphQLClient
-      .request(GET_PANTALLA)
+      .request(GET_LOCAL)
       .then((data) => {
         const opcionesData =
-          data.pantalla.data.attributes.opciones.attributes.opciones;
+          data.local.data.attributes.opciones.attributes.opciones;
         // Extraer el valor de "logoURL" de las opcionesData
         const logoURL =
           "http://54.94.34.59:1337" +
-          data.pantalla.data.attributes.logoURL.data.attributes.url;
+          data.local.data.attributes.logoURL.data.attributes.url;
 
         // Actualizar el estado de opciones, incluyendo logoURL << Esto se guarda en el localStorage
         setOpciones({
@@ -153,6 +154,17 @@ function App() {
         element={
           <>
             <UpdatePrecios />
+          </>
+        }
+      />
+
+      <Route
+        path="/wiz"
+        element={
+          <>
+            <NavBar />
+            <Encabezado tituloEncabezado="Wizard 🧙🏻‍♂️" />
+            <OnBoarding />
           </>
         }
       />

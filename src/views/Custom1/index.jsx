@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import graphQLClient from "../../graphqlClient";
-import { GET_CUSTOMVIEWS, GET_PANTALLA } from "../../graphqlQueries";
+import { GET_CUSTOMVIEWS, GET_LOCAL } from "../../graphqlQueries";
 import ScHeader from "../../components/ScHeader";
 import ListaProductos from "../../components/products/ListaProductos";
 import styles from "./Custom1.module.css";

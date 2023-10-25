@@ -19,10 +19,10 @@ export const GET_CUSTOMVIEWS = gql`
   }
 `;
 
-// Traer opciones de pantalla
-export const GET_PANTALLA = gql`
-  query getPantalla {
-    pantalla(id: 1) {
+// Traer opciones de local
+export const GET_LOCAL = gql`
+  query getLocal {
+    local(id: 1) {
       data {
         attributes {
           logoURL {
@@ -33,6 +33,15 @@ export const GET_PANTALLA = gql`
             }
           }
           opciones
+          tvs {
+            data {
+              attributes {
+                activo
+                horario
+                nombre
+              }
+            }
+          }
         }
       }
     }
@@ -41,10 +50,10 @@ export const GET_PANTALLA = gql`
 
 // ---------------- UPDATES ----------------
 
-// Actualizar las opciones de pantalla
-export const UPDATE_PANTALLA = gql`
-  mutation UpdatePantalla($data: JSON, $id: ID!) {
-    updatePantalla(data: { opciones: $data }, id: $id) {
+// Actualizar las opciones de local
+export const UPDATE_LOCAL = gql`
+  mutation UpdateLocal($data: JSON, $id: ID!) {
+    updateLocal(data: { opciones: $data }, id: $id) {
       data {
         attributes {
           logoURL {
