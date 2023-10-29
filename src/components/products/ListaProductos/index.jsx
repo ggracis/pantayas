@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GET_PRODUCTO } from "../../../graphqlQueries";
 import graphQLClient from "../../../graphqlClient";
 import {
+  Center,
   Table,
   TableContainer,
   Tbody,
@@ -13,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import styles from "./ListaProductos.module.css";
 
-function ListaProductos({ productIds }) {
+function ListaProductos({ productIds, titulo }) {
   const [productos, setProductos] = useState([]);
   const [preciosKeys, setPreciosKeys] = useState([]);
 
@@ -50,44 +51,57 @@ function ListaProductos({ productIds }) {
   }, [productIds]);
 
   return (
-    <TableContainer>
-      <Table variant="striped" colorScheme="whiteAlpha" size="sm">
-        <Thead>
-          <Tr>
-            <Th></Th>
-            {preciosKeys.map((precioKey) => (
-              <Th key={precioKey}>
-                <Text
-                  className={styles.titulos}
-                  id="titulos"
-                >{`${precioKey}`}</Text>
-              </Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {productos.map((producto) => (
-            <Tr key={producto.nombre}>
-              <Td>
-                <Text className={styles.nombres} id="nombres">
-                  {producto.nombre}
-                </Text>
-                <Text className={styles.descripcion} id="descripcion">
-                  {producto.descripcion}
-                </Text>
-              </Td>
+    <>
+      <Text
+        fontSize="2xl"
+        fontWeight="bold"
+        lineHeight="shorter"
+        textAlign="center"
+        mb={1}
+        mt={2}
+      >
+        {titulo}
+      </Text>
+
+      <TableContainer>
+        <Table variant="striped" colorScheme="whiteAlpha" size="sm">
+          <Thead>
+            <Tr>
+              <Th></Th>
               {preciosKeys.map((precioKey) => (
-                <Td key={precioKey}>
-                  <Text className={styles.precios}>
-                    ${producto.precios[precioKey]}
-                  </Text>
-                </Td>
+                <Th key={precioKey}>
+                  <Text
+                    className={styles.titulos}
+                    id="titulos"
+                  >{`${precioKey}`}</Text>
+                </Th>
               ))}
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </TableContainer>
+          </Thead>
+          <Tbody>
+            {productos.map((producto) => (
+              <Tr key={producto.nombre}>
+                <Td>
+                  <Text className={styles.nombres} id="nombres">
+                    {producto.nombre}
+                  </Text>
+                  <Text className={styles.descripcion} id="descripcion">
+                    {producto.descripcion}
+                  </Text>
+                </Td>
+                {preciosKeys.map((precioKey) => (
+                  <Td key={precioKey}>
+                    <Text className={styles.precios}>
+                      ${producto.precios[precioKey]}
+                    </Text>
+                  </Td>
+                ))}
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }
 

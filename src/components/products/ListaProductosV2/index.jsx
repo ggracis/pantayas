@@ -12,7 +12,7 @@ import {
 
 import styles from "./ListaProductos.module.css";
 
-function ListaProductosV2({ productIds }) {
+function ListaProductosV2({ productIds, titulo }) {
   const [productos, setProductos] = useState([]);
   const [preciosKeys, setPreciosKeys] = useState([]);
 
@@ -55,6 +55,16 @@ function ListaProductosV2({ productIds }) {
       align="stretch"
       mt={4}
     >
+      <Text
+        fontSize="2xl"
+        fontWeight="bold"
+        lineHeight="shorter"
+        textAlign="center"
+        mb={1}
+        mt={2}
+      >
+        {titulo}
+      </Text>
       {productos.map((producto, index) => (
         <Grid templateColumns="repeat(6, 1fr)" key={index}>
           <GridItem colSpan={4}>

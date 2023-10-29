@@ -126,7 +126,7 @@ function App() {
               tituloEncabezado="Preferencias de usuario"
               bajadaEncabezado="Personaliza todas tus pantallas"
             />
-            <ModPreferencias />
+            <OnBoarding />
           </>
         }
       />
@@ -154,17 +154,6 @@ function App() {
         element={
           <>
             <UpdatePrecios />
-          </>
-        }
-      />
-
-      <Route
-        path="/wiz"
-        element={
-          <>
-            <NavBar />
-            <Encabezado tituloEncabezado="Wizard 🧙🏻‍♂️" />
-            <OnBoarding />
           </>
         }
       />

@@ -150,7 +150,7 @@ const ModPreferencias = () => {
       <FormControl
         w="80vw"
         p={4}
-        bg="whiteAlpha.500"
+        bg="blackAlpha.300"
         m="auto"
         mt={8}
         mb={8}

@@ -1,6 +1,5 @@
 // graphqlQueries.js
 import { gql } from "graphql-request";
-import graphQLClient from "./graphqlClient";
 
 // ----------------
 // Opciones del usuario
@@ -42,6 +41,23 @@ export const GET_LOCAL = gql`
               }
             }
           }
+        }
+      }
+    }
+  }
+`;
+
+// Crear Custom View
+
+export const CREATE_CUSTOMVIEW = gql`
+  mutation createCustomview($data: CustomviewInput!) {
+    createCustomview(data: $data) {
+      data {
+        id
+        attributes {
+          nombre
+          estructura
+          componentes
         }
       }
     }
@@ -154,6 +170,9 @@ export const SEARCH_PRODUCTO_BY_NAME = gql`
     ) {
       data {
         id
+        attributes {
+          nombre
+        }
       }
       meta {
         pagination {
