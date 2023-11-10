@@ -91,9 +91,13 @@ function ListaProductos({ productIds, titulo }) {
                 </Td>
                 {preciosKeys.map((precioKey) => (
                   <Td key={precioKey}>
-                    <Text className={styles.precios}>
-                      ${producto.precios[precioKey]}
-                    </Text>
+                    {producto.precios[precioKey] ? (
+                      <Text className={styles.precios}>
+                        ${producto.precios[precioKey]}
+                      </Text>
+                    ) : (
+                      <Text className={styles.precios}> </Text>
+                    )}
                   </Td>
                 ))}
               </Tr>

@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { GET_PRODUCTO } from "../../../graphqlQueries";
+import { useEffect, useState } from "react";
+import { DELETE_PRODUCTO, GET_PRODUCTO } from "../../../graphqlQueries";
 import graphQLClient from "../../../graphqlClient";
 import {
   Box,
+  Button,
   Center,
   IconButton,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Table,
   TableContainer,
   Tbody,
@@ -13,12 +20,18 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
-import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { FaRegTrashAlt, FaEdit } from "react-icons/fa";
 import EditarAgregarProducto from "../EditarAgregarProducto";
+import EditarProducto from "../EditarProducto";
 
 function ListaProductosEditable({ productIds }) {
+  const [editingProductId, setEditingProductId] = useState(null);
   const [productos, setProductos] = useState([]);
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [abrirDialogo, setAbrirDialogo] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -26,41 +39,85 @@ function ListaProductosEditable({ productIds }) {
         const productosData = await Promise.all(
           productIds.map(async (productId) => {
             const data = await graphQLClient.request(GET_PRODUCTO, {
-              productId: productId,
+              productId,
             });
             return data.producto.data;
           })
         );
         setProductos(productosData);
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error al obtener los productos:", error);
       }
     };
 
     fetchProductos();
   }, [productIds]);
-  console.log("Productos: ", productos);
 
-  // Función para formatear los precios
   const formatPrices = (precios) => {
-    if (precios) {
-      return Object.entries(precios).map(([key, value]) => {
-        return (
-          <div key={key}>
-            <strong>{key}:</strong> ${value}
-          </div>
-        );
-      });
+    if (precios && Object.keys(precios).length > 0) {
+      return Object.entries(precios).map(([key, value]) => (
+        <div key={key}>
+          <strong>{key}:</strong> ${value}
+        </div>
+      ));
     } else {
-      return "N/A"; // O cualquier otro mensaje que desees para precios nulos
+      return "N/A";
     }
   };
 
+  const deleteProduct = async (productId) => {
+    try {
+      const { deleteProducto } = await graphQLClient.request(DELETE_PRODUCTO, {
+        idProducto: productId,
+      });
+
+      if (deleteProducto) {
+        const productName = productos.find((p) => p.id === productId).attributes
+          .nombre;
+        toast({
+          title: "Producto eliminado",
+          description: `El producto "${productName}" se eliminó correctamente`,
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
+        setProductos(productos.filter((p) => p.id !== productId));
+      } else {
+        throw new Error("No se pudo eliminar el producto");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el producto:", error);
+      toast({
+        title: "Error al eliminar el producto",
+        description: "Hubo un error al intentar eliminar el producto",
+        status: "error",
+        duration: 6000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const confirmDeleteProduct = (productId) => {
+    setProductoSeleccionado(productId);
+    setAbrirDialogo(true);
+  };
+
+  const handleDeleteConfirmation = () => {
+    if (productoSeleccionado) {
+      deleteProduct(productoSeleccionado);
+      setProductoSeleccionado(null);
+      setAbrirDialogo(false);
+    }
+  };
+
+  const closeDialog = () => {
+    setProductoSeleccionado(null);
+    setAbrirDialogo(false);
+  };
+
   return (
-    <>
-      <Box mt={4}>
-        <EditarAgregarProducto />
-      </Box>
+    <Box mt={4}>
+      <EditarAgregarProducto />
       <Box
         w="80vw"
         p={4}
@@ -96,16 +153,19 @@ function ListaProductosEditable({ productIds }) {
                   </Td>
                   <Td>
                     <Text fontSize="1em" lineHeight="1em">
-                      {producto.attributes.categorias.data
-                        .map((categoria) => categoria.attributes.nombre)
-                        .join(", ")}
+                      {producto.attributes.categoria &&
+                      producto.attributes.categoria.data
+                        ? producto.attributes.categoria.data.attributes.nombre
+                        : ""}
                     </Text>
                   </Td>
                   <Td>
                     <Text fontSize="1em" lineHeight="1em">
-                      {producto.attributes.subcategorias.data
-                        .map((subcategoria) => subcategoria.attributes.nombre)
-                        .join(", ")}
+                      {producto.attributes.categoria &&
+                      producto.attributes.subcategoria.data
+                        ? producto.attributes.subcategoria.data.attributes
+                            .nombre
+                        : ""}
                     </Text>
                   </Td>
                   <Td>
@@ -117,8 +177,8 @@ function ListaProductosEditable({ productIds }) {
                         ml={2}
                         colorScheme="red"
                         icon={<FaRegTrashAlt />}
+                        onClick={() => confirmDeleteProduct(producto.id)}
                       />
-
                       <EditarAgregarProducto productoEdicion={producto.id} />
                     </Center>
                   </Td>
@@ -128,7 +188,30 @@ function ListaProductosEditable({ productIds }) {
           </Table>
         </TableContainer>
       </Box>
-    </>
+      {abrirDialogo && (
+        <Modal onClose={closeDialog} isOpen={abrirDialogo}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Eliminar Producto</ModalHeader>
+            <ModalBody>
+              <Text>¿Estás seguro de que quieres eliminar este producto?</Text>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                colorScheme="red"
+                mr={3}
+                onClick={handleDeleteConfirmation}
+              >
+                Eliminar
+              </Button>
+              <Button variant="ghost" onClick={closeDialog}>
+                Cancelar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+    </Box>
   );
 }
 

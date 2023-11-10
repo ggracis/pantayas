@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+
+import { useForm } from "react-hook-form";
 import {
   Box,
   Button,
@@ -17,6 +19,11 @@ import {
   Text,
   HStack,
   InputGroup,
+  useToast,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
 } from "@chakra-ui/react";
 import { MdOutlineSave } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
@@ -25,11 +32,19 @@ import {
   GET_CATEGORIAS,
   GET_SUBCATEGORIAS,
   GET_PRODUCTO,
-  UPDATE_PPRODUCTO,
+  UPDATE_PRODUCTO,
+  CREATE_PRODUCTO,
 } from "../../../graphqlQueries";
 import graphQLClient from "../../../graphqlClient";
 
 const EditarAgregarProducto = ({ productoEdicion }) => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
   const [categorias, setCategorias] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -87,6 +102,7 @@ const EditarAgregarProducto = ({ productoEdicion }) => {
       if (productoEdicion) {
         setIsEditMode(true);
         editarProducto(productoEdicion);
+        setValue("categoria", producto.categoria);
       } else {
         setIsEditMode(false);
         resetProducto();
@@ -110,7 +126,6 @@ const EditarAgregarProducto = ({ productoEdicion }) => {
   };
 
   const editarProducto = async (productId) => {
-    console.log("Editar Producto ", productId);
     try {
       const { producto } = await graphQLClient.request(GET_PRODUCTO, {
         productId,
@@ -119,42 +134,36 @@ const EditarAgregarProducto = ({ productoEdicion }) => {
         console.log("Producto: ", producto);
 
         const productoAttributes = producto.data.attributes;
-        const categoria =
-          productoAttributes.categorias.data.length > 0
-            ? productoAttributes.categorias.data[0].attributes.nombre
-            : "";
-        const subcategoria =
-          productoAttributes.subcategorias.data.length > 0
-            ? productoAttributes.subcategorias.data[0].attributes.nombre
-            : "";
+
+        const categoriaId =
+          productoAttributes.categoria && productoAttributes.categoria.data
+            ? productoAttributes.categoria.data.id
+            : null;
+
+        const subcategoriaId =
+          productoAttributes.subcategoria &&
+          productoAttributes.subcategoria.data
+            ? productoAttributes.subcategoria.data.id
+            : null;
 
         setProducto({
           ...productoAttributes,
-          categoria,
-          subcategoria,
+          categoria: categoriaId,
+          subcategoria: subcategoriaId,
         });
+
+        setValue("id", producto.data.id);
+        setValue("nombre", productoAttributes.nombre);
+        setValue("descripcion", productoAttributes.descripcion);
+        setValue("categoria", categoriaId);
+        setValue("subcategoria", subcategoriaId);
+        setValue("unidadMedida", productoAttributes.unidadMedida);
       } else {
         console.error("Producto no encontrado");
       }
     } catch (error) {
       console.error("Error al obtener el producto:", error);
     }
-  };
-
-  const handleNombreChange = (e) => {
-    const { value } = e.target;
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      nombre: value,
-    }));
-  };
-
-  const handleDescripcionChange = (e) => {
-    const { value } = e.target;
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      descripcion: value,
-    }));
   };
 
   // Función para generar los precios basados en la unidad de medida
@@ -201,40 +210,6 @@ const EditarAgregarProducto = ({ productoEdicion }) => {
     }));
   };
 
-  const handleInputChange = (e, titulo) => {
-    const { value } = e.target;
-    const preciosVariantes = [...producto.preciosVariantes];
-
-    // Encuentra el índice numérico del título en los titulosVariantes
-    const index = producto.titulosVariantes.indexOf(titulo);
-
-    if (index !== -1) {
-      preciosVariantes[index] = value;
-      setProducto((prevProducto) => ({
-        ...prevProducto,
-        preciosVariantes,
-        // Actualiza los precios basados en los preciosVariantes
-        precios: generarPrecios(producto.unidadMedida, preciosVariantes),
-      }));
-    }
-  };
-
-  const handleCategoriaChange = (categoriaId) => {
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      categoria: categoriaId,
-    }));
-    console.log(categoriaId);
-  };
-
-  const handleSubcategoriaChange = (subcategoriaId) => {
-    setProducto((prevProducto) => ({
-      ...prevProducto,
-      subcategoria: subcategoriaId,
-    }));
-    console.log(subcategoriaId);
-  };
-
   const generateTitulosVariantes = (unidadMedida) => {
     switch (unidadMedida) {
       case "Kg.":
@@ -248,43 +223,78 @@ const EditarAgregarProducto = ({ productoEdicion }) => {
     }
   };
 
+  const toast = useToast();
+
   const actualizarProducto = async (producto) => {
     try {
-      const updatedProductData = {
-        data: {
-          id: producto.id,
-          attributes: {
-            nombre: producto.nombre,
-            descripcion: producto.descripcion,
-            unidadMedida: producto.unidadMedida,
-            precios: producto.precios,
-            categorias: producto.categoria,
-            subcategorias: producto.subcategoria,
-          },
-        },
-      };
-      console.log("PRODUCTO: ", updatedProductData);
+      const id = producto.id;
+      const nombre = producto.nombre;
+      const descripcion = producto.descripcion;
+      const unidadMedida = producto.unidadMedida;
+      const precios = producto.precios;
+      const categoria = producto.categoria;
+      const subcategoria = producto.subcategoria;
 
-      // Utiliza la consulta de actualización y las variables necesarias
-      const { updateProducto } = await graphQLClient.request(
-        UPDATE_PPRODUCTO,
-        updatedProductData
-      );
-      console.log("Producto actualizado:", updateProducto);
+      let mutation;
+
+      if (id) {
+        mutation = UPDATE_PRODUCTO;
+      } else {
+        mutation = CREATE_PRODUCTO;
+      }
+
+      const data = {
+        nombre,
+        descripcion,
+        unidadMedida,
+        precios,
+        categoria,
+        subcategoria,
+      };
+
+      const result = await graphQLClient.request(mutation, {
+        id,
+        ...data,
+      });
+
+      const action = isEditMode ? "actualizado" : "creado";
+
+      toast({
+        title: `Producto ${action}`,
+        description: `${nombre} ${action} correctamente`,
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+      });
+
+      console.log(`Producto ${action}:`, result);
+    } catch (error) {
+      console.error("Error al actualizar/crear el producto:", error);
+
+      const action = isEditMode ? "actualizar" : "crear";
+
+      toast({
+        title: `Error al ${action} el producto`,
+        description: `Hubo un error al intentar ${action} el producto`,
+        status: "error",
+        duration: 6000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      await actualizarProducto(data);
+      onClose();
     } catch (error) {
       console.error("Error al actualizar el producto:", error);
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await actualizarProducto(producto);
-    resetProducto();
-    onClose();
-  };
+  //  console.log("Valores de subcategoria:", watch("subcategoria"));
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const initialRef = useRef(null);
 
   // Renderizar el botón y el encabezado del modal en función de isEditMode
   const modalButtonText = isEditMode ? "Guardar" : "Agregar";
@@ -298,7 +308,6 @@ const EditarAgregarProducto = ({ productoEdicion }) => {
         <IconButton
           onClick={() => {
             onOpen();
-            console.log(producto.unidadMedida);
           }}
           ml={2}
           colorScheme="teal"
@@ -312,80 +321,94 @@ const EditarAgregarProducto = ({ productoEdicion }) => {
         </Box>
       )}
 
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{modalHeader}</ModalHeader>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody pb={6}>
               <FormControl>
                 <FormLabel htmlFor="nombre">Nombre del producto:</FormLabel>
-                <Input
-                  type="text"
-                  name="nombre"
-                  value={producto.nombre || ""}
-                  onChange={handleNombreChange}
-                />
+                <Input {...register("nombre")} />
               </FormControl>
+
               <FormControl>
                 <FormLabel htmlFor="descripcion">Descripción:</FormLabel>
-                <Input
-                  type="text"
-                  name="descripcion"
-                  value={producto.descripcion || ""}
-                  onChange={handleDescripcionChange}
-                />
+                <Input {...register("descripcion")} />
               </FormControl>
 
               <FormControl>
                 <FormLabel htmlFor="categoria">Categoría:</FormLabel>
                 <Select
-                  key={producto.id}
-                  name="categoria"
-                  value={producto.categoria}
-                  onChange={(e) => handleCategoriaChange(e.target.value)}
+                  {...register("categoria", {
+                    required: "Seleccione una categoría",
+                  })}
                 >
-                  <option key="cat" value={null}>
-                    Elegir categoría
-                  </option>
+                  <option value="">Elegir categoría</option>
                   {categorias.map((categoria) => (
                     <option key={categoria.id} value={categoria.id}>
                       {categoria.attributes.nombre}
                     </option>
                   ))}
                 </Select>
+                {errors.categoria && (
+                  <Alert status="error">
+                    <AlertIcon />
+                    <AlertDescription>
+                      {errors.categoria.message}
+                    </AlertDescription>
+                  </Alert>
+                )}
               </FormControl>
 
               <FormControl>
                 <FormLabel htmlFor="subcategoria">Subcategoría:</FormLabel>
                 <Select
-                  name="subcategoria"
-                  value={producto.subcategoria}
-                  onChange={(e) => handleSubcategoriaChange(e.target.value)}
+                  {...register("subcategoria", {
+                    required: "Seleccione una subcategoría",
+                  })}
                 >
                   <option key="subcat" value={null}>
                     Elegir subcategoría
-                  </option>
+                  </option>{" "}
                   {subcategorias.map((subcategoria) => (
                     <option key={subcategoria.id} value={subcategoria.id}>
                       {subcategoria.attributes.nombre}
                     </option>
                   ))}
                 </Select>
+                {errors.subcategoria && (
+                  <Alert status="error">
+                    <AlertIcon />
+                    <AlertDescription>
+                      {errors.subcategoria.message}
+                    </AlertDescription>
+                  </Alert>
+                )}
               </FormControl>
 
               <FormControl>
                 <FormLabel htmlFor="unidadMedida">Unidad de Medida:</FormLabel>
                 <Select
-                  name="unidadMedida"
-                  value={producto.unidadMedida}
+                  {...register("unidadMedida", {
+                    required: "Seleccione una unidad de medida",
+                  })}
                   onChange={(e) => handleUnidadMedidaChange(e)}
                 >
                   <option value="Kg.">Kg.</option>
                   <option value="Unidad">Unidad</option>
                   <option value="Porcion">Porción</option>
                 </Select>
+                {errors.unidadMedida && (
+                  <Alert status="error">
+                    <AlertIcon />
+                    <AlertDescription>
+                      {errors.unidadMedida.message}
+                    </AlertDescription>
+                  </Alert>
+                )}
               </FormControl>
+
               <Text>Precios</Text>
 
               {producto.precios && Object.keys(producto.precios).length > 0 && (
@@ -396,9 +419,9 @@ const EditarAgregarProducto = ({ productoEdicion }) => {
                       <Input
                         size="sm"
                         type="text"
-                        name={titulo}
-                        value={producto.precios[titulo] || ""}
-                        onChange={(e) => handleInputChange(e, titulo)}
+                        name={`precios.${titulo}`}
+                        defaultValue={producto.precios[titulo] || ""}
+                        {...register(`precios.${titulo}`)}
                       />
                     </InputGroup>
                   ))}

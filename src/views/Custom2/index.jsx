@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import graphQLClient from "../../graphqlClient";
 import { GET_CUSTOMVIEWS, GET_LOCAL } from "../../graphqlQueries";
 import ScHeader from "../../components/ScHeader";
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Box, Flex, Grid, GridItem } from "@chakra-ui/react";
 import ListaProductos from "../../components/products/ListaProductos";
 
 import "./Custom2.css";
@@ -33,7 +33,7 @@ const CustomView2 = () => {
 
     fetchCustomView();
   }, [customViewId]);
-  console.log(customViewData);
+  console.log("customViewData: ", customViewData);
 
   // Función para renderizar componentes dinámicamente
   const renderComponent = (component) => {
@@ -80,25 +80,29 @@ const CustomView2 = () => {
     }
   };
 
+  const renderColumns = (data) => {
+    const columnKeys = Object.keys(data).filter((key) => key.startsWith("col"));
+
+    return (
+      <Grid templateColumns="repeat(3, 2fr)">
+        {columnKeys.map((key) => (
+          <GridItem key={key} m="1" w="32vw" flex="1">
+            {renderComponent(data[key])}
+          </GridItem>
+        ))}
+      </Grid>
+    );
+  };
+
   return (
-    <div bg={hexBg}>
+    <Box bg={hexBg} h="100vh">
       {customViewData && (
         <>
           <ScHeader title={customViewData.header} />
-          <Grid templateColumns="repeat(3, 2fr)">
-            <GridItem m="1" w="32vw" h="90vh">
-              {renderComponent(customViewData.col1)}
-            </GridItem>
-            <GridItem m="1" w="32vw" h="90vh">
-              {renderComponent(customViewData.col2)}
-            </GridItem>
-            <GridItem m="1" w="32vw" h="90vh">
-              {renderComponent(customViewData.col3)}
-            </GridItem>
-          </Grid>
+          {renderColumns(customViewData)}
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

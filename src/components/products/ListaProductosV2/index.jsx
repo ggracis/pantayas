@@ -73,14 +73,19 @@ function ListaProductosV2({ productIds, titulo }) {
           </GridItem>
           <GridItem colSpan={2}>
             <Grid templateColumns="repeat(3, 1fr)" key={index}>
-              {preciosKeys.map((precioKey, index) => (
-                <GridItem className={styles.precioBox} key={index}>
-                  <Text className={`${styles[`precioNumero${index + 1}`]}`}>
-                    ${producto.precios[precioKey]}
-                  </Text>
-                  <Text className={styles.precioDescripcion}>{precioKey}</Text>
-                </GridItem>
-              ))}
+              {preciosKeys.map(
+                (precioKey, index) =>
+                  producto.precios[precioKey] && (
+                    <GridItem className={styles.precioBox} key={index}>
+                      <Text className={`${styles[`precioNumero${index + 1}`]}`}>
+                        ${producto.precios[precioKey]}
+                      </Text>
+                      <Text className={styles.precioDescripcion}>
+                        {precioKey}
+                      </Text>
+                    </GridItem>
+                  )
+              )}
             </Grid>
           </GridItem>
         </Grid>

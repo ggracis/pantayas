@@ -111,7 +111,7 @@ function App() {
         element={
           <>
             <NavBar />
-            <Encabezado tituloEncabezado="Buscar de productos" />
+            <Encabezado tituloEncabezado="Buscar productos" />
             <BuscarProductos />
           </>
         }

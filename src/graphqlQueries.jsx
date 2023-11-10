@@ -100,14 +100,14 @@ export const GET_PRODUCTOS = gql`
           nombre
           descripcion
           precios
-          categorias {
+          categoria {
             data {
               attributes {
                 nombre
               }
             }
           }
-          subcategorias {
+          subcategoria {
             data {
               attributes {
                 nombre
@@ -138,7 +138,7 @@ export const GET_PRODUCTO = gql`
           }
           precios
           unidadMedida
-          categorias {
+          categoria {
             data {
               id
               attributes {
@@ -146,7 +146,7 @@ export const GET_PRODUCTO = gql`
               }
             }
           }
-          subcategorias {
+          subcategoria {
             data {
               id
               attributes {
@@ -154,32 +154,6 @@ export const GET_PRODUCTO = gql`
               }
             }
           }
-        }
-      }
-    }
-  }
-`;
-
-// Buscar un producto por nombre
-export const SEARCH_PRODUCTO_BY_NAME = gql`
-  query SearchProductosByName($nombre: String, $pageSize: Int, $page: Int) {
-    productos(
-      filters: { nombre: { containsi: $nombre } }
-      pagination: { page: $page, pageSize: $pageSize }
-      sort: "nombre"
-    ) {
-      data {
-        id
-        attributes {
-          nombre
-        }
-      }
-      meta {
-        pagination {
-          page
-          pageSize
-          total
-          pageCount
         }
       }
     }
@@ -214,9 +188,71 @@ export const GET_SUBCATEGORIAS = gql`
   }
 `;
 
+// Buscar un producto por nombre
+export const SEARCH_PRODUCTO = gql`
+  query SearchProductos($nombre: String, $pageSize: Int, $page: Int) {
+    productos(
+      filters: { nombre: { containsi: $nombre } }
+      pagination: { page: $page, pageSize: $pageSize }
+      sort: "nombre"
+    ) {
+      data {
+        id
+        attributes {
+          nombre
+        }
+      }
+      meta {
+        pagination {
+          page
+          pageSize
+          total
+          pageCount
+        }
+      }
+    }
+  }
+`;
+
+// Buscar un producto
+export const SEARCH_PRODUCTO_CATEGORIAS = gql`
+  query SearchProductos(
+    $nombre: String
+    $pageSize: Int
+    $page: Int
+    $categoria: ID
+    $subcategoria: ID
+  ) {
+    productos(
+      filters: {
+        nombre: { containsi: $nombre }
+        categoria: { id: { containsi: $categoria } }
+        subcategoria: { id: { containsi: $subcategoria } }
+      }
+      pagination: { page: $page, pageSize: $pageSize }
+      sort: "nombre"
+    ) {
+      data {
+        id
+        attributes {
+          nombre
+        }
+      }
+      meta {
+        pagination {
+          page
+          pageSize
+          total
+          pageCount
+        }
+      }
+    }
+  }
+`;
+
 // Eliminar producto
-export const REMOVE_PRODUCTO = gql`
-  mutation deleteProducto($idProducto: Int) {
+export const DELETE_PRODUCTO = gql`
+  mutation deleteProducto($idProducto: ID!) {
     deleteProducto(id: $idProducto) {
       data {
         id
@@ -225,24 +261,101 @@ export const REMOVE_PRODUCTO = gql`
   }
 `;
 
-// Editar producto
-
 // Crear producto
-export const CREATE_PRODUCTO = gql``;
+export const CREATE_PRODUCTO = gql`
+  mutation createProducto(
+    $nombre: String
+    $descripcion: String
+    $unidadMedida: String
+    $precios: JSON
+    $categoria: ID
+    $subcategoria: ID
+  ) {
+    createProducto(
+      data: {
+        nombre: $nombre
+        descripcion: $descripcion
+        unidadMedida: $unidadMedida
+        precios: $precios
+        categoria: $categoria
+        subcategoria: $subcategoria
+      }
+    ) {
+      data {
+        attributes {
+          nombre
+          descripcion
+          unidadMedida
+          precios
+          categoria {
+            data {
+              id
+              attributes {
+                nombre
+              }
+            }
+          }
+          subcategoria {
+            data {
+              id
+              attributes {
+                nombre
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 // ---------------- UPDATES ----------------
 
-export const UPDATE_PPRODUCTO = gql`
-  mutation updateProducto($id: ID!, $data: ProductoInput) {
-    updateProducto(id: $id, data: $data) {
-      producto {
+export const UPDATE_PRODUCTO = gql`
+  mutation updateProducto(
+    $id: ID!
+    $nombre: String
+    $descripcion: String
+    $unidadMedida: String
+    $precios: JSON
+    $categoria: ID
+    $subcategoria: ID
+  ) {
+    updateProducto(
+      id: $id
+      data: {
+        nombre: $nombre
+        descripcion: $descripcion
+        unidadMedida: $unidadMedida
+        precios: $precios
+        categoria: $categoria
+        subcategoria: $subcategoria
+      }
+    ) {
+      data {
         id
-        nombre
-        descripcion
-        unidadMedida
-        precios
-        categorias
-        subcategorias
+        attributes {
+          nombre
+          descripcion
+          unidadMedida
+          precios
+          categoria {
+            data {
+              id
+              attributes {
+                nombre
+              }
+            }
+          }
+          subcategoria {
+            data {
+              id
+              attributes {
+                nombre
+              }
+            }
+          }
+        }
       }
     }
   }

@@ -11,10 +11,7 @@ import {
   Divider,
   useToast,
 } from "@chakra-ui/react";
-import {
-  SEARCH_PRODUCTO_BY_NAME,
-  CREATE_CUSTOMVIEW,
-} from "../../../graphqlQueries";
+import { SEARCH_PRODUCTO, CREATE_CUSTOMVIEW } from "../../../graphqlQueries";
 import graphQLClient from "../../../graphqlClient";
 import { AsyncSelect, Select } from "chakra-react-select";
 
@@ -66,13 +63,10 @@ const CrearCustomView = () => {
   const handleProductSearch = async (inputValue) => {
     if (inputValue.length >= 3) {
       try {
-        const { productos } = await graphQLClient.request(
-          SEARCH_PRODUCTO_BY_NAME,
-          {
-            nombre: inputValue,
-            pageSize: 20,
-          }
-        );
+        const { productos } = await graphQLClient.request(SEARCH_PRODUCTO, {
+          nombre: inputValue,
+          pageSize: 20,
+        });
 
         if (productos) {
           console.log(productos);

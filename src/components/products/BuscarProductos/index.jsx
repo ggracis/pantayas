@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -19,7 +19,12 @@ import {
 
 import ListaProductosEditable from "../ListaProductosEditable";
 import { FaSearch } from "react-icons/fa";
-import { SEARCH_PRODUCTO_BY_NAME } from "../../../graphqlQueries";
+import {
+  GET_CATEGORIAS,
+  GET_SUBCATEGORIAS,
+  SEARCH_PRODUCTO,
+  SEARCH_PRODUCTO_CATEGORIAS,
+} from "../../../graphqlQueries";
 import graphQLClient from "../../../graphqlClient";
 
 const BuscarProductos = () => {
@@ -27,35 +32,169 @@ const BuscarProductos = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
+  const handleSearch = async () => {
     setLoading(true);
 
-    const formData = new FormData(e.target);
+    const nombre = document.getElementById("nombre").value;
+    const categoria = document.getElementById("categoria").value;
+    const subcategoria = document.getElementById("subcategoria").value;
+    const pageSize = parseInt(document.getElementById("pagesize").value) || 20;
+    const page = parseInt(document.getElementById("page").value) || 1;
+
     const variables = {
-      nombre: formData.get("nombre"),
-      categoria: formData.get("categoria"),
-      subcategoria: formData.get("subcategoria"),
-      pageSize: parseInt(formData.get("pagesize"), 20),
-      page: parseInt(formData.get("page"), 1),
+      nombre,
+      categoria: categoria,
+      subcategoria: subcategoria,
+      pageSize,
+      page,
     };
 
     try {
-      const { productos } = await graphQLClient.request(
-        SEARCH_PRODUCTO_BY_NAME,
-        variables
-      );
-      if (productos) {
-        setSearchResults(productos.data);
+      if (!categoria && !subcategoria) {
+        console.log("No se eligió ni categoría ni subcategoría");
+        const result = await graphQLClient.request(SEARCH_PRODUCTO, variables);
+        const productos = result.productos.data || [];
+        setSearchResults(productos);
+        console.log(productos);
       } else {
-        setSearchResults([]);
+        console.log("Se eligió categoría o subcategoría");
+        const result = await graphQLClient.request(
+          SEARCH_PRODUCTO_CATEGORIAS,
+          variables
+        );
+        const productos = result.productos.data || [];
+        setSearchResults(productos);
+        console.log(productos);
       }
+
       setError(null);
     } catch (err) {
       setError("Error al buscar productos.");
+      console.log(err);
       setSearchResults([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const SelectCategorias = () => {
+    const [categorias, setCategorias] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      const fetchCategorias = async () => {
+        setLoading(true);
+        try {
+          const { categorias } = await graphQLClient.request(GET_CATEGORIAS);
+          if (categorias && categorias.data) {
+            setCategorias(
+              categorias.data.map((categoria) => ({
+                id: categoria.id,
+                nombre: categoria.attributes.nombre,
+              }))
+            );
+
+            setError(null);
+          } else {
+            setCategorias([]);
+            setError("No se encontraron categorías.");
+          }
+        } catch (err) {
+          setError("Error al obtener las categorías.");
+          setCategorias([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCategorias();
+    }, []);
+
+    if (loading) {
+      return <p>Cargando...</p>;
+    }
+
+    if (error) {
+      return <p>Ocurrió un error: {error}</p>;
+    }
+
+    return (
+      <FormControl>
+        <Select placeholder="Categoría" id="categoria" name="categoria">
+          {categorias.map((categoria) => (
+            <option key={categoria.id} value={categoria.id}>
+              {categoria.nombre}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
+    );
+  };
+
+  const SelectSubcategorias = () => {
+    const [subcategorias, setSubcategorias] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      const fetchSubcategorias = async () => {
+        setLoading(true);
+        try {
+          const { subcategorias } = await graphQLClient.request(
+            GET_SUBCATEGORIAS
+          );
+          if (subcategorias && subcategorias.data) {
+            setSubcategorias(
+              subcategorias.data.map((subcategoria) => ({
+                id: subcategoria.id,
+                nombre: subcategoria.attributes.nombre,
+              }))
+            );
+            setError(null);
+          } else {
+            setSubcategorias([]);
+            setError("No se encontraron subcategorías.");
+          }
+        } catch (err) {
+          setError("Error al obtener las subcategorías.");
+          setSubcategorias([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchSubcategorias();
+    }, []);
+
+    if (loading) {
+      return <p>Cargando...</p>;
+    }
+
+    if (error) {
+      return <p>Ocurrió un error: {error}</p>;
+    }
+
+    return (
+      <FormControl>
+        <Select
+          placeholder="Subcategoría"
+          id="subcategoria"
+          name="subcategoria"
+        >
+          {subcategorias.map((subcategoria) => (
+            <option key={subcategoria.id} value={subcategoria.id}>
+              {subcategoria.nombre}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
+    );
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -63,54 +202,49 @@ const BuscarProductos = () => {
     <>
       <Center mt={4}>
         <Box>
-          <form onSubmit={handleSearch}>
+          <div>
             <Stack direction={["column", "row"]} spacing="15px">
               <FormControl>
-                <Input type="text" name="nombre" placeholder="Producto" />
+                <Input
+                  id="nombre"
+                  type="text"
+                  placeholder="Producto"
+                  onKeyDown={handleKeyPress}
+                />{" "}
               </FormControl>
 
-              <FormControl>
-                <Select placeholder="Categoría" name="categoria">
-                  <option value="Pastelería">Pastelería</option>
-                  <option value="categoria2">Categoría 2</option>
-                  <option value="categoria3">Categoría 3</option>
-                </Select>
-              </FormControl>
+              <SelectCategorias />
 
-              <FormControl>
-                <Select placeholder="Subcategoría" name="subcategoria">
-                  <option value="Tarta">Tarta</option>
-                  <option value="subcategoria2">Subcategoría 2</option>
-                  <option value="subcategoria3">Subcategoría 3</option>
-                </Select>
-              </FormControl>
+              <SelectSubcategorias />
 
               <FormControl>
                 <InputGroup>
-                  <InputLeftAddon children="Resultados" />
+                  <InputLeftAddon>
+                    <Text>Resultados</Text>
+                  </InputLeftAddon>
                   <NumberInput
                     step={20}
                     defaultValue={20}
                     min={20}
                     max={300}
                     allowMouseWheel
-                    name="pagesize"
+                    id="pagesize"
                   >
                     <NumberInputField />
                     <NumberInputStepper>
                       <NumberIncrementStepper />
                       <NumberDecrementStepper />
                     </NumberInputStepper>
-                  </NumberInput>{" "}
+                  </NumberInput>
                 </InputGroup>
               </FormControl>
 
-              <Input type="hidden" name="page" value="1" />
+              <Input type="hidden" id="page" value="1" />
 
               <FormControl>
                 <Button
                   colorScheme="teal"
-                  type="submit"
+                  onClick={handleSearch}
                   variant="outline"
                   rightIcon={<FaSearch />}
                 >
@@ -118,12 +252,13 @@ const BuscarProductos = () => {
                 </Button>
               </FormControl>
             </Stack>
-          </form>
+          </div>
         </Box>
       </Center>
 
       {loading && <Text>Cargando resultados...</Text>}
       {error && <Text color="red">{error}</Text>}
+
       {!loading && !error && (
         <ListaProductosEditable
           productIds={searchResults.map((producto) => producto.id)}
