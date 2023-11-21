@@ -5,8 +5,9 @@ import LogoEmpresa from "../LogoEmpresa";
 import RedesSociales from "../RedesSociales";
 
 const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
-const hexTexto = storedOpciones.hexTexto || "#5da763ff";
-const hexHead = storedOpciones.hexHead || "#807435ff";
+
+const hexTexto = storedOpciones ? storedOpciones.hexTexto : "#5da763ff";
+const hexHead = storedOpciones ? storedOpciones.hexHead : "#5da763ff";
 
 /* 
 fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
