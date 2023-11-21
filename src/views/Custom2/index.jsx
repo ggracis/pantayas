@@ -12,7 +12,7 @@ const CustomView2 = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
-  const hexBg = storedOpciones.hexBg;
+  const hexBg = storedOpciones.hexBg || "#f0f0f0";
 
   const [defaultCustomViewId, setDefaultCustomViewId] = useState(null);
 

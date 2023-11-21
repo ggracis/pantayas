@@ -7,7 +7,7 @@ import styles from "./Custom1.module.css";
 
 const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
 
-const hexBg = storedOpciones.hexBg;
+const hexBg = storedOpciones.hexBg || "#ffffff";
 /* 
 const hexTexto = storedOpciones.hexTexto;
 const hexHead = storedOpciones.hexHead;
