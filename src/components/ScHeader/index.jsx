@@ -9,6 +9,7 @@ const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
 //const hexHead = storedOpciones.hexHead;
 const hexTexto = "#b369cfff";
 const hexHead = "#b369cfff";
+const hexBg = "#b369cfff";
 /* 
 fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
 const hexBg = storedOpciones.hexBg;
