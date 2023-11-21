@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import {
@@ -11,7 +11,11 @@ import {
   Divider,
   useToast,
 } from "@chakra-ui/react";
-import { SEARCH_PRODUCTO, CREATE_CUSTOMVIEW } from "../../../graphqlQueries";
+import {
+  SEARCH_PRODUCTO,
+  CREATE_CUSTOMVIEW,
+  GET_CUSTOMVIEWS_LIST,
+} from "../../../graphqlQueries";
 import graphQLClient from "../../../graphqlClient";
 import { AsyncSelect, Select } from "chakra-react-select";
 
@@ -31,10 +35,7 @@ const CrearCustomView = () => {
 
   const handleEstructuraChange = (selectedEstructura) => {
     const estructuraValue = parseInt(selectedEstructura.value, 10);
-    setSelectedEstructura(selectedEstructura);
-    console.log(selectedEstructura);
     setEstructura(estructuraValue);
-    console.log(estructura);
 
     const componentes = {};
     for (let i = 1; i <= estructuraValue; i++) {
@@ -51,15 +52,6 @@ const CrearCustomView = () => {
     });
   };
 
-  const handleDisenoChange = (selectedDiseno) => {
-    console.log(selectedDiseno);
-    if (selectedDiseno.value === "0") {
-      setValue("diseno", "0");
-    } else {
-      setValue("diseno", selectedDiseno);
-    }
-  };
-
   const handleProductSearch = async (inputValue) => {
     if (inputValue.length >= 3) {
       try {
@@ -71,7 +63,16 @@ const CrearCustomView = () => {
         if (productos) {
           console.log(productos);
           return productos.data.map((producto) => ({
-            label: producto.attributes.nombre,
+            label: `${producto.attributes.nombre} (${
+              producto.attributes.categoria.data
+                ? producto.attributes.categoria.data.attributes.nombre
+                : ""
+            }${
+              producto.attributes.subcategoria.data
+                ? " - " +
+                  producto.attributes.subcategoria.data.attributes.nombre
+                : ""
+            })`,
             value: producto.id,
           }));
         }
@@ -217,6 +218,63 @@ const CrearCustomView = () => {
     }
   };
 
+  console.log("Diseno:", watch("diseno"), "Estructura:", watch("estructura"));
+
+  const SelectCustomviews = ({ onChange, value }) => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [customviewsOptions, setCustomviewsOptions] = useState([]);
+
+    useEffect(() => {
+      const fetchCustomviews = async () => {
+        setLoading(true);
+
+        try {
+          const { customviews } = await graphQLClient.request(
+            GET_CUSTOMVIEWS_LIST
+          );
+          if (customviews?.data) {
+            const options = customviews.data.map((customview) => ({
+              label: customview.attributes.nombre,
+              value: customview.id,
+            }));
+
+            options.unshift({ label: "Nuevo...", value: 0 });
+
+            setCustomviewsOptions(options);
+            setError(null);
+          } else {
+            setError("No se encontraron customviews.");
+          }
+        } catch (err) {
+          console.error("Error al obtener customviews:", err);
+          setError("No se encontraron customviews.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchCustomviews();
+    }, []);
+
+    if (loading) {
+      return <p>Cargando...</p>;
+    }
+
+    if (error) {
+      return <p>Ocurrió un error: {error}</p>;
+    }
+
+    return (
+      <Select
+        placeholder="Elegir diseño"
+        options={customviewsOptions}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  };
+
   return (
     <>
       <FormControl
@@ -231,38 +289,24 @@ const CrearCustomView = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <SimpleGrid columns={3} spacing={10} p={2}>
-          {/* Definimos el nombre del customview */}
           <FormControl>
-            <FormLabel>Diseno</FormLabel>
+            <FormLabel>Diseño</FormLabel>
             <Controller
               control={control}
               name="diseno"
               render={({ field: { onChange, value } }) => (
-                <Select
-                  placeholder="Elegir diseno"
+                <SelectCustomviews
+                  value={value}
                   onChange={(newValue) => {
                     onChange(newValue);
-                    handleDisenoChange(newValue);
+                    if (newValue && newValue.value === 0) {
+                      setValue("nombreCV", "");
+                    }
                   }}
-                  value={value}
-                  options={[
-                    {
-                      label: "prueba",
-                      value: "1",
-                    },
-                    {
-                      label: "2",
-                      value: "2",
-                    },
-                    {
-                      label: "Nuevo...",
-                      value: "0",
-                    },
-                  ]}
                 />
               )}
             />
-            {watch("diseno") === "0" && (
+            {watch("diseno") && watch("diseno").value === 0 && (
               <Controller
                 control={control}
                 name="nombreCV"

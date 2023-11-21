@@ -18,6 +18,20 @@ export const GET_CUSTOMVIEWS = gql`
   }
 `;
 
+// Traer todas las customviews (id y nombre)
+export const GET_CUSTOMVIEWS_LIST = gql`
+  query getCustomViews {
+    customviews {
+      data {
+        id
+        attributes {
+          nombre
+        }
+      }
+    }
+  }
+`;
+
 // Traer opciones de local
 export const GET_LOCAL = gql`
   query getLocal {
@@ -34,10 +48,14 @@ export const GET_LOCAL = gql`
           opciones
           tvs {
             data {
+              id
               attributes {
                 activo
-                horario
                 nombre
+                horario
+                defaultCV
+                diarioCV
+                findeCV
               }
             }
           }
@@ -80,6 +98,29 @@ export const UPDATE_LOCAL = gql`
             }
           }
           opciones
+        }
+      }
+    }
+  }
+`;
+
+// Actualizar las tv's
+export const UPDATE_TV_CUSTOMVIEW = gql`
+  mutation UpdateTvCustomview(
+    $tvId: ID!
+    $defaultCV: String
+    $diarioCV: String
+    $findeCV: String
+  ) {
+    updateTv(
+      id: $tvId
+      data: { defaultCV: $defaultCV, diarioCV: $diarioCV, findeCV: $findeCV }
+    ) {
+      data {
+        attributes {
+          defaultCV
+          diarioCV
+          findeCV
         }
       }
     }
@@ -200,6 +241,20 @@ export const SEARCH_PRODUCTO = gql`
         id
         attributes {
           nombre
+          categoria {
+            data {
+              attributes {
+                nombre
+              }
+            }
+          }
+          subcategoria {
+            data {
+              attributes {
+                nombre
+              }
+            }
+          }
         }
       }
       meta {

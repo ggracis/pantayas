@@ -1,38 +1,80 @@
+import { Box, Grid, GridItem } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-
+import ScHeader from "../../components/ScHeader";
+import ListaProductos from "../../components/products/ListaProductos";
+import ListaProductosV2 from "../../components/products/ListaProductosV2";
 import graphQLClient from "../../graphqlClient";
 import { GET_CUSTOMVIEWS, GET_LOCAL } from "../../graphqlQueries";
-import ScHeader from "../../components/ScHeader";
-import { Box, Flex, Grid, GridItem } from "@chakra-ui/react";
-import ListaProductos from "../../components/products/ListaProductos";
-
-import "./Custom2.css";
-import ListaProductosV2 from "../../components/products/ListaProductosV2";
-
-const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
-const hexBg = storedOpciones.hexBg;
 
 const CustomView2 = () => {
   const [customViewData, setCustomViewData] = useState(null);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const customViewId = params.get("id") || "2";
+  const storedOpciones = JSON.parse(localStorage.getItem("userOpciones"));
+  const hexBg = storedOpciones.hexBg;
+
+  const [defaultCustomViewId, setDefaultCustomViewId] = useState(null);
 
   useEffect(() => {
-    const fetchCustomView = async () => {
+    const fetchLocalData = async () => {
       try {
-        const data = await graphQLClient.request(GET_CUSTOMVIEWS, {
-          id: customViewId,
-        });
+        const localData = await graphQLClient.request(GET_LOCAL);
+        const tvId = params.get("tvId") || "1";
+        const defaultCV = localData.local.data.attributes.tvs.data.find(
+          (tv) => tv.id === tvId
+        ).attributes.defaultCV;
+        setDefaultCustomViewId(defaultCV);
+      } catch (error) {
+        console.error("Error fetching local data: ", error);
+      }
+    };
+
+    fetchLocalData();
+  }, [params]);
+
+  useEffect(() => {
+    const fetchCustomView = async (id) => {
+      try {
+        const data = await graphQLClient.request(GET_CUSTOMVIEWS, { id });
         setCustomViewData(data.customview.data.attributes.componentes);
       } catch (error) {
         console.error("Error:", error);
       }
     };
+    fetchCustomView(defaultCustomViewId);
+  }, [defaultCustomViewId]);
 
-    fetchCustomView();
-  }, [customViewId]);
+  const checkForChanges = async () => {
+    try {
+      const data = await graphQLClient.request(GET_LOCAL);
+      const tvId = params.get("tvId") || "1";
+      const newDefaultCV = data.local.data.attributes.tvs.data.find(
+        (tv) => tv.id === tvId
+      )?.attributes.defaultCV;
+      console.log(newDefaultCV);
+      console.log(defaultCustomViewId);
+
+      if (
+        newDefaultCV !== null &&
+        newDefaultCV !== undefined &&
+        newDefaultCV !== defaultCustomViewId
+      ) {
+        console.log("Cambio detectado");
+        setDefaultCustomViewId(newDefaultCV);
+      } else {
+        console.log("Sin cambios");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(checkForChanges, 10000);
+    return () => clearInterval(intervalId);
+  }, []);
+
   console.log("customViewData: ", customViewData);
 
   // Función para renderizar componentes dinámicamente
