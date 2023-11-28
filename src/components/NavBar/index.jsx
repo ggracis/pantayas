@@ -46,6 +46,9 @@ export default function NavBar() {
         <NavLink className={styles.enlaces} to="/c2" target="_blank">
           📺 2
         </NavLink>
+        <NavLink className={styles.enlaces} to="/issues">
+          Sugerencias 💡
+        </NavLink>
       </nav>
     );
   };
@@ -84,6 +87,9 @@ export default function NavBar() {
               <NavLink to="/c2" target="_blank">
                 📺 2
               </NavLink>
+            </MenuItem>
+            <MenuItem>
+              <NavLink to="/issues">Sugerencias 💡</NavLink>
             </MenuItem>
           </MenuList>
         </Menu>

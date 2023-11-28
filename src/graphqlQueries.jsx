@@ -204,7 +204,7 @@ export const GET_PRODUCTO = gql`
 // Traer categorias
 export const GET_CATEGORIAS = gql`
   query getCategorias {
-    categorias {
+    categorias(pagination: { pageSize: 50 }) {
       data {
         id
         attributes {
@@ -218,7 +218,7 @@ export const GET_CATEGORIAS = gql`
 // Traer subcategorias
 export const GET_SUBCATEGORIAS = gql`
   query getSubcategorias {
-    subcategorias {
+    subcategorias(pagination: { pageSize: 50 }) {
       data {
         id
         attributes {

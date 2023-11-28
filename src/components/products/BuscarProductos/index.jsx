@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button,
+  Center,
   FormControl,
   Input,
-  Select,
-  Button,
+  InputGroup,
+  InputLeftAddon,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  InputLeftAddon,
-  InputGroup,
+  Select,
   Stack,
-  Center,
   Text,
 } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 
-import ListaProductosEditable from "../ListaProductosEditable";
 import { FaSearch } from "react-icons/fa";
+import graphQLClient from "../../../graphqlClient";
 import {
   GET_CATEGORIAS,
   GET_SUBCATEGORIAS,
   SEARCH_PRODUCTO,
   SEARCH_PRODUCTO_CATEGORIAS,
 } from "../../../graphqlQueries";
-import graphQLClient from "../../../graphqlClient";
+import ListaProductosEditable from "../ListaProductosEditable";
 
 const BuscarProductos = () => {
   const [searchResults, setSearchResults] = useState([]);

@@ -1,25 +1,17 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import UpdatePrecios from "./UpdatePrecios";
+import Encabezado from "./components/Encabezado";
+import Issues from "./components/Issues";
 import NavBar from "./components/NavBar";
 import UsuarioForm from "./components/Users/Form";
-import Encabezado from "./components/Encabezado";
-import ModPreferencias from "./components/Users/ModPreferencias";
-import CustomView1 from "./views/Custom1";
-import CustomView2 from "./views/Custom2";
+import OnBoarding from "./components/onboarding";
 import BuscarProductos from "./components/products/BuscarProductos";
-import UpdatePrecios from "./UpdatePrecios";
 import graphQLClient from "./graphqlClient";
 import { GET_LOCAL } from "./graphqlQueries";
-import OnBoarding from "./components/onboarding";
-
-/* Viejos
-import Listado from "./components/products/Listado";
-import Screen1 from "./components/screens/Screen1";
-import Screen2 from "./components/screens/Screen2";
-import Screen3 from "./components/screens/Screen3";
-import ProductTable from "./components/products/TablaProductos";
-import EditarAgregarProducto from "./components/products/EditarAgregarProducto";
-*/
+import CustomView1 from "./views/Custom1";
+import CustomView2 from "./views/Custom2";
+import IssueGenerator from "./components/Issues";
 
 function App() {
   // Define el estado para las opciones del usuario
@@ -145,6 +137,20 @@ function App() {
         element={
           <>
             <CustomView2 />
+          </>
+        }
+      />
+
+      <Route
+        path="/issues"
+        element={
+          <>
+            <NavBar />
+            <Encabezado
+              tituloEncabezado="Sugerencias / Errores"
+              bajadaEncabezado="Envíe por aquí sus dudas, sugerencias, errores y reclamos... no abuse"
+            />
+            <IssueGenerator />
           </>
         }
       />
